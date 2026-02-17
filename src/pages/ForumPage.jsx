@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { COLORS } from '../utils/constants';
 import { getForumPosts } from '../lib/supabase';
+import { useGlobalEvent } from '../features/events/GlobalEventProvider';
+import { CorruptionPurge } from '../features/puzzles/types/CorruptionPurge/CorruptionPurge';
 
 // ═══════════════════════════════════════════════════════════════
 // FORUM PAGE — RENDERS & NEWS BENTO GRID
@@ -258,7 +260,10 @@ export const ForumPage = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [filter, setFilter] = useState('all');
   const [visible, setVisible] = useState(false);
+  const [showCorruption, setShowCorruption] = useState(false);
   const ref = useRef(null);
+  const { markPuzzleComplete, isPuzzleEventComplete } = useGlobalEvent();
+  const corruptionSolved = isPuzzleEventComplete('corruptionPurge');
 
   useEffect(() => {
     loadPosts();
@@ -287,6 +292,11 @@ export const ForumPage = () => {
       padding: 'clamp(80px, 12vw, 120px) clamp(12px, 4vw, 40px) clamp(30px, 5vw, 60px)',
     }}>
       {selectedPost && <PostLightbox post={selectedPost} onClose={() => setSelectedPost(null)} />}
+      <CorruptionPurge
+        isOpen={showCorruption}
+        onClose={() => setShowCorruption(false)}
+        onSuccess={() => { markPuzzleComplete('corruptionPurge'); setShowCorruption(false); }}
+      />
 
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         {/* Header */}
@@ -440,6 +450,41 @@ export const ForumPage = () => {
             SHOWING {filteredPosts.length} OF {posts.length} TRANSMISSIONS
           </div>
         )}
+
+        {/* Hidden puzzle trigger — glitch/corruption signal */}
+        <div
+          onClick={() => !corruptionSolved && setShowCorruption(true)}
+          style={{
+            marginTop: 40,
+            padding: 'clamp(14px, 3vw, 20px)',
+            background: '#060606',
+            border: `1px dashed ${corruptionSolved ? COLORS.flora + '40' : COLORS.signal + '30'}`,
+            textAlign: 'center',
+            cursor: corruptionSolved ? 'default' : 'pointer',
+            transition: 'all 0.3s',
+          }}
+        >
+          {corruptionSolved ? (
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, letterSpacing: 2 }}>
+              ✓ FEED CORRUPTION PURGED — SIGNAL CLEAN
+            </div>
+          ) : (
+            <>
+              <div style={{
+                fontFamily: "'Space Mono', monospace", fontSize: 11,
+                color: COLORS.signal, letterSpacing: 2, marginBottom: 4,
+              }}>
+                ⚠ FEED CORRUPTION DETECTED — ▓▒░ ANOMALOUS DATA ░▒▓
+              </div>
+              <div style={{
+                fontFamily: "'Space Mono', monospace", fontSize: 9,
+                color: COLORS.ash, letterSpacing: 1, opacity: 0.5,
+              }}>
+                [CLICK TO INITIATE PURGE PROTOCOL]
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

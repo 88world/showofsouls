@@ -51,6 +51,58 @@ export const useGameStore = create(
           correctFrames: 0,
           bestTime: null,
         },
+        // ── Recording puzzles ──
+        morseDecoder: {
+          completed: false,
+          attempts: 0,
+          bestTime: null,
+        },
+        frequencyTuner: {
+          completed: false,
+          attempts: 0,
+          bestTime: null,
+        },
+        waveformMatch: {
+          completed: false,
+          attempts: 0,
+          bestTime: null,
+        },
+        signalScramble: {
+          completed: false,
+          attempts: 0,
+          bestTime: null,
+        },
+        wireSplice: {
+          completed: false,
+          attempts: 0,
+          bestTime: null,
+        },
+        // ── Document puzzles ──
+        redactionReveal: {
+          completed: false,
+          attempts: 0,
+          bestTime: null,
+        },
+        fileDecryptor: {
+          completed: false,
+          attempts: 0,
+          bestTime: null,
+        },
+        keypadLock: {
+          completed: false,
+          attempts: 0,
+          bestTime: null,
+        },
+        patternGrid: {
+          completed: false,
+          attempts: 0,
+          bestTime: null,
+        },
+        jigsawFragment: {
+          completed: false,
+          attempts: 0,
+          bestTime: null,
+        },
       },
 
       // ═══════════════════════════════════════════════════════

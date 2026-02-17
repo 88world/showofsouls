@@ -302,7 +302,7 @@ const BentoGrid = () => {
   return (
     <>
       <PasswordTerminal isOpen={showPassword} onClose={() => setShowPassword(false)} onSuccess={() => { markPuzzleComplete('passwordTerminal'); setShowPassword(false); }} />
-      <MemoryGame isOpen={showMemoryGame} onClose={() => setShowMemoryGame(false)} onSuccess={() => { markPuzzleComplete('memoryGame'); setShowMemoryGame(false); }} />
+      <MemoryGame isOpen={showMemoryGame} onClose={() => setShowMemoryGame(false)} onSuccess={() => { setShowMemoryGame(false); }} />
 
       <section ref={ref} style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 4vw, 40px)", background: COLORS.bg, borderBottom: `1px solid ${COLORS.ash}` }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>

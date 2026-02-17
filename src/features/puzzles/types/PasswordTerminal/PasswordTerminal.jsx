@@ -79,7 +79,7 @@ export const PasswordTerminal = ({ isOpen, onClose, onSuccess }) => {
       inset: 0,
       background: "rgba(0, 0, 0, 0.9)",
       backdropFilter: "blur(10px)",
-      zIndex: 10000,
+      zIndex: 9998,
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
