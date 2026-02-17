@@ -1,0 +1,211 @@
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL EVENT WIDGET
+   Compact event status display
+   ═══════════════════════════════════════════════════════════════ */
+
+.global-event-widget {
+  background: linear-gradient(135deg, rgba(10, 10, 10, 0.95), rgba(20, 20, 20, 0.95));
+  border: 2px solid rgba(0, 255, 0, 0.5);
+  padding: 15px;
+  font-family: 'Courier New', monospace;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.3),
+    inset 0 0 20px rgba(0, 255, 0, 0.05);
+}
+
+.global-event-widget:hover {
+  border-color: #00ff00;
+  box-shadow: 
+    0 6px 20px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(0, 255, 0, 0.3),
+    inset 0 0 30px rgba(0, 255, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* States */
+.widget-active {
+  border-color: rgba(0, 255, 0, 0.7);
+}
+
+.widget-completed {
+  border-color: rgba(220, 20, 60, 0.5);
+  cursor: default;
+}
+
+.widget-completed:hover {
+  transform: none;
+  border-color: rgba(220, 20, 60, 0.7);
+}
+
+.widget-inactive {
+  border-color: rgba(255, 255, 255, 0.3);
+  cursor: default;
+}
+
+.widget-inactive:hover {
+  transform: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.widget-loading {
+  border-color: rgba(255, 255, 255, 0.2);
+  cursor: wait;
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% { border-color: rgba(255, 255, 255, 0.2); }
+  50% { border-color: rgba(255, 255, 255, 0.4); }
+}
+
+.widget-expanded {
+  cursor: default;
+}
+
+/* Header */
+.widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.widget-indicator {
+  font-weight: bold;
+}
+
+.indicator-active {
+  color: #00ff00;
+  animation: pulse-indicator 2s ease-in-out infinite;
+}
+
+@keyframes pulse-indicator {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.indicator-completed {
+  color: #dc143c;
+}
+
+.indicator-expired {
+  color: #ffa500;
+}
+
+.widget-countdown {
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  font-weight: bold;
+  color: #00ff00;
+  text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+  letter-spacing: 2px;
+}
+
+/* Title */
+.widget-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+/* Status */
+.widget-status {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: 2px;
+}
+
+.widget-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 5px;
+}
+
+/* Details (expanded) */
+.widget-details {
+  overflow: hidden;
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px dashed rgba(0, 255, 0, 0.3);
+}
+
+.widget-description {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 15px 0;
+}
+
+.widget-action-btn {
+  width: 100%;
+  padding: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: transparent;
+  border: 2px solid #00ff00;
+  color: #00ff00;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.widget-action-btn:hover {
+  background: #00ff00;
+  color: #0a0a0a;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+}
+
+.widget-completion-info {
+  background: rgba(220, 20, 60, 0.1);
+  border: 1px solid rgba(220, 20, 60, 0.3);
+  padding: 12px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.completion-line {
+  margin-bottom: 6px;
+}
+
+.completion-line:last-child {
+  margin-bottom: 0;
+}
+
+.completion-line strong {
+  color: #dc143c;
+}
+
+/* Footer */
+.widget-footer {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .widget-title {
+    font-size: 16px;
+  }
+
+  .widget-countdown {
+    font-size: 14px;
+  }
+
+  .widget-description {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,312 @@
+/* ═══════════════════════════════════════════════════════════════
+   BROADCAST BAR - Retro TV Emergency Broadcast System
+   Sits below the Nav bar — never covers VHS overlay
+   ═══════════════════════════════════════════════════════════════ */
+
+.broadcast-bar {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 90; /* Below nav (100), below VHS overlay */
+  width: 92%;
+  max-width: 900px;
+  pointer-events: auto;
+  animation: broadcastSlideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.broadcast-bar.dismissed {
+  animation: broadcastSlideOut 0.4s ease-in forwards;
+}
+
+/* Outer TV frame */
+.broadcast-frame {
+  background: #0c0c0c;
+  border: 3px solid #3a3a3a;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 1px #1a1a1a,
+    0 8px 32px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  position: relative;
+}
+
+/* TV screen bezel */
+.broadcast-screen {
+  margin: 6px;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  background: #050505;
+  border: 2px solid #222;
+}
+
+/* Scanline overlay on the broadcast bar itself */
+.broadcast-scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0.15;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.3) 0px,
+    rgba(0, 0, 0, 0.3) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+}
+
+/* Screen phosphor glow */
+.broadcast-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.6) 100%);
+}
+
+/* Top bar — channel info */
+.broadcast-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.broadcast-channel {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.broadcast-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #c41e1e;
+  animation: broadcastPulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 6px #c41e1e;
+}
+
+/* Main content area */
+.broadcast-content {
+  padding: 14px 18px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Event title row */
+.broadcast-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.broadcast-alert-badge {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #0c0c0c;
+  background: #c41e1e;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.broadcast-event-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: #e8dcc8;
+  text-shadow: 0 0 8px rgba(196, 30, 30, 0.3);
+  margin: 0;
+  line-height: 1;
+}
+
+/* Info row — fragments + timer */
+.broadcast-info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.broadcast-fragments {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.broadcast-fragment-pip {
+  width: 10px;
+  height: 10px;
+  border: 1px solid #444;
+  background: transparent;
+  transition: all 0.4s ease;
+}
+
+.broadcast-fragment-pip.collected {
+  background: #00ff66;
+  border-color: #00ff66;
+  box-shadow: 0 0 6px #00ff6640;
+}
+
+.broadcast-fragment-pip.missing {
+  background: transparent;
+  border-color: #555;
+}
+
+.broadcast-timer {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: #c41e1e;
+  text-shadow: 0 0 4px rgba(196, 30, 30, 0.4);
+}
+
+.broadcast-timer.urgent {
+  animation: broadcastBlink 0.5s step-end infinite;
+}
+
+/* Dismiss button */
+.broadcast-dismiss {
+  background: none;
+  border: none;
+  color: #555;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 8px;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.broadcast-dismiss:hover {
+  color: #c41e1e;
+}
+
+/* Bottom status strip */
+.broadcast-status-strip {
+  padding: 4px 14px;
+  background: #111;
+  border-top: 1px solid #222;
+  overflow: hidden;
+  position: relative;
+}
+
+.broadcast-ticker-text {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: #666;
+  white-space: nowrap;
+  animation: broadcastTicker 30s linear infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BROADCAST NOTIFICATION (toast-style)
+   Shows when a fragment is collected or event changes
+   ═══════════════════════════════════════════════════════════════ */
+
+.broadcast-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 95;
+  min-width: 300px;
+  max-width: 420px;
+  animation: toastSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.broadcast-toast.exiting {
+  animation: toastSlideOut 0.4s ease-in forwards;
+}
+
+.broadcast-toast .broadcast-frame {
+  border-color: #2a2a2a;
+}
+
+.toast-icon {
+  font-size: 18px;
+  margin-right: 10px;
+  filter: grayscale(0.3);
+}
+
+.toast-message {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: #e8dcc8;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+}
+
+.toast-subtitle {
+  font-family: 'Space Mono', monospace;
+  font-size: 9px;
+  color: #666;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+@keyframes broadcastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@keyframes broadcastSlideOut {
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-30px);
+  }
+}
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toastSlideOut {
+  to {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+}
+
+@keyframes broadcastPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes broadcastBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes broadcastTicker {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
