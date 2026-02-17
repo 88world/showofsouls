@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { Nav } from './components/layout/Nav';
 import { Footer } from './components/layout/Footer';
 import { VHSOverlay } from './components/common/VHSOverlay';
+import { FloatingEmbers } from './components/common/FloatingEmbers';
 import { ProgressionProvider } from './features/progression/ProgressionProvider';
 import { GlobalEventProvider } from './features/events/GlobalEventProvider';
 import { COLORS } from './utils/constants';
@@ -35,10 +36,11 @@ export default function App() {
     <Router>
       <ProgressionProvider>
         <GlobalEventProvider>
-          <div style={{ 
+          <FloatingEmbers />          <div style={{ 
             background: COLORS.bg, 
             color: COLORS.bone, 
-            minHeight: "100vh" 
+            minHeight: "100vh",
+            position: 'relative',
           }}>
             {/* Global Fonts */}
             <link 
