@@ -17,7 +17,7 @@ export const Footer = () => {
     <footer style={{
       background: COLORS.bg,
       borderTop: `2px solid ${COLORS.crimson}`,
-      padding: '60px 40px 40px',
+      padding: 'clamp(30px, 6vw, 60px) clamp(16px, 4vw, 40px) clamp(20px, 4vw, 40px)',
     }}>
       <div style={{ maxWidth: 1000, margin: '0 auto' }}>
         
@@ -52,8 +52,8 @@ export const Footer = () => {
         {/* MIDDLE ROW: GLOBAL WARNING & LINKS */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: 60,
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(220px, 100%), 1fr))',
+          gap: 'clamp(24px, 4vw, 60px)',
           paddingBottom: 40,
           borderBottom: `1px solid ${COLORS.ash}`,
           marginBottom: 40,
@@ -76,7 +76,8 @@ export const Footer = () => {
           {/* Site Map & External Links */}
           <div style={{ 
             display: 'flex', 
-            gap: 60, 
+            gap: 'clamp(24px, 4vw, 60px)',
+            flexWrap: 'wrap',
             fontFamily: "'Space Mono', monospace", 
             fontSize: 14, 
             letterSpacing: 1 

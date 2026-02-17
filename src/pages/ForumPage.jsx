@@ -284,7 +284,7 @@ export const ForumPage = () => {
       minHeight: '100vh',
       background: COLORS.bg,
       color: COLORS.bone,
-      padding: '120px 40px 60px',
+      padding: 'clamp(80px, 12vw, 120px) clamp(12px, 4vw, 40px) clamp(30px, 5vw, 60px)',
     }}>
       {selectedPost && <PostLightbox post={selectedPost} onClose={() => setSelectedPost(null)} />}
 
@@ -406,7 +406,7 @@ export const ForumPage = () => {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
+              gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))",
               gridAutoRows: "220px",
               gap: 16,
               opacity: visible ? 1 : 0,

@@ -11,7 +11,7 @@ export const IncidentPage = () => {
       minHeight: '100vh',
       background: COLORS.bg,
       color: COLORS.bone,
-      padding: '120px 40px 60px',
+      padding: 'clamp(80px, 12vw, 120px) clamp(12px, 4vw, 40px) clamp(30px, 5vw, 60px)',
     }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
         <h1 style={{

@@ -239,7 +239,7 @@ const PostEditor = ({ post, onSave, onCancel }) => {
         style={{
           background: COLORS.cardDark,
           border: `2px solid ${COLORS.flora}`,
-          padding: 32, maxWidth: 600, width: '100%',
+          padding: 'clamp(16px, 4vw, 32px)', maxWidth: 600, width: 'calc(100% - 24px)',
           maxHeight: '90vh', overflow: 'auto',
           animation: 'scaleIn 0.3s ease',
         }}
@@ -1539,7 +1539,7 @@ const Dashboard = ({ onLogout }) => {
   return (
     <div style={{
       minHeight: '100vh', background: COLORS.bg,
-      color: COLORS.bone, padding: '120px 40px 60px',
+      color: COLORS.bone, padding: 'clamp(80px, 12vw, 120px) clamp(12px, 4vw, 40px) clamp(30px, 5vw, 60px)',
     }}>
       {/* Post editor modal */}
       {editing && (
@@ -1907,6 +1907,7 @@ const Dashboard = ({ onLogout }) => {
         <div style={{
           display: 'flex', gap: 0, marginBottom: 24,
           borderBottom: `1px solid ${COLORS.ash}20`,
+          overflowX: 'auto', WebkitOverflowScrolling: 'touch',
         }}>
           {[
             { id: 'forum', label: 'FORUM POSTS', count: posts.length, color: COLORS.flora },
@@ -1918,7 +1919,7 @@ const Dashboard = ({ onLogout }) => {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               style={{
-                padding: '14px 24px',
+                padding: '14px clamp(10px, 2vw, 24px)',
                 background: activeTab === tab.id ? COLORS.cardDark : 'transparent',
                 border: 'none',
                 borderBottom: activeTab === tab.id ? `2px solid ${tab.color}` : '2px solid transparent',
@@ -1927,6 +1928,7 @@ const Dashboard = ({ onLogout }) => {
                 color: activeTab === tab.id ? tab.color : COLORS.ash,
                 cursor: 'pointer', transition: 'all 0.2s',
                 display: 'flex', alignItems: 'center', gap: 8,
+                whiteSpace: 'nowrap', flexShrink: 0,
               }}
               onMouseEnter={e => {
                 if (activeTab !== tab.id) e.currentTarget.style.color = tab.color;
@@ -1963,7 +1965,7 @@ const Dashboard = ({ onLogout }) => {
           <>
             {/* Stats bar */}
             <div style={{
-              display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16,
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(140px, 100%), 1fr))', gap: 16,
               marginBottom: 24,
             }}>
               {[
@@ -1999,6 +2001,8 @@ const Dashboard = ({ onLogout }) => {
               border: `1px solid ${COLORS.ash}20`,
               overflow: 'hidden',
             }}>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <div style={{ minWidth: 600 }}>
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '2fr 1fr 1fr 1fr 200px',
@@ -2124,6 +2128,8 @@ const Dashboard = ({ onLogout }) => {
                   </div>
                 </div>
               ))}
+              </div>
+            </div>
             </div>
           </>
         )}
@@ -2133,7 +2139,7 @@ const Dashboard = ({ onLogout }) => {
           <>
             {/* Stats bar */}
             <div style={{
-              display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16,
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(140px, 100%), 1fr))', gap: 16,
               marginBottom: 24,
             }}>
               {[
@@ -2169,6 +2175,8 @@ const Dashboard = ({ onLogout }) => {
               border: `1px solid ${COLORS.ash}20`,
               overflow: 'hidden',
             }}>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <div style={{ minWidth: 650 }}>
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 2fr 1fr 1fr 1fr 180px',
@@ -2301,6 +2309,8 @@ const Dashboard = ({ onLogout }) => {
                   </div>
                 </div>
               ))}
+              </div>
+            </div>
             </div>
           </>
         )}
@@ -2310,7 +2320,7 @@ const Dashboard = ({ onLogout }) => {
           <>
             {/* Stats bar */}
             <div style={{
-              display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16,
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(140px, 100%), 1fr))', gap: 16,
               marginBottom: 24,
             }}>
               {[
@@ -2341,6 +2351,8 @@ const Dashboard = ({ onLogout }) => {
               border: `1px solid ${COLORS.ash}20`,
               overflow: 'hidden',
             }}>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <div style={{ minWidth: 600 }}>
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 2fr 1fr 1fr 1fr 150px',
@@ -2437,6 +2449,8 @@ const Dashboard = ({ onLogout }) => {
                   </div>
                 </div>
               ))}
+              </div>
+            </div>
             </div>
           </>
         )}
@@ -2446,7 +2460,7 @@ const Dashboard = ({ onLogout }) => {
           <>
             {/* Stats bar */}
             <div style={{
-              display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16,
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(140px, 100%), 1fr))', gap: 16,
               marginBottom: 24,
             }}>
               {[
@@ -2477,6 +2491,8 @@ const Dashboard = ({ onLogout }) => {
               border: `1px solid ${COLORS.ash}20`,
               overflow: 'hidden',
             }}>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <div style={{ minWidth: 600 }}>
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: '1fr 2fr 1fr 1fr 1fr 150px',
@@ -2574,6 +2590,8 @@ const Dashboard = ({ onLogout }) => {
                   </div>
                 </div>
               ))}
+              </div>
+            </div>
             </div>
           </>
         )}

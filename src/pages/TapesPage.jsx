@@ -111,15 +111,27 @@ const RetroAudioPlayer = ({ src, title, recordingId }) => {
     seekToPosition(e.clientX);
   };
 
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+    seekToPosition(e.touches[0].clientX);
+  };
+
   useEffect(() => {
     if (!isDragging) return;
     const handleMove = (e) => { seekToPosition(e.clientX); };
     const handleUp = () => { setIsDragging(false); };
+    const handleTouchMove = (e) => { e.preventDefault(); seekToPosition(e.touches[0].clientX); };
+    const handleTouchEnd = () => { setIsDragging(false); };
     window.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseup', handleUp);
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
     return () => {
       window.removeEventListener('mousemove', handleMove);
       window.removeEventListener('mouseup', handleUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
   }, [isDragging, seekToPosition]);
 
@@ -269,11 +281,12 @@ const RetroAudioPlayer = ({ src, title, recordingId }) => {
         </div>
 
         {/* Progress / tuning dial — draggable */}
-        <div ref={progressRef} onMouseDown={handleProgressDown}
+        <div ref={progressRef} onMouseDown={handleProgressDown} onTouchStart={handleTouchStart}
           style={{
             height: 10, background: '#0a0906',
             cursor: isDragging ? 'grabbing' : 'pointer', position: 'relative',
             border: `1px solid ${COLORS.ash}15`, borderRadius: 1,
+            touchAction: 'none',
             boxShadow: 'inset 0 1px 3px rgba(0,0,0,0.5)',
             padding: '2px 0',
           }}
@@ -487,13 +500,23 @@ const CRTVideoModal = ({ tape, onClose }) => {
     seekTo(e.clientX);
   };
 
+  const handleTouchStart = (e) => {
+    e.preventDefault();
+    setIsDragging(true);
+    seekTo(e.touches[0].clientX);
+  };
+
   useEffect(() => {
     if (!isDragging) return;
     const handleMove = (e) => seekTo(e.clientX);
     const handleUp = () => setIsDragging(false);
+    const handleTouchMove = (e) => { e.preventDefault(); seekTo(e.touches[0].clientX); };
+    const handleTouchEnd = () => setIsDragging(false);
     window.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseup', handleUp);
-    return () => { window.removeEventListener('mousemove', handleMove); window.removeEventListener('mouseup', handleUp); };
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
+    return () => { window.removeEventListener('mousemove', handleMove); window.removeEventListener('mouseup', handleUp); window.removeEventListener('touchmove', handleTouchMove); window.removeEventListener('touchend', handleTouchEnd); };
   }, [isDragging, seekTo]);
 
   const pct = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -521,7 +544,7 @@ const CRTVideoModal = ({ tape, onClose }) => {
         onMouseMove={resetHideTimer}
         style={{
           position: 'relative',
-          maxWidth: 900, width: '90vw',
+          maxWidth: 900, width: '95vw',
           background: '#000',
           border: `3px solid ${COLORS.ash}40`,
           borderRadius: 8,
@@ -619,10 +642,12 @@ const CRTVideoModal = ({ tape, onClose }) => {
           <div
             ref={progressRef}
             onMouseDown={handleProgressDown}
+            onTouchStart={handleTouchStart}
             style={{
               height: 6, background: COLORS.ash + '15',
               cursor: isDragging ? 'grabbing' : 'pointer',
               position: 'relative', marginBottom: 10, borderRadius: 3,
+              touchAction: 'none',
             }}
           >
             {/* Buffered look */}
@@ -1105,7 +1130,7 @@ export const TapesPage = () => {
       minHeight: '100vh',
       background: COLORS.bg,
       color: COLORS.bone,
-      padding: '160px 40px 100px',
+      padding: 'clamp(100px, 15vw, 160px) clamp(12px, 4vw, 40px) clamp(40px, 8vw, 100px)',
       position: 'relative',
       overflowX: 'hidden',
     }}>
@@ -1140,10 +1165,10 @@ export const TapesPage = () => {
           </div>
         </div>
 
-        {/* Tape Grid — 3 per row */}
+        {/* Tape Grid — responsive */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
           gap: 16,
         }}>
           {tapesLoading ? (
@@ -1237,7 +1262,7 @@ export const TapesPage = () => {
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
           gap: 16,
         }}>
           {recordingsLoading ? (
@@ -1379,7 +1404,7 @@ export const TapesPage = () => {
 
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
           gap: 16,
         }}>
           {documentsLoading ? (

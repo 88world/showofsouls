@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Nav } from './components/layout/Nav';
 import { Footer } from './components/layout/Footer';
 import { VHSOverlay } from './components/common/VHSOverlay';
@@ -20,6 +21,14 @@ import { AdminPage } from './pages/AdminPage';
 // Phase 2: Puzzle framework complete
 // Phase 3: Global events & Supabase integration
 // ═══════════════════════════════════════════════════════════════
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pathname]);
+  return null;
+}
 
 export default function App() {
   return (
@@ -51,6 +60,16 @@ export default function App() {
           
           body { 
             overflow-x: hidden; 
+            -webkit-tap-highlight-color: transparent;
+          }
+
+          button, a {
+            touch-action: manipulation;
+          }
+
+          img, video {
+            max-width: 100%;
+            height: auto;
           }
 
           @keyframes morseBlink {
@@ -212,18 +231,29 @@ export default function App() {
           }
 
           @media (max-width: 900px) {
-            nav > div > div:last-child > a { 
-              display: none !important; 
+            /* NAV — hide desktop, show mobile */
+            .nav-desktop { display: none !important; }
+            .nav-mobile-header { display: flex !important; }
+            .nav-mobile-menu { display: flex !important; }
+            .sos-nav {
+              top: 12px !important;
+              padding: 10px 16px !important;
+              border-radius: 12px !important;
+              width: calc(100vw - 24px) !important;
+              max-width: calc(100vw - 24px) !important;
             }
-            
-            .bento-grid {
-              grid-template-columns: repeat(2, 1fr) !important;
-              grid-template-rows: auto !important;
-            }
-            
-            .col-span-2, .col-span-3 { 
-              grid-column: span 2 / span 2; 
-            }
+
+            /* BENTO GRID — 6-col to 2-col */
+            .col-span-1 { grid-column: span 1 / span 1; }
+            .col-span-2 { grid-column: span 2 / span 2; }
+            .col-span-3 { grid-column: span 2 / span 2; }
+            .row-span-2 { grid-row: span 1 / span 1; }
+          }
+
+          @media (max-width: 600px) {
+            /* BENTO GRID — 2-col to 1-col */
+            .col-span-1, .col-span-2, .col-span-3 { grid-column: span 1 / span 1 !important; }
+            .row-span-1, .row-span-2 { grid-row: span 1 / span 1 !important; }
           }
 
           /* Mosaic Grid Spans */
@@ -233,6 +263,9 @@ export default function App() {
           .row-span-1 { grid-row: span 1 / span 1; }
           .row-span-2 { grid-row: span 2 / span 2; }
         `}</style>
+
+        {/* Scroll to top on route change */}
+        <ScrollToTop />
 
         {/* VHS Effects Overlay */}
         <VHSOverlay />

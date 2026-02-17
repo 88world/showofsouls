@@ -84,7 +84,7 @@ const EventCooldownBox = () => {
       padding: "20px", background: "rgba(10, 5, 5, 0.9)",
       border: `1px solid ${hasEvent ? COLORS.flora : COLORS.crimson}`,
       boxShadow: `0 0 20px ${hasEvent ? COLORS.flora : COLORS.crimson}15`,
-      fontFamily: "'Space Mono', monospace", minWidth: 280,
+      fontFamily: "'Space Mono', monospace", minWidth: 220, maxWidth: "calc(100vw - 32px)",
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, color: hasEvent ? COLORS.flora : COLORS.crimson }}>
         <div style={{ width: 8, height: 8, background: hasEvent ? COLORS.flora : COLORS.crimson, borderRadius: '50%', animation: "pulse 2s infinite" }} />
@@ -172,8 +172,8 @@ const SplitHero = ({ scrollY }) => {
 
 
       {/* Top Left Cam Info */}
-      <div style={{
-        position: "absolute", top: 32, left: 40, zIndex: 10,
+      <div className="hero-cam-info" style={{
+        position: "absolute", top: 32, left: 20, zIndex: 10,
         display: "flex", alignItems: "center", gap: 16,
         fontFamily: "'Space Mono', monospace", color: COLORS.crimson,
       }}>
@@ -190,7 +190,7 @@ const SplitHero = ({ scrollY }) => {
       <div style={{
         position: "relative", zIndex: 10, height: "100%",
         display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-        padding: "0 40px", textAlign: "center",
+        padding: "0 16px", textAlign: "center",
       }}>
         <div style={{
           opacity: loaded ? 1 : 0,
@@ -304,7 +304,7 @@ const BentoGrid = () => {
       <PasswordTerminal isOpen={showPassword} onClose={() => setShowPassword(false)} onSuccess={() => { markPuzzleComplete('passwordTerminal'); setShowPassword(false); }} />
       <MemoryGame isOpen={showMemoryGame} onClose={() => setShowMemoryGame(false)} onSuccess={() => { markPuzzleComplete('memoryGame'); setShowMemoryGame(false); }} />
 
-      <section ref={ref} style={{ padding: "120px 40px", background: COLORS.bg, borderBottom: `1px solid ${COLORS.ash}` }}>
+      <section ref={ref} style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 4vw, 40px)", background: COLORS.bg, borderBottom: `1px solid ${COLORS.ash}` }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ marginBottom: 60, opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease 0.2s", textAlign: "left" }}>
             <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, letterSpacing: 3, color: COLORS.crimson, marginBottom: 12, display: "flex", alignItems: "center", gap: 8 }}>
@@ -319,7 +319,7 @@ const BentoGrid = () => {
           </div>
 
           <div style={{
-            display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gridTemplateRows: "repeat(3, 220px)", gap: 16,
+            display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(min(200px, 100%), 1fr))", gridAutoRows: "200px", gap: 16,
             opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(30px)", transition: "all 0.8s ease 0.4s",
           }}>
             {mosaicItems.map((item, i) => (
@@ -424,7 +424,7 @@ const CTATerminal = () => {
   }, [visible]);
 
   return (
-    <section ref={ref} style={{ padding: "120px 40px 80px", background: COLORS.bg }}>
+    <section ref={ref} style={{ padding: "clamp(60px, 10vw, 120px) clamp(16px, 4vw, 40px) clamp(40px, 6vw, 80px)", background: COLORS.bg }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
         <h2 style={{
           fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(36px, 5vw, 56px)", letterSpacing: 8, color: COLORS.bone,
