@@ -47,6 +47,12 @@ export const PatternGrid = ({ isOpen, onClose, onSuccess }) => {
   const [showTarget, setShowTarget] = useState(true);
   const [moves, setMoves] = useState(0);
 
+  const completePuzzle = () => {
+    if (success) return;
+    setSuccess(true);
+    setTimeout(() => { onSuccess(); onClose(); }, 1200);
+  };
+
   const handleCellClick = (r, c) => {
     if (success) return;
     setGrid(prev => {
@@ -74,15 +80,20 @@ export const PatternGrid = ({ isOpen, onClose, onSuccess }) => {
         row.every((cell, c) => cell === target.current[r][c])
       );
       if (match) {
-        setSuccess(true);
-        setTimeout(() => { onSuccess(); onClose(); }, 1200);
+        completePuzzle();
       }
     }
-  }, [grid, moves]);
+  }, [grid, moves, success]);
 
   const handleReset = () => {
     setGrid(Array(GRID_SIZE).fill(null).map(() => Array(GRID_SIZE).fill(false)));
     setMoves(0);
+  };
+
+  const handleAutoSolve = () => {
+    if (success) return;
+    setGrid(target.current.map((row) => row.map((cell) => cell)));
+    completePuzzle();
   };
 
   if (!isOpen) return null;
@@ -141,9 +152,25 @@ export const PatternGrid = ({ isOpen, onClose, onSuccess }) => {
           </div>
         </div>
 
-        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.ash, marginBottom: 16, display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.ash, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>MOVES: {moves}</span>
-          <span onClick={handleReset} style={{ cursor: 'pointer', color: COLORS.ember, letterSpacing: 2 }}>RESET</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            {moves >= 200 && !success && (
+              <button onClick={handleAutoSolve} style={{
+                background: 'transparent',
+                border: `1px solid ${COLORS.flora}`,
+                color: COLORS.flora,
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 9,
+                letterSpacing: 2,
+                padding: '6px 10px',
+                cursor: 'pointer',
+              }}>
+                AUTO SOLVE
+              </button>
+            )}
+            <span onClick={handleReset} style={{ cursor: 'pointer', color: COLORS.ember, letterSpacing: 2 }}>RESET</span>
+          </div>
         </div>
 
         {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12, textAlign: 'center', display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center' }}><IconComponent icon={Icons.CheckCircle2} size={14} color={COLORS.flora} />PATTERN SYNCHRONIZED — {moves} MOVES</div>}
