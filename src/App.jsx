@@ -75,7 +75,7 @@ export default function App() {
             height: auto;
           }
 
-          @media (max-width: 420px) {
+          @media (max-width: 768px) {
             .page {
               padding-left: 14px !important;
               padding-right: 14px !important;
@@ -119,6 +119,52 @@ export default function App() {
             .page p {
               font-size: 14px !important;
               line-height: 1.6 !important;
+            }
+
+            /* Event Box - Show mobile version, hide desktop */
+            .event-box-desktop-wrapper {
+              display: none !important;
+            }
+
+            .event-box-mobile-wrapper {
+              display: block !important;
+            }
+
+            .hero-cam-info {
+              font-size: 11px !important;
+            }
+
+            /* Hero section mobile adjustments */
+            section {
+              min-height: auto !important;
+            }
+
+            .hero-section {
+              min-height: auto !important;
+              height: auto !important;
+            }
+
+          }
+
+          /* Desktop: hero section fills viewport, event box positioning */
+          @media (min-width: 769px) {
+            .hero-section {
+              min-height: 100vh;
+            }
+
+            .event-box-desktop-wrapper {
+              display: block !important;
+            }
+
+            .event-box-mobile-wrapper {
+              display: none !important;
+            }
+
+            .event-box-desktop {
+              position: absolute;
+              bottom: clamp(12px, 3vh, 60px);
+              right: clamp(16px, 3vw, 50px);
+              z-index: 10;
             }
           }
 

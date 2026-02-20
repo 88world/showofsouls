@@ -63,7 +63,7 @@ const GlitchText = ({ children, className = "" }) => {
 // Shows countdown to next global event or active event status
 // ═══════════════════════════════════════════════════════════════
 
-const EventCooldownBox = () => {
+const EventCooldownBox = ({ isMobileInline = false }) => {
   const { currentEvent, getTimeRemaining, getCompletedCount, getTotalPuzzles } = useGlobalEvent();
   const [time, setTime] = useState(null);
 
@@ -81,20 +81,17 @@ const EventCooldownBox = () => {
   const pad = (n) => String(n).padStart(2, '0');
 
   return (
-    <div style={{
-      position: "absolute", 
-      bottom: "clamp(12px, 3vh, 60px)", 
-      right: "clamp(16px, 3vw, 50px)", 
-      zIndex: 10,
-      padding: "clamp(14px, 3vw, 20px)", 
+    <div className={isMobileInline ? "event-box-mobile" : "event-box-desktop"} style={{
+      padding: "clamp(20px, 4vw, 24px)", 
       background: "rgba(10, 5, 5, 0.95)",
       border: `1px solid ${hasEvent ? COLORS.flora : COLORS.crimson}`,
       boxShadow: `0 0 20px ${hasEvent ? COLORS.flora : COLORS.crimson}15`,
       fontFamily: "'Space Mono', monospace", 
-      minWidth: "clamp(180px, 40vw, 220px)", 
-      maxWidth: "calc(100vw - 32px)",
+      minWidth: isMobileInline ? "auto" : "clamp(180px, 40vw, 220px)", 
+      maxWidth: "100%",
+      width: isMobileInline ? "100%" : "auto",
     }}>
-      <div style={{ display: "flex", alignItems: "center", gap: "clamp(6px, 2vw, 10px)", marginBottom: "clamp(8px, 2vw, 12px)", color: hasEvent ? COLORS.flora : COLORS.crimson }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "clamp(8px, 2vw, 10px)", marginBottom: "clamp(12px, 3vw, 16px)", color: hasEvent ? COLORS.flora : COLORS.crimson }}>
         <div style={{ width: "clamp(6px, 1.5vw, 8px)", height: "clamp(6px, 1.5vw, 8px)", background: hasEvent ? COLORS.flora : COLORS.crimson, borderRadius: '50%', animation: "pulse 2s infinite" }} />
         <span style={{ fontSize: "clamp(11px, 2.2vw, 14px)", letterSpacing: 1, fontWeight: "bold" }}>
           {hasEvent ? 'GLOBAL EVENT ACTIVE' : 'NEXT EVENT'}
@@ -154,11 +151,9 @@ const SplitHero = ({ scrollY, onActivatePuzzle }) => {
   }, []);
 
   return (
-    <section style={{
+    <section className="hero-section" style={{
       position: "relative",
-      height: "100vh",
-      minHeight: "clamp(600px, 100vh, 900px)",
-      overflow: "hidden",
+      overflow: "visible",
       background: COLORS.bg,
       borderBottom: `2px solid ${COLORS.crimson}`,
     }}>
@@ -179,30 +174,32 @@ const SplitHero = ({ scrollY, onActivatePuzzle }) => {
        }} />
 
 
-      {/* Top Left Cam Info */}
-      <div className="hero-cam-info" style={{
-        position: "absolute", top: 32, left: 20, zIndex: 10,
-        display: "flex", alignItems: "center", gap: 16,
-        fontFamily: "'Space Mono', monospace", color: COLORS.crimson,
+      {/* Bottom Right - Event Cooldown Timer (Desktop Only) */}
+      <div className="event-box-desktop-wrapper">
+        <EventCooldownBox />
+      </div>
+
+      {/* Main Content */}
+      <div className="hero-content" style={{
+        position: "relative", zIndex: 10,
+        display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "center",
+        padding: "clamp(90px, 15vh, 140px) clamp(16px, 4vw, 40px) clamp(40px, 5vh, 60px)", textAlign: "center",
       }}>
-          <div style={{ fontSize: 14, letterSpacing: 2, display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-            <span style={{ animation: "blink 1s steps(1) infinite" }}><IconComponent icon={Icons.Activity} size={12} color={COLORS.crimson} /></span>
+
+        {/* REC label - in flow, top-left */}
+        <div style={{
+          alignSelf: "flex-start",
+          marginBottom: "clamp(16px, 3vh, 28px)",
+          display: "flex", alignItems: "center", gap: 8,
+          fontFamily: "'Space Mono', monospace", color: COLORS.crimson,
+          fontSize: 13, letterSpacing: 2,
+        }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <span style={{ animation: "blink 1s steps(1) infinite" }}><IconComponent icon={Icons.Activity} size={11} color={COLORS.crimson} /></span>
             <span>REC</span>
           </span>
           <span style={{ color: COLORS.bone, opacity: 0.7 }}>[TAPE 1947-B]</span>
         </div>
-      </div>
-
-      {/* Bottom Right - Event Cooldown Timer */}
-      <EventCooldownBox />
-
-      {/* Main Content */}
-      <div style={{
-        position: "relative", zIndex: 10, height: "100%",
-        display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-        padding: "clamp(60px, 8vh, 120px) clamp(16px, 4vw, 40px)", textAlign: "center",
-      }}>
         <div style={{
           opacity: loaded ? 1 : 0,
           transform: loaded ? "scale(1)" : "scale(1.1)",
@@ -261,6 +258,7 @@ const SplitHero = ({ scrollY, onActivatePuzzle }) => {
 
         <div style={{
           marginTop: "clamp(40px, 8vh, 60px)",
+          marginBottom: "clamp(32px, 6vh, 0px)",
           opacity: loaded ? 1 : 0,
           transition: "all 1s ease 1s",
         }}>
@@ -291,6 +289,18 @@ const SplitHero = ({ scrollY, onActivatePuzzle }) => {
           }}>
             ENTER THE PARK
           </button>
+        </div>
+
+        {/* Mobile Event Box - In Document Flow */}
+        <div className="event-box-mobile-wrapper" style={{
+          marginTop: "24px",
+          marginBottom: "24px",
+          width: "100%",
+          maxWidth: "500px",
+          opacity: loaded ? 1 : 0,
+          transition: "all 1s ease 1.2s",
+        }}>
+          <EventCooldownBox isMobileInline={true} />
         </div>
       </div>
     </section>
@@ -408,7 +418,7 @@ You haven't stumbled upon this data by accident; you found this for a specific r
         } : null}
       />
 
-      <section ref={ref} style={{ padding: "clamp(80px, 12vw, 140px) clamp(20px, 5vw, 50px)", background: `linear-gradient(180deg, ${COLORS.bg} 0%, ${COLORS.crimson}03 100%)`, borderBottom: `2px solid ${COLORS.crimson}40`, position: "relative" }}>
+      <section ref={ref} className="bento-section" style={{ padding: "clamp(80px, 12vw, 140px) clamp(20px, 5vw, 50px)", background: `linear-gradient(180deg, ${COLORS.bg} 0%, ${COLORS.crimson}03 100%)`, borderBottom: `2px solid ${COLORS.crimson}40`, position: "relative" }}>
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{ marginBottom: 60, opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)", transition: "all 0.8s ease 0.2s", textAlign: "left" }}>
               <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, letterSpacing: 4, color: COLORS.flora, marginBottom: 16, display: "flex", alignItems: "center", gap: 8, textTransform: "uppercase" }}>
