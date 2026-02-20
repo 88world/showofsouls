@@ -27,11 +27,53 @@ const Sector7Grid = () => {
   const [visible, setVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const ref = useRef(null);
+  const carouselRef = useRef(null);
+  const posRef = useRef(0);
+  const lastTimeRef = useRef(null);
+  const singleWidthRef = useRef(0);
 
   useEffect(() => {
     const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.1 });
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+
+    const compute = () => {
+      singleWidthRef.current = el.scrollWidth / 2 || 0;
+      posRef.current = posRef.current % (singleWidthRef.current || 1);
+    };
+    compute();
+
+    let rafId = null;
+    const speed = 100; // pixels per second - adjust for faster/slower
+
+    const onFrame = (t) => {
+      if (!lastTimeRef.current) lastTimeRef.current = t;
+      const dt = (t - lastTimeRef.current) / 1000;
+      lastTimeRef.current = t;
+
+      if (singleWidthRef.current > 0) {
+        posRef.current += speed * dt;
+        const offset = posRef.current % singleWidthRef.current;
+        el.style.transform = `translateX(${-offset}px)`;
+      }
+
+      rafId = requestAnimationFrame(onFrame);
+    };
+
+    const onResize = () => compute();
+    window.addEventListener('resize', onResize);
+    rafId = requestAnimationFrame(onFrame);
+
+    return () => {
+      window.removeEventListener('resize', onResize);
+      if (rafId) cancelAnimationFrame(rafId);
+      lastTimeRef.current = null;
+    };
   }, []);
 
   const secrets = [
@@ -238,23 +280,6 @@ const Sector7Grid = () => {
             </div>
           </div>
 
-          <style>{`
-            @keyframes scrollLeftLoopSector {
-              0% { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
-            }
-            .sector-scroll-container {
-              display: flex;
-              gap: 14px;
-              padding: 16px 0;
-              animation: scrollLeftLoopSector 3s linear infinite;
-              will-change: transform;
-            }
-            .sector-scroll-container:hover {
-              animation-play-state: paused;
-            }
-          `}</style>
-
           <div style={{
             overflow: "hidden",
             position: "relative",
@@ -266,7 +291,15 @@ const Sector7Grid = () => {
             maskImage: "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
             WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 15%, black 85%, transparent 100%)",
           }}>
-            <div className="sector-scroll-container">
+            <div
+              ref={carouselRef}
+              style={{
+                display: "flex",
+                gap: 14,
+                padding: "16px 0",
+                willChange: "transform",
+              }}
+            >
               {[...secrets, ...secrets].map((item, i) => (
                 <div
                   key={i}

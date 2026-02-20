@@ -134,7 +134,7 @@ export default function App() {
           
           @keyframes tickerScroll {
             0% { transform: translateX(0); }
-            100% { transform: translateX(-33.33%); }
+            100% { transform: translateX(-25%); }
           }
           
           @keyframes particleFloat {
