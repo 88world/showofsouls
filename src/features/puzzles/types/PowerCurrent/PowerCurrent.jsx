@@ -16,6 +16,13 @@ const TILE_TYPES = {
   CROSS: [1,1,1,1],
 };
 
+const DIRS = [
+  { dx: 0, dy: -1, side: 0, opp: 2 },
+  { dx: 1, dy: 0, side: 1, opp: 3 },
+  { dx: 0, dy: 1, side: 2, opp: 0 },
+  { dx: -1, dy: 0, side: 3, opp: 1 },
+];
+
 function rotate(tile, times=1){
   let t = tile.slice();
   for (let i=0;i<times;i++) t = [t[3], t[0], t[1], t[2]];
@@ -29,16 +36,42 @@ function makeRandomBoard(size=4){
   return Array.from({ length: size }, () => Array.from({ length: size }, () => ({ conn: rotate(types[Math.floor(Math.random()*types.length)], Math.floor(Math.random()*4)) })));
 }
 
+function checkSolutionBoard(b, size, source, target) {
+  const inBounds = (x, y) => x >= 0 && x < size && y >= 0 && y < size;
+  const key = (x, y) => `${x},${y}`;
+  const visited = new Set();
+  const stack = [];
+
+  const sourceTile = b[source.y][source.x].conn;
+  if (!sourceTile[source.side]) return false;
+
+  stack.push({ x: source.x, y: source.y });
+
+  while (stack.length) {
+    const cur = stack.pop();
+    const k = key(cur.x, cur.y);
+    if (visited.has(k)) continue;
+    visited.add(k);
+    const tile = b[cur.y][cur.x].conn;
+    if (cur.x === target.x && cur.y === target.y && tile[target.side]) return true;
+
+    for (const d of DIRS) {
+      const nx = cur.x + d.dx;
+      const ny = cur.y + d.dy;
+      if (!inBounds(nx, ny)) continue;
+      if (tile[d.side] && b[ny][nx].conn[d.opp]) {
+        stack.push({ x: nx, y: ny });
+      }
+    }
+  }
+
+  return false;
+}
+
 function generateSolvableBoard(size, source, target) {
   const board = makeRandomBoard(size);
 
   const inBounds = (x, y) => x >= 0 && x < size && y >= 0 && y < size;
-  const dirs = [
-    { dx: 0, dy: -1, side: 0, opp: 2 },
-    { dx: 1, dy: 0, side: 1, opp: 3 },
-    { dx: 0, dy: 1, side: 2, opp: 0 },
-    { dx: -1, dy: 0, side: 3, opp: 1 },
-  ];
 
   const path = [{ x: source.x, y: source.y }];
   const visited = new Set([`${source.x},${source.y}`]);
@@ -46,7 +79,7 @@ function generateSolvableBoard(size, source, target) {
   let cy = source.y;
 
   while (cx !== target.x || cy !== target.y) {
-    const options = dirs
+    const options = DIRS
       .map((d) => ({ ...d, nx: cx + d.dx, ny: cy + d.dy }))
       .filter((d) => inBounds(d.nx, d.ny) && !visited.has(`${d.nx},${d.ny}`));
 
@@ -78,7 +111,7 @@ function generateSolvableBoard(size, source, target) {
     if (prev) {
       const dx = current.x - prev.x;
       const dy = current.y - prev.y;
-      const dir = dirs.find((d) => d.dx === dx && d.dy === dy);
+      const dir = DIRS.find((d) => d.dx === dx && d.dy === dy);
       if (dir) conn[dir.opp] = 1;
     } else {
       conn[source.side] = 1;
@@ -87,7 +120,7 @@ function generateSolvableBoard(size, source, target) {
     if (next) {
       const dx = next.x - current.x;
       const dy = next.y - current.y;
-      const dir = dirs.find((d) => d.dx === dx && d.dy === dy);
+      const dir = DIRS.find((d) => d.dx === dx && d.dy === dy);
       if (dir) conn[dir.side] = 1;
     } else {
       conn[target.side] = 1;
@@ -96,6 +129,18 @@ function generateSolvableBoard(size, source, target) {
     // If a node has a single connector, upgrade to a corner/straight that matches
     board[current.y][current.x].conn = conn;
   }
+
+  // Scramble rotations so the path is not already solved
+  let attempts = 0;
+  do {
+    for (let y = 0; y < size; y += 1) {
+      for (let x = 0; x < size; x += 1) {
+        const turns = Math.floor(Math.random() * 4);
+        board[y][x].conn = rotate(board[y][x].conn, turns);
+      }
+    }
+    attempts += 1;
+  } while (checkSolutionBoard(board, size, source, target) && attempts < 6);
 
   return board;
 }
@@ -108,50 +153,17 @@ export const PowerCurrent = ({ isOpen, onClose, onSuccess }) => {
   const hubRadius = 7;
   const activeStroke = 6;
   const inactiveStroke = 3;
+  // define fixed source and target positions (can be randomized later)
+  const source = useMemo(() => ({ x: 0, y: 1, side: 3 }), []); // left of (0,1) -> W connector
+  const target = useMemo(() => ({ x: size-1, y: 2, side: 1 }), [size]); // right of (size-1,2)
   const [boardInit] = useState(() => generateSolvableBoard(size, source, target));
   const [board, setBoard] = useState(() => cloneBoard(boardInit));
   const [moves, setMoves] = useState(0);
   const [solved, setSolved] = useState(false);
 
-  // define fixed source and target positions (can be randomized later)
-  const source = useMemo(() => ({ x: 0, y: 1, side: 3 }), []); // left of (0,1) -> W connector
-  const target = useMemo(() => ({ x: size-1, y: 2, side: 1 }), [size]); // right of (size-1,2)
-
   if (!isOpen) return null;
 
-  const inBounds = (x,y) => x >= 0 && x < size && y >= 0 && y < size;
-
-  const checkSolution = (b) => {
-    // BFS from source into board; must reach target cell with connector matching
-    const key = (x,y) => `${x},${y}`;
-    const visited = new Set();
-    const stack = [];
-    // Start: move into adjacent cell from source side
-    const sx = source.x, sy = source.y;
-    stack.push({ x: sx, y: sy, incoming: source.side });
-    while(stack.length){
-      const cur = stack.pop();
-      const k = key(cur.x, cur.y);
-      if (visited.has(k)) continue;
-      visited.add(k);
-      const tile = b[cur.y][cur.x].conn;
-      // If this is target cell, check that it has a connector on target.side opposite
-      if (cur.x === target.x && cur.y === target.y) {
-        if (tile[target.side]) return true;
-      }
-      // explore neighbors where connectors match
-      const dirs = [ {dx:0,dy:-1,side:0,opp:2}, {dx:1,dy:0,side:1,opp:3}, {dx:0,dy:1,side:2,opp:0}, {dx:-1,dy:0,side:3,opp:1} ];
-      for (const d of dirs){
-        const nx = cur.x + d.dx, ny = cur.y + d.dy;
-        if (!inBounds(nx, ny)) continue;
-        // current tile must have connector on d.side and neighbor must have connector on opp
-        if (tile[d.side] && b[ny][nx].conn[d.opp]) {
-          stack.push({ x: nx, y: ny, incoming: d.opp });
-        }
-      }
-    }
-    return false;
-  };
+  const checkSolution = (b) => checkSolutionBoard(b, size, source, target);
 
   const rotateAt = (x,y) => {
     if (solved) return;
