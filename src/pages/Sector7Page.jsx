@@ -191,7 +191,7 @@ const Sector7Grid = () => {
         borderBottom: `2px solid ${COLORS.flora}40`,
         position: "relative",
       }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div className="page-max" style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{
             marginBottom: 60,
             opacity: visible ? 1 : 0,
@@ -542,7 +542,7 @@ const FooterMessage = () => {
 
 export default function Sector7Page() {
   return (
-    <div style={{
+    <div className="page page-sector7" style={{
       background: COLORS.bg,
       color: COLORS.bone,
       minHeight: "100vh",

@@ -131,7 +131,7 @@ const SplitHero = ({ scrollY = 0, onActivatePuzzle }) => {
   }, []);
 
   return (
-    <section ref={ref} style={{
+    <section ref={ref} className="stack-mobile" style={{
       minHeight: "90vh", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0,
       background: `linear-gradient(135deg, ${COLORS.bg} 0%, ${COLORS.crimson}02 100%)`, position: "relative",
       overflow: "hidden"
@@ -309,7 +309,7 @@ const BentoGrid = () => {
         background: `linear-gradient(180deg, ${COLORS.bg} 0%, ${COLORS.crimson}03 100%)`,
         borderBottom: `2px solid ${COLORS.crimson}40`, position: "relative",
       }}>
-        <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+        <div className="page-max" style={{ maxWidth: 1400, margin: "0 auto" }}>
           <div style={{
             marginBottom: 60, opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)",
             transition: "all 0.8s ease 0.2s", textAlign: "left"
@@ -528,7 +528,7 @@ const DeepLoreGrid = () => {
         background: `linear-gradient(180deg, ${COLORS.bg} 0%, ${COLORS.flora}02 100%)`,
         borderBottom: `2px solid ${COLORS.flora}40`, position: "relative",
       }}>
-        <div style={{ maxWidth: 1400, margin: "0 auto" }}>
+        <div className="page-max" style={{ maxWidth: 1400, margin: "0 auto" }}>
           <div style={{
             marginBottom: 60, opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)",
             transition: "all 0.8s ease 0.2s", textAlign: "left",
@@ -660,7 +660,7 @@ const CTATerminal = () => {
 
   return (
     <section ref={ref} style={{ padding: "clamp(80px, 12vw, 140px) clamp(20px, 5vw, 50px)", background: COLORS.bg }}>
-      <div style={{ maxWidth: 800, margin: "0 auto" }}>
+      <div className="page-max" style={{ maxWidth: 800, margin: "0 auto" }}>
         <h2 style={{
           fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(42px, 6vw, 64px)", letterSpacing: 6, color: COLORS.bone,
           margin: "0 0 56px", textAlign: "center", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)",
@@ -743,7 +743,7 @@ export default function HomePageNew() {
   }, []);
 
   return (
-    <div style={{ background: COLORS.bg, color: COLORS.bone, minHeight: "100vh", overflowX: "hidden" }}>
+    <div className="page page-homenew" style={{ background: COLORS.bg, color: COLORS.bone, minHeight: "100vh", overflowX: "hidden" }}>
       <FrequencyTuner isOpen={showFrequencyTuner} onClose={() => setShowFrequencyTuner(false)} onSuccess={() => { markPuzzleComplete('frequencyTuner'); setShowFrequencyTuner(false); }} />
       <SplitHero scrollY={scrollY} onActivatePuzzle={(id) => { if (id === 'frequencyTuner') setShowFrequencyTuner(true); }} />
 

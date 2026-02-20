@@ -44,7 +44,7 @@ const IntroSection = ({ onActivatePuzzle }) => {
       position: "relative",
     }}>
       <LocalCRTOverlay />
-      <div style={{ maxWidth: 900, margin: "0 auto", position: "relative", zIndex: 5 }}>
+      <div className="page-max" style={{ maxWidth: 900, margin: "0 auto", position: "relative", zIndex: 5 }}>
         <div style={{
           display: "flex",
           alignItems: "center",
@@ -460,7 +460,7 @@ export default function CharactersPage() {
   };
 
   return (
-    <div style={{ background: COLORS.bg, color: COLORS.bone, minHeight: "100vh", overflowX: "hidden" }}>
+    <div className="page page-characters" style={{ background: COLORS.bg, color: COLORS.bone, minHeight: "100vh", overflowX: "hidden" }}>
       <MemoryGame isOpen={showMemoryGame} onClose={() => setShowMemoryGame(false)} onSuccess={() => { markPuzzleComplete('memoryGame'); setShowMemoryGame(false); }} />
       <IntroSection onActivatePuzzle={handleActivatePuzzle} />
       <RingleaderBlock />

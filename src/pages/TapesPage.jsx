@@ -1446,7 +1446,7 @@ export const TapesPage = () => {
   };
 
   return (
-    <div style={{
+    <div className="page page-tapes" style={{
       minHeight: '100vh',
       background: COLORS.bg,
       color: COLORS.bone,
@@ -1477,7 +1477,7 @@ export const TapesPage = () => {
       />
 
       {/* MAIN CONTENT WRAPPER */}
-      <div style={{ maxWidth: 1000, margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <div className="page-max" style={{ maxWidth: 1000, margin: '0 auto', position: 'relative', zIndex: 1 }}>
         
         {/* Page Header */}
         <div style={{ marginBottom: 60, borderBottom: `2px solid ${COLORS.ash}`, paddingBottom: 20 }}>

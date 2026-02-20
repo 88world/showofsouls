@@ -75,6 +75,53 @@ export default function App() {
             height: auto;
           }
 
+          @media (max-width: 420px) {
+            .page {
+              padding-left: 14px !important;
+              padding-right: 14px !important;
+            }
+
+            .page-max {
+              max-width: 100% !important;
+            }
+
+            .stack-mobile {
+              flex-direction: column !important;
+              gap: 16px !important;
+              align-items: stretch !important;
+            }
+
+            .grid-mobile {
+              grid-template-columns: 1fr !important;
+              gap: 12px !important;
+            }
+
+            .card-mobile {
+              width: 100% !important;
+              min-width: 0 !important;
+            }
+
+            .page h1 {
+              font-size: clamp(36px, 10vw, 56px) !important;
+              letter-spacing: 4px !important;
+            }
+
+            .page h2 {
+              font-size: clamp(28px, 8vw, 42px) !important;
+              letter-spacing: 3px !important;
+            }
+
+            .page h3 {
+              font-size: clamp(20px, 6vw, 30px) !important;
+              letter-spacing: 2px !important;
+            }
+
+            .page p {
+              font-size: 14px !important;
+              line-height: 1.6 !important;
+            }
+          }
+
           @keyframes morseBlink {
             0%, 100% { opacity: 0.3; }
             50% { opacity: 1; }

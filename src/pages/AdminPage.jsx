@@ -1672,7 +1672,7 @@ const Dashboard = ({ onLogout }) => {
   };
 
   return (
-    <div style={{
+    <div className="page page-admin" style={{
       minHeight: '100vh', background: COLORS.bg,
       color: COLORS.bone, padding: 'clamp(80px, 12vw, 120px) clamp(12px, 4vw, 40px) clamp(30px, 5vw, 60px)',
     }}>

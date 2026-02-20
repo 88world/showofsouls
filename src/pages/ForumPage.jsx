@@ -306,7 +306,7 @@ export const ForumPage = () => {
   const categories = ['all', 'render', 'news', 'update', 'devlog'];
 
   return (
-    <div style={{
+    <div className="page page-forum" style={{
       minHeight: '100vh',
       background: COLORS.bg,
       color: COLORS.bone,
@@ -314,7 +314,7 @@ export const ForumPage = () => {
     }}>
       {selectedPost && <PostLightbox post={selectedPost} onClose={() => setSelectedPost(null)} />}
 
-      <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+      <div className="page-max" style={{ maxWidth: 1200, margin: '0 auto' }}>
         {/* Header */}
         <div style={{
           marginBottom: 48,

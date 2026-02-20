@@ -82,35 +82,41 @@ const EventCooldownBox = () => {
 
   return (
     <div style={{
-      position: "absolute", bottom: 60, right: 50, zIndex: 10,
-      padding: "20px", background: "rgba(10, 5, 5, 0.9)",
+      position: "absolute", 
+      bottom: "clamp(20px, 4vh, 60px)", 
+      right: "clamp(16px, 3vw, 50px)", 
+      zIndex: 10,
+      padding: "clamp(12px, 3vw, 20px)", 
+      background: "rgba(10, 5, 5, 0.9)",
       border: `1px solid ${hasEvent ? COLORS.flora : COLORS.crimson}`,
       boxShadow: `0 0 20px ${hasEvent ? COLORS.flora : COLORS.crimson}15`,
-      fontFamily: "'Space Mono', monospace", minWidth: 220, maxWidth: "calc(100vw - 32px)",
+      fontFamily: "'Space Mono', monospace", 
+      minWidth: "clamp(180px, 40vw, 220px)", 
+      maxWidth: "calc(100vw - 32px)",
     }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, color: hasEvent ? COLORS.flora : COLORS.crimson }}>
-        <div style={{ width: 8, height: 8, background: hasEvent ? COLORS.flora : COLORS.crimson, borderRadius: '50%', animation: "pulse 2s infinite" }} />
-        <span style={{ fontSize: 14, letterSpacing: 1, fontWeight: "bold" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "clamp(6px, 2vw, 10px)", marginBottom: "clamp(8px, 2vw, 12px)", color: hasEvent ? COLORS.flora : COLORS.crimson }}>
+        <div style={{ width: "clamp(6px, 1.5vw, 8px)", height: "clamp(6px, 1.5vw, 8px)", background: hasEvent ? COLORS.flora : COLORS.crimson, borderRadius: '50%', animation: "pulse 2s infinite" }} />
+        <span style={{ fontSize: "clamp(11px, 2.2vw, 14px)", letterSpacing: 1, fontWeight: "bold" }}>
           {hasEvent ? 'GLOBAL EVENT ACTIVE' : 'NEXT EVENT'}
         </span>
       </div>
 
       {hasEvent ? (
         <>
-          <div style={{ fontSize: 13, letterSpacing: 1, marginBottom: 8, color: COLORS.bone }}>
+          <div style={{ fontSize: "clamp(11px, 2vw, 13px)", letterSpacing: 1, marginBottom: "clamp(6px, 1.5vw, 8px)", color: COLORS.bone }}>
             <span style={{ opacity: 0.5 }}>TIME LEFT:</span>{' '}
             <span style={{ color: COLORS.flora, fontWeight: 'bold' }}>
               {pad(time.hours)}:{pad(time.minutes)}:{pad(time.seconds)}
             </span>
           </div>
-          <div style={{ fontSize: 13, letterSpacing: 1, color: COLORS.bone }}>
+          <div style={{ fontSize: "clamp(11px, 2vw, 13px)", letterSpacing: 1, color: COLORS.bone }}>
             <span style={{ opacity: 0.5 }}>PROGRESS:</span>{' '}
             <span style={{ color: completed >= total ? COLORS.flora : COLORS.bone }}>
               {completed}/{total} PUZZLES
             </span>
           </div>
           {/* Mini progress bar */}
-          <div style={{ marginTop: 10, height: 3, background: 'rgba(255,255,255,0.1)', borderRadius: 2, overflow: 'hidden' }}>
+          <div style={{ marginTop: "clamp(8px, 2vw, 10px)", height: 3, background: 'rgba(255,255,255,0.1)', borderRadius: 2, overflow: 'hidden' }}>
             <div style={{
               height: '100%',
               width: `${(completed / total) * 100}%`,
@@ -122,11 +128,11 @@ const EventCooldownBox = () => {
         </>
       ) : (
         <>
-          <div style={{ fontSize: 13, letterSpacing: 1, marginBottom: 8, color: COLORS.bone }}>
+          <div style={{ fontSize: "clamp(11px, 2vw, 13px)", letterSpacing: 1, marginBottom: "clamp(6px, 1.5vw, 8px)", color: COLORS.bone }}>
             <span style={{ opacity: 0.5 }}>STATUS:</span>{' '}
             <GlitchText>AWAITING SIGNAL...</GlitchText>
           </div>
-          <div style={{ fontSize: 13, letterSpacing: 1, color: COLORS.bone, opacity: 0.5 }}>
+          <div style={{ fontSize: "clamp(10px, 1.8vw, 12px)", color: COLORS.ash, opacity: 0.6, lineHeight: 1.5 }}>
             STANDBY FOR BROADCAST
           </div>
         </>
@@ -151,7 +157,7 @@ const SplitHero = ({ scrollY, onActivatePuzzle }) => {
     <section style={{
       position: "relative",
       height: "100vh",
-      minHeight: 750,
+      minHeight: "clamp(600px, 100vh, 900px)",
       overflow: "hidden",
       background: COLORS.bg,
       borderBottom: `2px solid ${COLORS.crimson}`,
@@ -195,7 +201,7 @@ const SplitHero = ({ scrollY, onActivatePuzzle }) => {
       <div style={{
         position: "relative", zIndex: 10, height: "100%",
         display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center",
-        padding: "0 16px", textAlign: "center",
+        padding: "clamp(60px, 8vh, 120px) clamp(16px, 4vw, 40px)", textAlign: "center",
       }}>
         <div style={{
           opacity: loaded ? 1 : 0,
@@ -232,36 +238,37 @@ const SplitHero = ({ scrollY, onActivatePuzzle }) => {
         </div>
 
         <div style={{
-          marginTop: 60,
+          marginTop: "clamp(30px, 6vh, 60px)",
           opacity: loaded ? 0.7 : 0,
           transform: loaded ? "translateY(0)" : "translateY(20px)",
           transition: "all 1s ease 0.7s",
           fontFamily: "'Crimson Text', serif",
-          fontSize: "clamp(16px, 2.1vw, 18px)",
-          lineHeight: 1.9,
+          fontSize: "clamp(14px, 2.1vw, 18px)",
+          lineHeight: 1.7,
           color: COLORS.bone,
           maxWidth: 700,
           marginLeft: "auto",
           marginRight: "auto",
+          padding: "0 8px",
         }}>
-          <p style={{ margin: "0 0 16px 0" }}>You didn't stumble onto this.</p>
-          <p style={{ margin: "0 0 16px 0" }}>Frequency doesn't work that way. Neither does He.</p>
-          <p style={{ margin: "0 0 16px 0" }}>In 2026, something happened at Flora's Wonderland that the authorities sealed, redacted, and buried. They called it a structural failure. They called it a gas leak. They called it a lot of things.</p>
-          <p style={{ margin: "0 0 16px 0" }}>We were there. We are still there.</p>
-          <p style={{ margin: "0 0 16px 0" }}>The Ringleader — Dr. Joseph M. Cavicus — did not build an amusement park. He built a vessel. And on the night of the Incident, the vessels were filled.</p>
+          <p style={{ margin: "0 0 12px 0" }}>You didn't stumble onto this.</p>
+          <p style={{ margin: "0 0 12px 0" }}>Frequency doesn't work that way. Neither does He.</p>
+          <p style={{ margin: "0 0 12px 0" }}>In 2026, something happened at Flora's Wonderland that the authorities sealed, redacted, and buried. They called it a structural failure. They called it a gas leak. They called it a lot of things.</p>
+          <p style={{ margin: "0 0 12px 0" }}>We were there. We are still there.</p>
+          <p style={{ margin: "0 0 12px 0" }}>The Ringleader — Dr. Joseph M. Cavicus — did not build an amusement park. He built a vessel. And on the night of the Incident, the vessels were filled.</p>
           <p style={{ margin: 0 }}>They walk the island. They do not age.</p>
         </div>
 
         <div style={{
-          marginTop: 50,
+          marginTop: "clamp(30px, 6vh, 50px)",
           opacity: loaded ? 1 : 0,
           transition: "all 1s ease 1s",
         }}>
           <button style={{
             fontFamily: "'Bebas Neue', sans-serif",
-            fontSize: 24,
-            letterSpacing: 4,
-            padding: "18px 48px",
+            fontSize: "clamp(18px, 3.5vw, 24px)",
+            letterSpacing: "clamp(2px, 0.5vw, 4px)",
+            padding: "clamp(14px, 3vh, 18px) clamp(32px, 8vw, 48px)",
             border: `2px solid ${COLORS.bone}`,
             background: "transparent",
             color: COLORS.bone,
@@ -311,6 +318,41 @@ const BentoGrid = () => {
     if (ref.current) obs.observe(ref.current);
     return () => obs.disconnect();
   }, []);
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const compute = () => {
+      singleWidthRef.current = el.scrollWidth / 2 || 0;
+      posRef.current = posRef.current % (singleWidthRef.current || 1);
+    };
+    compute();
+    let rafId = null;
+    const speed = 120;
+
+    const onFrame = (t) => {
+      if (!lastTimeRef.current) lastTimeRef.current = t;
+      const dt = (t - lastTimeRef.current) / 1000;
+      lastTimeRef.current = t;
+      if (!isPaused && singleWidthRef.current > 0) {
+        posRef.current += speed * dt;
+        const offset = posRef.current % singleWidthRef.current;
+        el.style.transform = `translateX(${-offset}px)`;
+      }
+      rafId = requestAnimationFrame(onFrame);
+    };
+
+    const onResize = () => {
+      compute();
+    };
+    window.addEventListener('resize', onResize);
+    rafId = requestAnimationFrame(onFrame);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      if (rafId) cancelAnimationFrame(rafId);
+      lastTimeRef.current = null;
+    };
+  }, [carouselRef, isPaused]);
 
   const gridItems = [
     { id: 1, title: "SECTOR 7", subtitle: "NIGHT OF THE INCIDENT", fullContent: (() => {
@@ -485,44 +527,6 @@ You haven't stumbled upon this data by accident; you found this for a specific r
             </div>
           </div>
 
-          {/* Smooth JS-driven infinite scrolling for carousel */}
-          {useEffect(() => {
-            const el = carouselRef.current;
-            if (!el) return;
-            const compute = () => {
-              singleWidthRef.current = el.scrollWidth / 2 || 0;
-              // Ensure position stays within bounds
-              posRef.current = posRef.current % (singleWidthRef.current || 1);
-            };
-            compute();
-            let rafId = null;
-            const speed = 120; // pixels per second, faster scroll
-
-            const onFrame = (t) => {
-              if (!lastTimeRef.current) lastTimeRef.current = t;
-              const dt = (t - lastTimeRef.current) / 1000;
-              lastTimeRef.current = t;
-              if (!isPaused && singleWidthRef.current > 0) {
-                posRef.current += speed * dt;
-                const offset = posRef.current % singleWidthRef.current;
-                el.style.transform = `translateX(${-offset}px)`;
-              }
-              rafId = requestAnimationFrame(onFrame);
-            };
-
-            const onResize = () => {
-              compute();
-            };
-            window.addEventListener('resize', onResize);
-            rafId = requestAnimationFrame(onFrame);
-            return () => {
-              window.removeEventListener('resize', onResize);
-              if (rafId) cancelAnimationFrame(rafId);
-              lastTimeRef.current = null;
-            };
-          }, [carouselRef, isPaused])}
-
-
         </div>
       </section>
     </>
@@ -549,6 +553,36 @@ const DeepLoreGrid = () => {
     if (loreRef.current) obs.observe(loreRef.current);
     return () => obs.disconnect();
   }, []);
+
+  useEffect(() => {
+    const el = loreCarouselRef.current;
+    if (!el) return;
+    const compute = () => {
+      loreSingleRef.current = el.scrollWidth / 2 || 0;
+      lorePosRef.current = lorePosRef.current % (loreSingleRef.current || 1);
+    };
+    compute();
+    let raf = null;
+    const speed = 100;
+    const loop = (t) => {
+      if (!loreLastRef.current) loreLastRef.current = t;
+      const dt = (t - loreLastRef.current) / 1000;
+      loreLastRef.current = t;
+      if (!lorePaused && loreSingleRef.current > 0) {
+        lorePosRef.current += speed * dt;
+        const offset = lorePosRef.current % loreSingleRef.current;
+        el.style.transform = `translateX(${-offset}px)`;
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    window.addEventListener('resize', compute);
+    raf = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener('resize', compute);
+      if (raf) cancelAnimationFrame(raf);
+      loreLastRef.current = null;
+    };
+  }, [lorePaused]);
 
     const loreItems = [
     {
@@ -617,7 +651,7 @@ const DeepLoreGrid = () => {
         position: "relative",
         marginTop: 0,
       }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+        <div className="page-max" style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div style={{
             marginBottom: 60,
             opacity: visible ? 1 : 0,
@@ -764,35 +798,6 @@ const DeepLoreGrid = () => {
               ))}
             </div>
           </div>
-          {useEffect(() => {
-            const el = loreCarouselRef.current;
-            if (!el) return;
-            const compute = () => {
-              loreSingleRef.current = el.scrollWidth / 2 || 0;
-              lorePosRef.current = lorePosRef.current % (loreSingleRef.current || 1);
-            };
-            compute();
-            let raf = null;
-            const speed = 100;
-            const loop = (t) => {
-              if (!loreLastRef.current) loreLastRef.current = t;
-              const dt = (t - loreLastRef.current) / 1000;
-              loreLastRef.current = t;
-              if (!lorePaused && loreSingleRef.current > 0) {
-                lorePosRef.current += speed * dt;
-                const offset = lorePosRef.current % loreSingleRef.current;
-                el.style.transform = `translateX(${-offset}px)`;
-              }
-              raf = requestAnimationFrame(loop);
-            };
-            window.addEventListener('resize', compute);
-            raf = requestAnimationFrame(loop);
-            return () => {
-              window.removeEventListener('resize', compute);
-              if (raf) cancelAnimationFrame(raf);
-              loreLastRef.current = null;
-            };
-          }, [lorePaused])}
         </div>
       </section>
     </>
@@ -828,7 +833,7 @@ const CTATerminal = () => {
 
   return (
     <section ref={ref} style={{ padding: "clamp(80px, 12vw, 140px) clamp(20px, 5vw, 50px)", background: COLORS.bg }}>
-      <div style={{ maxWidth: 800, margin: "0 auto" }}>
+      <div className="page-max" style={{ maxWidth: 800, margin: "0 auto" }}>
         <h2 style={{
           fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(42px, 6vw, 64px)", letterSpacing: 6, color: COLORS.bone,
           margin: "0 0 56px", textAlign: "center", opacity: visible ? 1 : 0, transform: visible ? "translateY(0)" : "translateY(20px)",
@@ -911,7 +916,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div style={{ background: COLORS.bg, color: COLORS.bone, minHeight: "100vh", overflowX: "hidden" }}>
+    <div className="page page-home" style={{ background: COLORS.bg, color: COLORS.bone, minHeight: "100vh", overflowX: "hidden" }}>
       <FrequencyTuner isOpen={showFrequencyTuner} onClose={() => setShowFrequencyTuner(false)} onSuccess={() => { markPuzzleComplete('frequencyTuner'); setShowFrequencyTuner(false); }} />
       <SplitHero scrollY={scrollY} onActivatePuzzle={(id) => { if (id === 'frequencyTuner') setShowFrequencyTuner(true); }} />
 

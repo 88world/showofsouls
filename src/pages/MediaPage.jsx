@@ -13,13 +13,13 @@ export const MediaPage = () => {
   const { currentEvent, markPuzzleComplete, isPuzzleEventComplete } = useGlobalEvent();
   const spectralSolved = isPuzzleEventComplete('spectralAnalysis');
   return (
-    <div style={{
+    <div className="page page-media" style={{
       minHeight: '100vh',
       background: COLORS.bg,
       color: COLORS.bone,
       padding: '120px 40px 60px',
     }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
+      <div className="page-max" style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
         <h1 style={{
           fontFamily: "'Bebas Neue', sans-serif",
           fontSize: 'clamp(40px, 8vw, 80px)',

@@ -50,7 +50,7 @@ const IncidentReportSection = () => {
       position: "relative",
     }}>
       <LocalCRTOverlay />
-      <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 5 }}>
+      <div className="page-max" style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 5 }}>
         <div style={{
           marginBottom: 60,
           opacity: visible ? 1 : 0,
@@ -270,7 +270,7 @@ const EvidenceSection = () => {
       position: "relative",
     }}>
       <LocalCRTOverlay />
-      <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 5 }}>
+      <div className="page-max" style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 5 }}>
         <h2 style={{
           fontFamily: "'Bebas Neue', sans-serif",
           fontSize: "clamp(32px, 5vw, 56px)",
@@ -393,7 +393,7 @@ const EvidenceSection = () => {
 
 export default function IncidentPage() {
   return (
-    <div style={{ background: COLORS.bg, color: COLORS.bone, minHeight: "100vh", overflowX: "hidden" }}>
+    <div className="page page-incident" style={{ background: COLORS.bg, color: COLORS.bone, minHeight: "100vh", overflowX: "hidden" }}>
       <IncidentReportSection />
       <EvidenceSection />
     </div>
