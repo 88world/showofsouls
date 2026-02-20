@@ -4,6 +4,8 @@ import {
   completeGlobalEvent,
   subscribeToEvents,
   unlockTape,
+  getAllTapes,
+  getUnlockedTapes,
 } from '../../lib/supabase';
 import { supabase } from '../../lib/supabase';
 import { COLORS } from '../../utils/constants';
@@ -300,15 +302,25 @@ export function GlobalEventProvider({ children }) {
           return { success: false, completed: false };
         }
 
-        // If event rewards include tapes, unlock the first tape globally
+        // Unlock the next tape globally (sequential per event)
         try {
           const rewards = typeof currentEvent.rewards === 'string' ? JSON.parse(currentEvent.rewards) : (currentEvent.rewards || {});
-          if (rewards && Array.isArray(rewards.tapes)) {
-            // Unlock only the first tape as defined by the event rewards
-            const first = rewards.tapes[0];
-            if (first) {
-              await unlockTape(first, 'global_completion', 'event_auto_unlock');
-            }
+          const [tapes, unlocked] = await Promise.all([getAllTapes(), getUnlockedTapes()]);
+          const unlockedSet = new Set((unlocked || []).map((t) => t.tape_id));
+
+          let nextTapeId = null;
+          if (rewards && Array.isArray(rewards.tapes) && rewards.tapes.length) {
+            nextTapeId = rewards.tapes.find((tapeId) => !unlockedSet.has(tapeId)) || null;
+          }
+
+          if (!nextTapeId) {
+            const sorted = (tapes || []).slice().sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+            const nextTape = sorted.find((t) => !unlockedSet.has(t.tape_id));
+            nextTapeId = nextTape?.tape_id || null;
+          }
+
+          if (nextTapeId) {
+            await unlockTape(nextTapeId, 'global_completion', 'event_auto_unlock');
           }
         } catch (e) {
           // Non-fatal parsing/unlock error

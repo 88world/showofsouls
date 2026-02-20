@@ -23,14 +23,39 @@ function getOrCreateHex() {
 
 // Generate scrambled positions for hex fragments
 function generateFragmentPositions(code) {
-  return code.split('').map((char, i) => ({
-    char,
-    index: i,
-    x: 15 + Math.random() * 70, // %
-    y: 10 + Math.random() * 70, // %
-    rotation: Math.floor(Math.random() * 40) - 20,
-    found: false,
-  }));
+  const minDist = 14; // percent distance to avoid overlap
+  const placements = [];
+
+  const isFarEnough = (x, y) => {
+    return placements.every((p) => {
+      const dx = p.x - x;
+      const dy = p.y - y;
+      return Math.hypot(dx, dy) >= minDist;
+    });
+  };
+
+  return code.split('').map((char, i) => {
+    let x = 15 + Math.random() * 70;
+    let y = 10 + Math.random() * 70;
+    let attempts = 0;
+
+    while (!isFarEnough(x, y) && attempts < 60) {
+      x = 12 + Math.random() * 76;
+      y = 8 + Math.random() * 76;
+      attempts += 1;
+    }
+
+    placements.push({ x, y });
+
+    return {
+      char,
+      index: i,
+      x,
+      y,
+      rotation: Math.floor(Math.random() * 40) - 20,
+      found: false,
+    };
+  });
 }
 
 export const FileDecryptor = ({ isOpen, onClose, onSuccess }) => {
