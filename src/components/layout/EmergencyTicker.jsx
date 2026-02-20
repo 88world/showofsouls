@@ -17,7 +17,7 @@ export const EmergencyTicker = ({ messages }) => (
     <div style={{
       display: "flex",
       gap: 80,
-      animation: "tickerScroll 50s linear infinite",
+      animation: "tickerScroll 5s linear infinite",
       whiteSpace: "nowrap",
       fontFamily: "'Space Mono', monospace",
       fontSize: 13,

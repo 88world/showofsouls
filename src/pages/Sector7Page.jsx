@@ -247,7 +247,7 @@ const Sector7Grid = () => {
               display: flex;
               gap: 14px;
               padding: 16px 0;
-              animation: scrollLeftLoopSector 22s linear infinite;
+              animation: scrollLeftLoopSector 3s linear infinite;
               will-change: transform;
             }
             .sector-scroll-container:hover {
