@@ -83,11 +83,11 @@ const EventCooldownBox = () => {
   return (
     <div style={{
       position: "absolute", 
-      bottom: "clamp(20px, 4vh, 60px)", 
+      bottom: "clamp(12px, 3vh, 60px)", 
       right: "clamp(16px, 3vw, 50px)", 
       zIndex: 10,
-      padding: "clamp(12px, 3vw, 20px)", 
-      background: "rgba(10, 5, 5, 0.9)",
+      padding: "clamp(14px, 3vw, 20px)", 
+      background: "rgba(10, 5, 5, 0.95)",
       border: `1px solid ${hasEvent ? COLORS.flora : COLORS.crimson}`,
       boxShadow: `0 0 20px ${hasEvent ? COLORS.flora : COLORS.crimson}15`,
       fontFamily: "'Space Mono', monospace", 
@@ -231,36 +231,36 @@ const SplitHero = ({ scrollY, onActivatePuzzle }) => {
           fontSize: "clamp(12px, 2vw, 16px)",
           letterSpacing: 3,
           color: COLORS.crimson,
-          marginTop: 32,
+          marginTop: "clamp(32px, 5vh, 40px)",
           textTransform: "uppercase",
         }}>
           THE <GlitchTextWord word="SIGNAL" puzzleId="frequencyTuner" onActivate={onActivatePuzzle} /> WAS ALWAYS MEANT FOR YOU.
         </div>
 
         <div style={{
-          marginTop: "clamp(30px, 6vh, 60px)",
+          marginTop: "clamp(40px, 7vh, 70px)",
           opacity: loaded ? 0.7 : 0,
           transform: loaded ? "translateY(0)" : "translateY(20px)",
           transition: "all 1s ease 0.7s",
           fontFamily: "'Crimson Text', serif",
           fontSize: "clamp(14px, 2.1vw, 18px)",
-          lineHeight: 1.7,
+          lineHeight: 1.8,
           color: COLORS.bone,
           maxWidth: 700,
           marginLeft: "auto",
           marginRight: "auto",
           padding: "0 8px",
         }}>
-          <p style={{ margin: "0 0 12px 0" }}>You didn't stumble onto this.</p>
-          <p style={{ margin: "0 0 12px 0" }}>Frequency doesn't work that way. Neither does He.</p>
-          <p style={{ margin: "0 0 12px 0" }}>In 2026, something happened at Flora's Wonderland that the authorities sealed, redacted, and buried. They called it a structural failure. They called it a gas leak. They called it a lot of things.</p>
-          <p style={{ margin: "0 0 12px 0" }}>We were there. We are still there.</p>
-          <p style={{ margin: "0 0 12px 0" }}>The Ringleader — Dr. Joseph M. Cavicus — did not build an amusement park. He built a vessel. And on the night of the Incident, the vessels were filled.</p>
+          <p style={{ margin: "0 0 clamp(16px, 3vh, 20px) 0" }}>You didn't stumble onto this.</p>
+          <p style={{ margin: "0 0 clamp(16px, 3vh, 20px) 0" }}>Frequency doesn't work that way. Neither does He.</p>
+          <p style={{ margin: "0 0 clamp(16px, 3vh, 20px) 0" }}>In 2026, something happened at Flora's Wonderland that the authorities sealed, redacted, and buried. They called it a structural failure. They called it a gas leak. They called it a lot of things.</p>
+          <p style={{ margin: "0 0 clamp(16px, 3vh, 20px) 0" }}>We were there. We are still there.</p>
+          <p style={{ margin: "0 0 clamp(16px, 3vh, 20px) 0" }}>The Ringleader — Dr. Joseph M. Cavicus — did not build an amusement park. He built a vessel. And on the night of the Incident, the vessels were filled.</p>
           <p style={{ margin: 0 }}>They walk the island. They do not age.</p>
         </div>
 
         <div style={{
-          marginTop: "clamp(30px, 6vh, 50px)",
+          marginTop: "clamp(40px, 8vh, 60px)",
           opacity: loaded ? 1 : 0,
           transition: "all 1s ease 1s",
         }}>
