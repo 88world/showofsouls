@@ -72,7 +72,6 @@ export async function getCurrentEvent() {
     .select('*')
     .eq('is_active', true)
     .order('started_at', { ascending: false })
-    .limit(1)
     .single();
 
   if (error && error.code !== 'PGRST116') {
@@ -475,6 +474,67 @@ export async function uploadMediaFile(file, folder = 'media') {
     .getPublicUrl(filePath);
 
   return { success: true, url: urlData.publicUrl };
+}
+
+/**
+ * Create a new global event
+ */
+export async function createGlobalEvent(eventData) {
+  const eventId = `EVENT-${Date.now()}`;
+  const { data, error } = await supabase
+    .from('global_events')
+    .insert({
+      event_id: eventId,
+      title: eventData.title || 'Global Event',
+      description: eventData.description || '',
+      is_active: true,
+      started_at: new Date().toISOString(),
+      puzzle_data: eventData.puzzleData || { puzzles: [], totalPuzzles: 5 },
+      solution: eventData.solution || '',
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error creating global event:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true, data };
+}
+
+/**
+ * Get all global events
+ */
+export async function getAllGlobalEvents() {
+  const { data, error } = await supabase
+    .from('global_events')
+    .select('*')
+    .order('started_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching global events:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/**
+ * Stop/deactivate a global event
+ */
+export async function stopGlobalEvent(eventId) {
+  const { error } = await supabase
+    .from('global_events')
+    .update({ is_active: false })
+    .eq('event_id', eventId);
+
+  if (error) {
+    console.error('Error stopping event:', error);
+    return { success: false, error: error.message };
+  }
+
+  return { success: true };
 }
 
 // ═══════════════════════════════════════════════════════════════

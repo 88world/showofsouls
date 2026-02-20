@@ -2,7 +2,9 @@ import { useState, useEffect, useRef } from 'react';
 import { COLORS } from '../utils/constants';
 import { getForumPosts } from '../lib/supabase';
 import { useGlobalEvent } from '../features/events/GlobalEventProvider';
-import { CorruptionPurge } from '../features/puzzles/types/CorruptionPurge/CorruptionPurge';
+import { IconComponent, Icons } from '../components/common/Icons';
+import { GlitchTextWord } from '../components/common/GlitchTextWord';
+import { QuantumCipher } from '../features/puzzles/types/QuantumCipher/QuantumCipher';
 
 // ═══════════════════════════════════════════════════════════════
 // FORUM PAGE — RENDERS & NEWS BENTO GRID
@@ -25,6 +27,15 @@ const CATEGORY_STYLES = {
   news: { bg: COLORS.crimson + '20', border: COLORS.crimson, color: COLORS.crimson, label: 'NEWS' },
   update: { bg: COLORS.gold + '20', border: COLORS.gold, color: COLORS.gold, label: 'UPDATE' },
   devlog: { bg: COLORS.ember + '20', border: COLORS.ember, color: COLORS.ember, label: 'DEVLOG' },
+};
+
+// Map category keys to icon names exported from `Icons`
+const ICON_MAP = {
+  render: 'Sparkles',
+  news: 'Radio',
+  update: 'Zap',
+  devlog: 'Code',
+  all: 'Layers',
 };
 
 const PostCard = ({ post, index, isHovered, onHover, onLeave }) => {
@@ -63,26 +74,30 @@ const PostCard = ({ post, index, isHovered, onHover, onLeave }) => {
       )}
 
       {/* Pinned badge */}
-      {post.is_pinned && (
+        {post.is_pinned && (
         <div style={{
           position: "absolute", top: 0, left: 0, zIndex: 10,
           background: COLORS.crimson, padding: "4px 10px",
           fontFamily: "'Space Mono', monospace", fontSize: 9,
           letterSpacing: 2, color: COLORS.bone, fontWeight: "bold",
+          display: 'inline-flex', alignItems: 'center', gap: 6
         }}>
-          📌 PINNED
+          <IconComponent icon={Icons.MapPin} size={12} color={COLORS.bone} />
+          <span>PINNED</span>
         </div>
       )}
 
-      {/* Category tag */}
+      {/* Category tag (with icon) */}
       <div style={{
         position: "absolute", top: 0, right: 0, zIndex: 10,
         background: cat.bg, border: `1px solid ${cat.border}`,
-        padding: "4px 10px",
-        fontFamily: "'Space Mono', monospace", fontSize: 9,
-        letterSpacing: 2, color: cat.color, fontWeight: "bold",
+        padding: "6px 10px",
+        fontFamily: "'Space Mono', monospace", fontSize: 11,
+        letterSpacing: 1.5, color: cat.color, fontWeight: "bold",
+        display: 'flex', alignItems: 'center', gap: 8,
       }}>
-        {cat.label}
+        <IconComponent icon={Icons[ICON_MAP[post.category] || 'Radio']} size={14} color={cat.color} />
+        <span style={{ fontSize: 11 }}>{cat.label}</span>
       </div>
 
       {/* Content */}
@@ -174,16 +189,19 @@ const PostLightbox = ({ post, onClose }) => {
         {/* Close button */}
         <button
           onClick={onClose}
+          aria-label="Close post"
           style={{
             position: "absolute", top: 12, right: 12, zIndex: 10,
             background: "transparent", border: "none",
-            color: COLORS.ash, fontSize: 24, cursor: "pointer",
+            color: COLORS.ash, cursor: "pointer",
             lineHeight: 1,
+            padding: 6,
+            display: 'inline-flex', alignItems: 'center'
           }}
-          onMouseEnter={e => e.target.style.color = COLORS.crimson}
-          onMouseLeave={e => e.target.style.color = COLORS.ash}
+          onMouseEnter={e => e.currentTarget.style.color = COLORS.crimson}
+          onMouseLeave={e => e.currentTarget.style.color = COLORS.ash}
         >
-          ×
+          <IconComponent icon={Icons.X} size={18} color={COLORS.ash} />
         </button>
 
         {/* Image */}
@@ -203,11 +221,13 @@ const PostLightbox = ({ post, onClose }) => {
           }}>
             <span style={{
               background: cat.bg, border: `1px solid ${cat.border}`,
-              padding: "4px 10px",
-              fontFamily: "'Space Mono', monospace", fontSize: 9,
-              letterSpacing: 2, color: cat.color, fontWeight: "bold",
+              padding: "6px 10px",
+              fontFamily: "'Space Mono', monospace", fontSize: 11,
+              letterSpacing: 1.5, color: cat.color, fontWeight: "bold",
+              display: 'inline-flex', alignItems: 'center', gap: 8,
             }}>
-              {cat.label}
+              <IconComponent icon={Icons[ICON_MAP[post.category] || 'Radio']} size={14} color={cat.color} />
+              <span style={{ fontSize: 11 }}>{cat.label}</span>
             </span>
             {post.is_pinned && (
               <span style={{
@@ -235,7 +255,9 @@ const PostLightbox = ({ post, onClose }) => {
             color: COLORS.ash, letterSpacing: 1,
           }}>
             <span>BY {post.author}</span>
-            <span>•</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', padding: '0 6px' }}>
+              <IconComponent icon={Icons.Circle} size={6} color={COLORS.ash} />
+            </span>
             <span>{new Date(post.created_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }).toUpperCase()}</span>
           </div>
 
@@ -260,10 +282,9 @@ export const ForumPage = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [filter, setFilter] = useState('all');
   const [visible, setVisible] = useState(false);
-  const [showCorruption, setShowCorruption] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const ref = useRef(null);
-  const { markPuzzleComplete, isPuzzleEventComplete } = useGlobalEvent();
-  const corruptionSolved = isPuzzleEventComplete('corruptionPurge');
+  const { markPuzzleComplete, isPuzzleEventComplete, currentEvent } = useGlobalEvent();
 
   useEffect(() => {
     loadPosts();
@@ -292,11 +313,6 @@ export const ForumPage = () => {
       padding: 'clamp(80px, 12vw, 120px) clamp(12px, 4vw, 40px) clamp(30px, 5vw, 60px)',
     }}>
       {selectedPost && <PostLightbox post={selectedPost} onClose={() => setSelectedPost(null)} />}
-      <CorruptionPurge
-        isOpen={showCorruption}
-        onClose={() => setShowCorruption(false)}
-        onSuccess={() => { markPuzzleComplete('corruptionPurge'); setShowCorruption(false); }}
-      />
 
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         {/* Header */}
@@ -311,7 +327,14 @@ export const ForumPage = () => {
             letterSpacing: 3, color: COLORS.crimson, marginBottom: 12,
             display: "flex", alignItems: "center", gap: 8,
           }}>
-            <span style={{ animation: "blink 1s infinite" }}>█</span> TRANSMISSION FEED
+            <span style={{ animation: "blink 1s infinite" }}>█</span>
+            <span>
+              {currentEvent?.is_active ? (
+                  <GlitchTextWord word="TRANSMISSION" puzzleId="quantumCipher" onActivate={() => setShowPassword(true)} />
+                ) : (
+                  'TRANSMISSION'
+                )} {' '}FEED
+            </span>
           </div>
           <h1 style={{
             fontFamily: "'Bebas Neue', sans-serif",
@@ -373,7 +396,10 @@ export const ForumPage = () => {
                   }
                 }}
               >
-                {cat === 'all' ? '░ ALL' : `░ ${cat.toUpperCase()}`}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <IconComponent icon={Icons[ICON_MAP[cat] || 'Layers']} size={12} color={isActive ? (style.color || COLORS.bone) : COLORS.ash} />
+                  <span>{cat === 'all' ? 'ALL' : cat.toUpperCase()}</span>
+                </div>
               </button>
             );
           })}
@@ -450,42 +476,15 @@ export const ForumPage = () => {
             SHOWING {filteredPosts.length} OF {posts.length} TRANSMISSIONS
           </div>
         )}
-
-        {/* Hidden puzzle trigger — glitch/corruption signal */}
-        <div
-          onClick={() => !corruptionSolved && setShowCorruption(true)}
-          style={{
-            marginTop: 40,
-            padding: 'clamp(14px, 3vw, 20px)',
-            background: '#060606',
-            border: `1px dashed ${corruptionSolved ? COLORS.flora + '40' : COLORS.signal + '30'}`,
-            textAlign: 'center',
-            cursor: corruptionSolved ? 'default' : 'pointer',
-            transition: 'all 0.3s',
-          }}
-        >
-          {corruptionSolved ? (
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, letterSpacing: 2 }}>
-              ✓ FEED CORRUPTION PURGED — SIGNAL CLEAN
-            </div>
-          ) : (
-            <>
-              <div style={{
-                fontFamily: "'Space Mono', monospace", fontSize: 11,
-                color: COLORS.signal, letterSpacing: 2, marginBottom: 4,
-              }}>
-                ⚠ FEED CORRUPTION DETECTED — ▓▒░ ANOMALOUS DATA ░▒▓
-              </div>
-              <div style={{
-                fontFamily: "'Space Mono', monospace", fontSize: 9,
-                color: COLORS.ash, letterSpacing: 1, opacity: 0.5,
-              }}>
-                [CLICK TO INITIATE PURGE PROTOCOL]
-              </div>
-            </>
-          )}
-        </div>
       </div>
+      {/* Password terminal modal (forum trigger) */}
+      {showPassword && (
+        <QuantumCipher
+          isOpen={showPassword}
+          onClose={() => setShowPassword(false)}
+          onSuccess={() => { markPuzzleComplete('quantumCipher'); setShowPassword(false); }}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // FILE DECRYPTOR — Collect scattered hex fragments and type the code
@@ -150,16 +151,25 @@ export const FileDecryptor = ({ isOpen, onClose, onSuccess }) => {
         )}
 
         {error && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.crimson, marginBottom: 12, textAlign: 'center' }}>{error}</div>}
-        {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12, textAlign: 'center' }}>✓ FILE DECRYPTED</div>}
+        {success && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12 }}>
+            <IconComponent icon={Icons.CheckCircle2} />
+            <span>FILE DECRYPTED</span>
+          </div>
+        )}
 
         <button onClick={handleSubmit} disabled={success || !showField} style={{
           width: '100%', padding: '12px', background: 'transparent',
           border: `2px solid ${success ? COLORS.flora : showField ? COLORS.ember : COLORS.ash + '30'}`,
           color: success ? COLORS.flora : showField ? COLORS.ember : COLORS.ash + '30',
           fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: 4, cursor: showField ? 'pointer' : 'default',
-        }}>{success ? '✓ DECRYPTED' : 'DECRYPT FILE'}</button>
+        }}>{success ? (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.CheckCircle2} />DECRYPTED</span>
+        ) : 'DECRYPT FILE'}</button>
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} aria-label="Close file decryptor" style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>
+          <IconComponent icon={Icons.X} />
+        </button>
       </div>
     </div>
   );

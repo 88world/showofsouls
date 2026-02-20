@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // CORRUPTION PURGE — Click glitch artifacts before they disappear
@@ -170,21 +171,21 @@ export const CorruptionPurge = ({ isOpen, onClose, onSuccess }) => {
           {/* Idle state */}
           {phase === 'idle' && (
             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8 }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 40, color: COLORS.signal + '30' }}>▓▒░</div>
+              <div style={{ fontSize: 40, color: COLORS.signal + '30' }}><IconComponent icon={Icons.Zap} size={40} color={COLORS.signal + '30'} /></div>
               <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.ash }}>CORRUPTION DETECTED</div>
             </div>
           )}
 
           {phase === 'fail' && (
             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8 }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, color: COLORS.crimson }}>✗ PURGE FAILED</div>
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, color: COLORS.crimson, display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.XCircle} size={18} color={COLORS.crimson} />PURGE FAILED</div>
               <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.ash }}>PURGED {hits}/{TARGET_HITS} — TRY AGAIN</div>
             </div>
           )}
 
           {phase === 'success' && (
             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 8 }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, color: COLORS.flora }}>✓ CORRUPTION PURGED</div>
+              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 14, color: COLORS.flora, display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.CheckCircle2} size={18} color={COLORS.flora} />CORRUPTION PURGED</div>
               <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.ash }}>SYSTEM CLEAN</div>
             </div>
           )}
@@ -197,9 +198,13 @@ export const CorruptionPurge = ({ isOpen, onClose, onSuccess }) => {
           fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: 4,
           cursor: phase === 'active' || phase === 'success' ? 'default' : 'pointer',
           opacity: phase === 'active' ? 0.4 : 1,
-        }}>{phase === 'success' ? '✓ SYSTEM PURGED' : phase === 'active' ? 'PURGING...' : phase === 'fail' ? 'RETRY PURGE' : 'INITIATE PURGE'}</button>
+        }}>{phase === 'success' ? (
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.CheckCircle2} size={14} />SYSTEM PURGED</span>
+        ) : phase === 'active' ? 'PURGING...' : phase === 'fail' ? 'RETRY PURGE' : 'INITIATE PURGE'}</button>
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} aria-label="Close corruption purge" style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>
+          <IconComponent icon={Icons.X} />
+        </button>
 
         <style>{`
           @keyframes corruptionGlitch {

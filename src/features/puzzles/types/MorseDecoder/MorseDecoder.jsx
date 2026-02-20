@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // MORSE DECODER — Listen to morse beeps, type the decoded word
@@ -110,7 +111,7 @@ export const MorseDecoder = ({ isOpen, onClose, onSuccess }) => {
           fontFamily: "'Space Mono', monospace", fontSize: 12, letterSpacing: 2,
           cursor: playing ? 'wait' : 'pointer',
         }}>
-          {playing ? '◉ PLAYING...' : '▶ PLAY TRANSMISSION'}
+          {playing ? (<><IconComponent icon={Icons.Loader} size={12} /> PLAYING...</>) : (<><IconComponent icon={Icons.Play} size={12} /> PLAY TRANSMISSION</>)}
         </button>
 
         {/* Input */}
@@ -124,7 +125,7 @@ export const MorseDecoder = ({ isOpen, onClose, onSuccess }) => {
             }}
           />
           {error && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.crimson, marginTop: 8, textAlign: 'center' }}>{error}</div>}
-          {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginTop: 8, textAlign: 'center' }}>✓ TRANSMISSION DECODED</div>}
+          {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginTop: 8, textAlign: 'center', display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center' }}><IconComponent icon={Icons.CheckCircle2} size={14} color={COLORS.flora} />TRANSMISSION DECODED</div>}
           <button type="submit" disabled={success} style={{
             width: '100%', marginTop: 16, padding: '12px', background: 'transparent',
             border: `2px solid ${success ? COLORS.flora : COLORS.ember}`,
@@ -133,7 +134,7 @@ export const MorseDecoder = ({ isOpen, onClose, onSuccess }) => {
           }}>SUBMIT</button>
         </form>
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}><IconComponent icon={Icons.X} size={18} color={COLORS.ash} /></button>
       </div>
     </div>
   );

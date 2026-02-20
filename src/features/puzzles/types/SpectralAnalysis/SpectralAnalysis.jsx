@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // SPECTRAL ANALYSIS — Match a hidden frequency spectrum with sliders
@@ -149,16 +150,16 @@ export const SpectralAnalysis = ({ isOpen, onClose, onSuccess }) => {
             MATCH: {matchPercent}% — {matchPercent >= 75 ? 'CLOSE' : 'ADJUST BANDS'}
           </div>
         )}
-        {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12, textAlign: 'center' }}>✓ ANOMALY FREQUENCY LOCKED</div>}
+        {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12, textAlign: 'center', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}><IconComponent icon={Icons.CheckCircle2} size={14} color={COLORS.flora} />ANOMALY FREQUENCY LOCKED</div>}
 
         <button onClick={() => !scanning && setScanning(true)} disabled={success || scanning} style={{
           width: '100%', padding: '12px', background: 'transparent',
           border: `2px solid ${success ? COLORS.flora : scanning ? COLORS.ash + '40' : COLORS.flora}`,
           color: success ? COLORS.flora : scanning ? COLORS.ash : COLORS.flora,
           fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: 4, cursor: scanning ? 'wait' : 'pointer',
-        }}>{success ? '✓ SPECTRUM MATCHED' : scanning ? 'SCANNING...' : 'RUN ANALYSIS'}</button>
+        }}>{success ? (<><IconComponent icon={Icons.CheckCircle2} size={12} color={COLORS.flora} /> SPECTRUM MATCHED</>) : scanning ? 'SCANNING...' : 'RUN ANALYSIS'}</button>
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}><IconComponent icon={Icons.X} size={18} color={COLORS.ash} /></button>
       </div>
     </div>
   );

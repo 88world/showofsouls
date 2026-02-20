@@ -56,11 +56,11 @@ export default function GlobalEventWidget({ onOpenEvent }) {
       <div className="widget-header">
         <div className="widget-indicator">
           {isCompleted ? (
-            <span className="indicator-completed">{'✓ COMPLETED'}</span>
+            <span className="indicator-completed">COMPLETED</span>
           ) : isExpired ? (
-            <span className="indicator-expired">{'⚠ EXPIRED'}</span>
+            <span className="indicator-expired">EXPIRED</span>
           ) : (
-            <span className="indicator-active">{'● ACTIVE'}</span>
+            <span className="indicator-active">ACTIVE</span>
           )}
         </div>
         

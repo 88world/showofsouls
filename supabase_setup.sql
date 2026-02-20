@@ -329,3 +329,98 @@ ON CONFLICT DO NOTHING;
 -- 2. Copy your Project URL and anon key to .env file
 -- 3. Restart your dev server: npm run dev
 -- ═══════════════════════════════════════════════════════════════
+
+-- ═══════════════════════════════════════════════════════════════
+-- DOCUMENTS MIGRATION FIX (TYPE CAST)
+-- Fixes: ERROR: operator does not exist: text = uuid
+-- Cause: comparing `documents_admins.user_id` (text) with `auth.uid()` (uuid)
+-- Solution: cast `auth.uid()` to text in RLS policies (auth.uid()::text)
+-- Idempotent; safe to re-run
+-- ═══════════════════════════════════════════════════════════════
+
+-- Create admin table if not present (user_id stored as text)
+CREATE TABLE IF NOT EXISTS documents_admins (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id TEXT UNIQUE NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Drop any existing policies that may conflict (safe)
+DO $$ DECLARE r record;
+BEGIN
+  FOR r IN (
+    SELECT policyname FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'documents'
+  ) LOOP
+    EXECUTE format('DROP POLICY IF EXISTS %I ON public.documents', r.policyname);
+  END LOOP;
+END$$;
+
+-- Enable RLS for documents
+ALTER TABLE IF EXISTS public.documents ENABLE ROW LEVEL SECURITY;
+
+-- Public SELECT: only visible documents
+CREATE POLICY public_select_visible ON public.documents
+  FOR SELECT
+  USING (is_visible = true);
+
+-- Admin full access: compare documents_admins.user_id (text) to auth.uid() cast to text
+CREATE POLICY admins_full_access ON public.documents
+  FOR ALL
+  USING (EXISTS (
+    SELECT 1 FROM public.documents_admins da WHERE da.user_id = auth.uid()::text
+  ))
+  WITH CHECK (EXISTS (
+    SELECT 1 FROM public.documents_admins da WHERE da.user_id = auth.uid()::text
+  ));
+
+-- Note: If you store admin user ids as UUID (uuid column), cast the stored value instead:
+--   da.user_id::uuid = auth.uid()
+-- but the above casts auth.uid() to text which is safe given user_id is TEXT.
+
+-- Quick test guidance:
+-- 1) Add an admin row using the Supabase SQL editor (replace below with a real auth.uid() value):
+--    INSERT INTO documents_admins (user_id) VALUES ('put-auth-uid-here') ON CONFLICT DO NOTHING;
+-- 2) Re-run the SQL that previously errored; the type-cast fixes the text = uuid operator error.
+
+-- End of migration fix
+
+-- ═══════════════════════════════════════════════════════════════
+-- DISABLE ROW LEVEL SECURITY FOR ALL PUBLIC TABLES
+-- Idempotent: safe to run multiple times. Drops any existing policies
+-- and disables RLS for every table in the public schema.
+-- Run this if you want the database to be publicly readable/writable
+-- by the anon/service roles according to your Supabase project settings.
+-- ═══════════════════════════════════════════════════════════════
+
+DO $$ DECLARE t record;
+BEGIN
+  FOR t IN (
+    SELECT tablename FROM pg_tables WHERE schemaname = 'public'
+  ) LOOP
+    BEGIN
+      EXECUTE format('ALTER TABLE IF EXISTS public.%I DISABLE ROW LEVEL SECURITY', t.tablename);
+    EXCEPTION WHEN OTHERS THEN
+      -- ignore tables that can't be altered
+      RAISE NOTICE 'could not disable RLS on %', t.tablename;
+    END;
+  END LOOP;
+END$$;
+
+DO $$ DECLARE r record;
+BEGIN
+  FOR r IN (
+    SELECT policyname, tablename FROM pg_policies WHERE schemaname = 'public'
+  ) LOOP
+    BEGIN
+      EXECUTE format('DROP POLICY IF EXISTS %I ON public.%I', r.policyname, r.tablename);
+    EXCEPTION WHEN OTHERS THEN
+      RAISE NOTICE 'could not drop policy % on %', r.policyname, r.tablename;
+    END;
+  END LOOP;
+END$$;
+
+-- Ensure the changes are analyzed for planner stats
+ANALYZE;
+
+

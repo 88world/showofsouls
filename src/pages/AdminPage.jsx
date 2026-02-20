@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { COLORS } from '../utils/constants';
-import { getAllForumPosts, createForumPost, updateForumPost, deleteForumPost, uploadForumImage, uploadMediaFile, getAllTapes, createTape, updateTape, deleteTape, getAllRecordings, createRecording, updateRecording, deleteRecording, getAllDocuments, createDocument, updateDocument, deleteDocument } from '../lib/supabase';
+import { getAllForumPosts, createForumPost, updateForumPost, deleteForumPost, uploadForumImage, uploadMediaFile, getAllTapes, createTape, updateTape, deleteTape, getAllRecordings, createRecording, updateRecording, deleteRecording, getAllDocuments, createDocument, updateDocument, deleteDocument, getCurrentEvent, createGlobalEvent, completeGlobalEvent, supabase } from '../lib/supabase';
+import { Icons, IconComponent } from '../components/common/Icons';
+import { SEED_TAPES, SEED_RECORDINGS, SEED_DOCUMENTS } from '../utils/seedTestData';
 
 // ═══════════════════════════════════════════════════════════════
 // ADMIN PAGE — LOGIN + FORUM DASHBOARD
@@ -125,8 +127,10 @@ const LoginScreen = ({ onLogin }) => {
               fontSize: 10, color: COLORS.crimson,
               marginTop: 12, textAlign: 'center',
               animation: 'shake 0.5s',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             }}>
-              ⚠ {error}
+              <Icons.AlertTriangle size={14} />
+              {error}
             </div>
           )}
 
@@ -331,11 +335,12 @@ const PostEditor = ({ post, onSave, onCancel }) => {
                 fontFamily: "'Space Mono', monospace",
                 fontSize: 10, color: COLORS.crimson,
                 cursor: 'pointer', transition: 'all 0.2s',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
               onMouseEnter={e => e.currentTarget.style.borderColor = COLORS.crimson}
               onMouseLeave={e => e.currentTarget.style.borderColor = COLORS.ash + '30'}
             >
-              ✕
+              <Icons.X size={14} />
             </button>
           )}
         </div>
@@ -344,8 +349,10 @@ const PostEditor = ({ post, onSave, onCancel }) => {
             fontFamily: "'Space Mono', monospace",
             fontSize: 10, color: COLORS.crimson,
             marginTop: 8, letterSpacing: 1,
+            display: 'flex', alignItems: 'center', gap: 6,
           }}>
-            ⚠ {uploadError}
+            <Icons.AlertTriangle size={14} />
+            {uploadError}
           </div>
         )}
         {uploading && (
@@ -504,7 +511,7 @@ const PostEditor = ({ post, onSave, onCancel }) => {
 
 const TapeEditor = ({ tape, onSave, onCancel }) => {
   const [form, setForm] = useState({
-    tape_id: tape?.tape_id || '',
+    tape_id: tape?.tape_id || '[AUTO-GENERATED]',
     title: tape?.title || '',
     date: tape?.date || '',
     length: tape?.length || '',
@@ -536,7 +543,9 @@ const TapeEditor = ({ tape, onSave, onCancel }) => {
   };
 
   const handleSave = async () => {
-    if (!form.tape_id.trim() || !form.title.trim()) return;
+    if (!form.title.trim()) return;
+    // Only require tape_id for editing, not for new tapes (they're auto-generated)
+    if (tape && !form.tape_id.trim()) return;
     setSaving(true);
     await onSave(form);
     setSaving(false);
@@ -604,7 +613,7 @@ const TapeEditor = ({ tape, onSave, onCancel }) => {
             <input
               value={form.tape_id}
               onChange={e => setForm({ ...form, tape_id: e.target.value })}
-              placeholder="TAPE-007"
+              placeholder="Auto-generated as TAPE-###"
               disabled={!!tape}
               style={{ ...inputStyle, opacity: tape ? 0.5 : 1 }}
             />
@@ -706,7 +715,7 @@ const TapeEditor = ({ tape, onSave, onCancel }) => {
             onMouseEnter={e => { if (!uploading) e.currentTarget.style.background = COLORS.gold + '20'; }}
             onMouseLeave={e => { if (!uploading) e.currentTarget.style.background = COLORS.gold + '10'; }}
           >
-            {uploading ? 'UPLOADING...' : '▶ UPLOAD VIDEO'}
+            {uploading ? 'UPLOADING...' : <><Icons.Upload size={14} /> UPLOAD VIDEO</>}
           </button>
           <input
             value={form.video_url}
@@ -725,11 +734,12 @@ const TapeEditor = ({ tape, onSave, onCancel }) => {
                 fontFamily: "'Space Mono', monospace",
                 fontSize: 10, color: COLORS.crimson,
                 cursor: 'pointer', transition: 'all 0.2s',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
               onMouseEnter={e => e.currentTarget.style.borderColor = COLORS.crimson}
               onMouseLeave={e => e.currentTarget.style.borderColor = COLORS.ash + '30'}
             >
-              ✕
+              <Icons.X size={14} />
             </button>
           )}
         </div>
@@ -738,8 +748,10 @@ const TapeEditor = ({ tape, onSave, onCancel }) => {
             fontFamily: "'Space Mono', monospace",
             fontSize: 10, color: COLORS.crimson,
             marginTop: 8, letterSpacing: 1,
+            display: 'flex', alignItems: 'center', gap: 6,
           }}>
-            ⚠ {uploadError}
+            <Icons.AlertTriangle size={14} />
+            {uploadError}
           </div>
         )}
         {uploading && (
@@ -765,7 +777,8 @@ const TapeEditor = ({ tape, onSave, onCancel }) => {
               fontSize: 9, color: COLORS.gold, letterSpacing: 1,
               marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6,
             }}>
-              ▶ VIDEO ATTACHED
+              <Icons.Video size={14} />
+              VIDEO ATTACHED
             </div>
             <div style={{
               fontFamily: "'Space Mono', monospace",
@@ -813,7 +826,7 @@ const TapeEditor = ({ tape, onSave, onCancel }) => {
         <div style={{ display: 'flex', gap: 12, marginTop: 28 }}>
           <button
             onClick={handleSave}
-            disabled={saving || !form.tape_id.trim() || !form.title.trim()}
+            disabled={saving || !form.title.trim() || (tape && !form.tape_id.trim())}
             style={{
               flex: 1, padding: '14px',
               background: COLORS.gold + '15',
@@ -823,10 +836,10 @@ const TapeEditor = ({ tape, onSave, onCancel }) => {
               color: COLORS.gold, textTransform: 'uppercase',
               cursor: saving ? 'wait' : 'pointer',
               transition: 'all 0.3s',
-              opacity: (!form.tape_id.trim() || !form.title.trim()) ? 0.4 : 1,
+              opacity: (!form.title.trim() || (tape && !form.tape_id.trim())) ? 0.4 : 1,
             }}
             onMouseEnter={e => {
-              if (!saving && form.tape_id.trim() && form.title.trim()) {
+              if (!saving && form.title.trim() && (!tape || form.tape_id.trim())) {
                 e.currentTarget.style.background = COLORS.gold + '25';
               }
             }}
@@ -1040,15 +1053,17 @@ const RecordingEditor = ({ recording, onSave, onCancel }) => {
               style={{ padding: '10px 14px', background: 'transparent',
                 border: `1px solid ${COLORS.ash}30`, fontFamily: "'Space Mono', monospace",
                 fontSize: 10, color: COLORS.crimson, cursor: 'pointer', transition: 'all 0.2s',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
               onMouseEnter={e => e.currentTarget.style.borderColor = COLORS.crimson}
               onMouseLeave={e => e.currentTarget.style.borderColor = COLORS.ash + '30'}
-            >✕</button>
+            ><Icons.X size={14} /></button>
           )}
         </div>
         {uploadError && (
-          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.crimson, marginTop: 8, letterSpacing: 1 }}>
-            ⚠ {uploadError}
+          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.crimson, marginTop: 8, letterSpacing: 1, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Icons.AlertTriangle size={14} />
+            {uploadError}
           </div>
         )}
         {uploading && (
@@ -1145,7 +1160,9 @@ const DocumentEditor = ({ document: doc, onSave, onCancel }) => {
   };
 
   const handleSave = async () => {
-    if (!form.document_id.trim() || !form.title.trim()) return;
+    const hasTitle = form.title.trim();
+    const hasId = form.document_id.trim();
+    if (!hasTitle || (doc && !hasId)) return;
     setSaving(true);
     await onSave(form);
     setSaving(false);
@@ -1287,7 +1304,7 @@ const DocumentEditor = ({ document: doc, onSave, onCancel }) => {
             onMouseEnter={e => { if (!uploading) e.currentTarget.style.background = COLORS.crimson + '20'; }}
             onMouseLeave={e => { if (!uploading) e.currentTarget.style.background = COLORS.crimson + '10'; }}
           >
-            {uploading ? 'UPLOADING...' : '📄 UPLOAD FILE'}
+            {uploading ? 'UPLOADING...' : <><Icons.FileText size={14} /> UPLOAD FILE</>}
           </button>
           <input value={form.file_url}
             onChange={e => setForm({ ...form, file_url: e.target.value })}
@@ -1299,15 +1316,17 @@ const DocumentEditor = ({ document: doc, onSave, onCancel }) => {
               style={{ padding: '10px 14px', background: 'transparent',
                 border: `1px solid ${COLORS.ash}30`, fontFamily: "'Space Mono', monospace",
                 fontSize: 10, color: COLORS.crimson, cursor: 'pointer', transition: 'all 0.2s',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}
               onMouseEnter={e => e.currentTarget.style.borderColor = COLORS.crimson}
               onMouseLeave={e => e.currentTarget.style.borderColor = COLORS.ash + '30'}
-            >✕</button>
+            ><Icons.X size={14} /></button>
           )}
         </div>
         {uploadError && (
-          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.crimson, marginTop: 8, letterSpacing: 1 }}>
-            ⚠ {uploadError}
+          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.crimson, marginTop: 8, letterSpacing: 1, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Icons.AlertTriangle size={14} />
+            {uploadError}
           </div>
         )}
         {uploading && (
@@ -1318,8 +1337,9 @@ const DocumentEditor = ({ document: doc, onSave, onCancel }) => {
         )}
         {form.file_url && (
           <div style={{ marginTop: 8, padding: 10, background: '#000', border: `1px solid ${COLORS.ash}20` }}>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: COLORS.crimson, letterSpacing: 1 }}>
-              📄 FILE ATTACHED
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: COLORS.crimson, letterSpacing: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Icons.Download size={12} />
+              <span>FILE ATTACHED</span>
             </div>
           </div>
         )}
@@ -1341,14 +1361,14 @@ const DocumentEditor = ({ document: doc, onSave, onCancel }) => {
         {/* Actions */}
         <div style={{ display: 'flex', gap: 12, marginTop: 28 }}>
           <button onClick={handleSave}
-            disabled={saving || !form.document_id.trim() || !form.title.trim()}
+            disabled={saving || !form.title.trim() || (doc && !form.document_id.trim())}
             style={{
               flex: 1, padding: '14px',
               background: COLORS.crimson + '15', border: `1px solid ${COLORS.crimson}`,
               fontFamily: "'Space Mono', monospace", fontSize: 11, letterSpacing: 2,
               color: COLORS.crimson, textTransform: 'uppercase',
               cursor: saving ? 'wait' : 'pointer', transition: 'all 0.3s',
-              opacity: (!form.document_id.trim() || !form.title.trim()) ? 0.4 : 1,
+              opacity: (!form.title.trim() || (doc && !form.document_id.trim())) ? 0.4 : 1,
             }}
             onMouseEnter={e => { if (!saving && form.document_id.trim() && form.title.trim()) e.currentTarget.style.background = COLORS.crimson + '25'; }}
             onMouseLeave={e => { e.currentTarget.style.background = COLORS.crimson + '15'; }}
@@ -1372,11 +1392,12 @@ const DocumentEditor = ({ document: doc, onSave, onCancel }) => {
 // ═══════════════════════════════════════════════════════════════
 
 const Dashboard = ({ onLogout }) => {
-  const [activeTab, setActiveTab] = useState('forum'); // 'forum' | 'tapes' | 'recordings' | 'documents'
+  const [activeTab, setActiveTab] = useState('forum'); // 'forum' | 'tapes' | 'recordings' | 'documents' | 'events'
   const [posts, setPosts] = useState([]);
   const [tapes, setTapes] = useState([]);
   const [recordings, setRecordings] = useState([]);
   const [documents, setDocuments] = useState([]);
+  const [currentEvent, setCurrentEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null); // null = none, 'new' = new post, post object = editing
   const [editingTape, setEditingTape] = useState(null); // null = none, 'new' = new tape, tape object = editing
@@ -1386,6 +1407,10 @@ const Dashboard = ({ onLogout }) => {
   const [deleteTapeConfirm, setDeleteTapeConfirm] = useState(null);
   const [deleteRecordingConfirm, setDeleteRecordingConfirm] = useState(null);
   const [deleteDocumentConfirm, setDeleteDocumentConfirm] = useState(null);
+  const [eventFormOpen, setEventFormOpen] = useState(false);
+  const [eventTitle, setEventTitle] = useState('');
+  const [eventDescription, setEventDescription] = useState('');
+  const [creatingEvent, setCreatingEvent] = useState(false);
 
   useEffect(() => {
     loadAll();
@@ -1393,13 +1418,14 @@ const Dashboard = ({ onLogout }) => {
 
   const loadAll = async () => {
     setLoading(true);
-    const [postsData, tapesData, recsData, docsData] = await Promise.all([
-      getAllForumPosts(), getAllTapes(), getAllRecordings(), getAllDocuments()
+    const [postsData, tapesData, recsData, docsData, eventData] = await Promise.all([
+      getAllForumPosts(), getAllTapes(), getAllRecordings(), getAllDocuments(), getCurrentEvent()
     ]);
     setPosts(postsData);
     setTapes(tapesData);
     setRecordings(recsData);
     setDocuments(docsData);
+    setCurrentEvent(eventData);
     setLoading(false);
   };
 
@@ -1458,7 +1484,13 @@ const Dashboard = ({ onLogout }) => {
         setEditingTape(null);
       }
     } else {
-      const result = await createTape(formData);
+      // Auto-generate tape ID for new tapes
+      const nextTapeNumber = (tapes.length + 1).toString().padStart(3, '0');
+      const tapeData = {
+        ...formData,
+        tape_id: `TAPE-${nextTapeNumber}`,
+      };
+      const result = await createTape(tapeData);
       if (result.success) {
         await loadTapes();
         setEditingTape(null);
@@ -1521,7 +1553,13 @@ const Dashboard = ({ onLogout }) => {
       const result = await updateDocument(editingDocument.id, formData);
       if (result.success) { await loadDocuments(); setEditingDocument(null); }
     } else {
-      const result = await createDocument(formData);
+      // Auto-generate document ID for new documents
+      const nextDocNumber = (documents.length + 1).toString().padStart(3, '0');
+      const docData = {
+        ...formData,
+        document_id: `DOC-${nextDocNumber}`,
+      };
+      const result = await createDocument(docData);
       if (result.success) { await loadDocuments(); setEditingDocument(null); }
     }
   };
@@ -1534,6 +1572,103 @@ const Dashboard = ({ onLogout }) => {
   const toggleDocumentVisibility = async (doc) => {
     await updateDocument(doc.id, { is_visible: !doc.is_visible });
     await loadDocuments();
+  };
+
+  // Event management handlers
+  const loadEvents = async () => {
+    const event = await getCurrentEvent();
+    setCurrentEvent(event);
+  };
+
+  const handleCreateEvent = async () => {
+    if (!eventTitle.trim()) return;
+
+    setCreatingEvent(true);
+    const eventData = {
+      title: eventTitle,
+      description: eventDescription,
+      started_at: new Date().toISOString(),
+      is_active: true,
+    };
+
+    const result = await createGlobalEvent(eventData);
+    setCreatingEvent(false);
+
+    if (result.success) {
+      await loadEvents();
+      setEventFormOpen(false);
+      setEventTitle('');
+      setEventDescription('');
+      
+      // Force all users to see update via page refresh after 2 seconds
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    }
+  };
+
+  const handleStopEvent = async () => {
+    if (!currentEvent) return;
+
+    const { error } = await supabase
+      .from('global_events')
+      .update({ is_active: false })
+      .eq('event_id', currentEvent.event_id);
+
+    if (!error) {
+      // Immediately update local state
+      await loadEvents();
+      
+      // Force all users to see update via page refresh after 2 seconds
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    }
+  };
+
+  const handleResetEvents = async () => {
+    if (!confirm('Are you sure? This will reset all event data.')) return;
+
+    // Delete all event-related data
+    await supabase.from('global_events').delete().gt('event_id', '0');
+    await supabase.from('event_completions').delete().gt('id', '0');
+
+    setCurrentEvent(null);
+    await loadEvents();
+    
+    // Force all users to see update via page refresh after 2 seconds
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+  };
+
+  // Seed test data for tapes, recordings, and documents
+  const handleSeedTestData = async () => {
+    if (!confirm('Generate 6 test tapes, 6 recordings, and 6 documents? (You can delete them later)')) return;
+
+    try {
+      // Seed tapes
+      for (const tape of SEED_TAPES) {
+        await createTape(tape);
+      }
+
+      // Seed recordings
+      for (const rec of SEED_RECORDINGS) {
+        await createRecording(rec);
+      }
+
+      // Seed documents
+      for (const doc of SEED_DOCUMENTS) {
+        await createDocument(doc);
+      }
+
+      // Reload all data
+      await loadAll();
+      alert('Test data seeded successfully!');
+    } catch (error) {
+      console.error('Error seeding test data:', error);
+      alert('Error seeding data. Check console.');
+    }
   };
 
   return (
@@ -1914,6 +2049,7 @@ const Dashboard = ({ onLogout }) => {
             { id: 'tapes', label: 'TAPES', count: tapes.length, color: COLORS.gold },
             { id: 'recordings', label: 'RECORDINGS', count: recordings.length, color: COLORS.ember },
             { id: 'documents', label: 'DOCUMENTS', count: documents.length, color: COLORS.crimson },
+            { id: 'events', label: 'GLOBAL EVENTS', count: currentEvent ? 1 : 0, color: COLORS.flora },
           ].map(tab => (
             <button
               key={tab.id}
@@ -2233,8 +2369,9 @@ const Dashboard = ({ onLogout }) => {
                       fontSize: 12, color: COLORS.bone,
                       whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                       maxWidth: 250,
+                      display: 'flex', alignItems: 'center', gap: 6,
                     }}>
-                      {tape.is_corrupt && <span style={{ color: COLORS.crimson }}>⚠ </span>}
+                      {tape.is_corrupt && <Icons.AlertTriangle size={14} color={COLORS.crimson} style={{ minWidth: 14 }} />}
                       {tape.title}
                     </div>
                     {tape.date && (
@@ -2537,7 +2674,7 @@ const Dashboard = ({ onLogout }) => {
                   <div>
                     <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, color: COLORS.bone,
                       whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 250 }}>
-                      {doc.file_url && <span style={{ color: COLORS.crimson }}>📄 </span>}
+                      {doc.file_url && <span style={{ color: COLORS.crimson }}><Icons.Download size={12} />&nbsp;</span>}
                       {doc.title}
                     </div>
                     {doc.date && (
@@ -2592,6 +2729,277 @@ const Dashboard = ({ onLogout }) => {
               ))}
               </div>
             </div>
+            </div>
+          </>
+        )}
+
+        {/* ═══════════ GLOBAL EVENTS TAB ═══════════ */}
+        {!loading && activeTab === 'events' && (
+          <>
+            <div style={{
+              display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(140px, 100%), 1fr))', gap: 16,
+              marginBottom: 24,
+            }}>
+              {[
+                { label: 'ACTIVE EVENTS', value: currentEvent ? 1 : 0, color: COLORS.flora },
+                { label: 'STATUS', value: currentEvent?.is_active ? 'LIVE' : 'IDLE', color: currentEvent?.is_active ? COLORS.flora : COLORS.ash },
+              ].map(stat => (
+                <div key={stat.label} style={{
+                  background: COLORS.cardDark,
+                  border: `1px solid ${COLORS.ash}20`,
+                  padding: '16px 20px', textAlign: 'center',
+                }}>
+                  <div style={{
+                    fontFamily: "'Bebas Neue', sans-serif",
+                    fontSize: 32, color: stat.color, letterSpacing: 2,
+                  }}>
+                    {typeof stat.value === 'string' ? stat.value : stat.value}
+                  </div>
+                  <div style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 9, color: COLORS.ash, letterSpacing: 2,
+                  }}>
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Current Event Display */}
+            {currentEvent && (
+              <div style={{
+                background: COLORS.cardDark,
+                border: `1px solid ${COLORS.flora}40`,
+                padding: '20px',
+                marginBottom: 24,
+              }}>
+                <div style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 11, color: COLORS.flora, letterSpacing: 2, marginBottom: 12, textTransform: 'uppercase',
+                }}>
+                  ● ACTIVE EVENT
+                </div>
+                <div style={{
+                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontSize: 24, color: COLORS.bone, letterSpacing: 2, marginBottom: 8,
+                }}>
+                  {currentEvent.title}
+                </div>
+                <div style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 11, color: COLORS.ash, lineHeight: 1.6, marginBottom: 16,
+                }}>
+                  {currentEvent.description}
+                </div>
+                <div style={{
+                  display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16,
+                }}>
+                  <div>
+                    <div style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 9, color: COLORS.ash, letterSpacing: 1, marginBottom: 4,
+                    }}>
+                      STARTED
+                    </div>
+                    <div style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 11, color: COLORS.bone,
+                    }}>
+                      {new Date(currentEvent.started_at).toLocaleString()}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 9, color: COLORS.ash, letterSpacing: 1, marginBottom: 4,
+                    }}>
+                      STATUS
+                    </div>
+                    <div style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 11, color: currentEvent.is_active ? COLORS.flora : COLORS.crimson,
+                    }}>
+                      {currentEvent.is_active ? '● ACTIVE' : '○ ENDED'}
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={handleStopEvent}
+                  style={{
+                    padding: '10px 20px',
+                    background: COLORS.crimson + '15',
+                    border: `1px solid ${COLORS.crimson}`,
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 10, letterSpacing: 2,
+                    color: COLORS.crimson, textTransform: 'uppercase',
+                    cursor: 'pointer', transition: 'all 0.3s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = COLORS.crimson + '30';
+                    e.currentTarget.style.boxShadow = `0 0 15px ${COLORS.crimson}20`;
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = COLORS.crimson + '15';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  <span style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}><IconComponent icon={Icons.X} size={12} color={COLORS.crimson} />STOP EVENT</span>
+                </button>
+              </div>
+            )}
+
+            {/* Create Event Section */}
+            <div style={{
+              background: COLORS.cardDark,
+              border: `1px solid ${COLORS.flora}40`,
+              padding: '20px',
+              marginBottom: 24,
+            }}>
+              <div style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 11, color: COLORS.flora, letterSpacing: 2, marginBottom: 16, textTransform: 'uppercase',
+              }}>
+                + NEW EVENT
+              </div>
+              <div style={{
+                display: 'grid', gap: 12, marginBottom: 16,
+              }}>
+                <div>
+                  <label style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 10, color: COLORS.ash, letterSpacing: 1, display: 'block', marginBottom: 6,
+                  }}>
+                    EVENT TITLE
+                  </label>
+                  <input
+                    type="text"
+                    value={eventTitle}
+                    onChange={e => setEventTitle(e.target.value)}
+                    placeholder="e.g., 'SIGNAL BREACH DETECTED'"
+                    style={{
+                      width: '100%', padding: '10px 12px',
+                      background: COLORS.bg, border: `1px solid ${COLORS.ash}30`,
+                      fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.bone,
+                      transition: 'all 0.2s', boxSizing: 'border-box',
+                    }}
+                    onFocus={e => {
+                      e.currentTarget.style.borderColor = COLORS.flora;
+                      e.currentTarget.style.boxShadow = `0 0 10px ${COLORS.flora}20`;
+                    }}
+                    onBlur={e => {
+                      e.currentTarget.style.borderColor = COLORS.ash + '30';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{
+                    fontFamily: "'Space Mono', monospace",
+                    fontSize: 10, color: COLORS.ash, letterSpacing: 1, display: 'block', marginBottom: 6,
+                  }}>
+                    DESCRIPTION
+                  </label>
+                  <textarea
+                    value={eventDescription}
+                    onChange={e => setEventDescription(e.target.value)}
+                    placeholder="Event details and puzzle hints..."
+                    style={{
+                      width: '100%', padding: '10px 12px', minHeight: 80,
+                      background: COLORS.bg, border: `1px solid ${COLORS.ash}30`,
+                      fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.bone,
+                      transition: 'all 0.2s', boxSizing: 'border-box', resize: 'vertical',
+                    }}
+                    onFocus={e => {
+                      e.currentTarget.style.borderColor = COLORS.flora;
+                      e.currentTarget.style.boxShadow = `0 0 10px ${COLORS.flora}20`;
+                    }}
+                    onBlur={e => {
+                      e.currentTarget.style.borderColor = COLORS.ash + '30';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  />
+                </div>
+              </div>
+              <button
+                onClick={handleCreateEvent}
+                disabled={creatingEvent || !eventTitle.trim()}
+                style={{
+                  padding: '10px 20px',
+                  background: !eventTitle.trim() ? COLORS.ash + '15' : COLORS.flora + '15',
+                  border: `1px solid ${!eventTitle.trim() ? COLORS.ash : COLORS.flora}`,
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 10, letterSpacing: 2,
+                  color: !eventTitle.trim() ? COLORS.ash : COLORS.flora,
+                  textTransform: 'uppercase',
+                  cursor: !eventTitle.trim() ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.3s',
+                  opacity: creatingEvent ? 0.5 : 1,
+                }}
+                onMouseEnter={e => {
+                  if (eventTitle.trim()) {
+                    e.currentTarget.style.background = COLORS.flora + '30';
+                    e.currentTarget.style.boxShadow = `0 0 15px ${COLORS.flora}20`;
+                  }
+                }}
+                onMouseLeave={e => {
+                  if (eventTitle.trim()) {
+                    e.currentTarget.style.background = COLORS.flora + '15';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }
+                }}
+              >
+                {creatingEvent ? (<><IconComponent icon={Icons.Loader} size={14} /> CREATING...</>) : (<><IconComponent icon={Icons.Play} size={14} /> LAUNCH EVENT</>)}
+              </button>
+            </div>
+
+            {/* Reset Events */}
+            <button
+              onClick={handleResetEvents}
+              style={{
+                padding: '12px 24px',
+                background: COLORS.crimson + '10',
+                border: `1px solid ${COLORS.crimson}50`,
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 10, letterSpacing: 2,
+                color: COLORS.crimson, textTransform: 'uppercase',
+                cursor: 'pointer', transition: 'all 0.3s',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = COLORS.crimson + '25';
+                e.currentTarget.style.borderColor = COLORS.crimson;
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = COLORS.crimson + '10';
+                e.currentTarget.style.borderColor = COLORS.crimson + '50';
+              }}
+            >
+              <span style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}><IconComponent icon={Icons.AlertTriangle} size={14} color={COLORS.crimson} />RESET ALL EVENTS</span>
+            </button>
+
+            {/* Seed test data button */}
+            <div style={{ marginTop: 40, paddingTop: 30, borderTop: `1px solid ${COLORS.ash}20` }}>
+              <button
+                onClick={handleSeedTestData}
+                style={{
+                  padding: '12px 24px',
+                  background: COLORS.gold + '10',
+                  border: `1px solid ${COLORS.gold}50`,
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 10, letterSpacing: 2,
+                  color: COLORS.gold, textTransform: 'uppercase',
+                  cursor: 'pointer', transition: 'all 0.3s',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = COLORS.gold + '25';
+                  e.currentTarget.style.borderColor = COLORS.gold;
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = COLORS.gold + '10';
+                  e.currentTarget.style.borderColor = COLORS.gold + '50';
+                }}
+              >
+                <span style={{ display: 'inline-flex', gap: 8, alignItems: 'center' }}><IconComponent icon={Icons.Loader} size={14} /> SEED TEST DATA (6-6-6)</span>
+              </button>
             </div>
           </>
         )}

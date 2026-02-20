@@ -1,198 +1,401 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { COLORS } from '../utils/constants';
 import { useGlobalEvent } from '../features/events/GlobalEventProvider';
-import { CipherDecoder } from '../features/puzzles/types/CipherDecoder/CipherDecoder';
+import { GlitchTextWord } from '../components/common/GlitchTextWord';
+import { PowerCurrent } from '../features/puzzles/types/PowerCurrent/PowerCurrent';
+import { Icons, IconComponent } from '../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
-// INCIDENT PAGE
-// Details about the park incident — Hidden Global Event Puzzle
+// UTILITY: LOCAL CRT EFFECT OVERLAY
+// ═══════════════════════════════════════════════════════════════
+const LocalCRTOverlay = () => (
+  <>
+    <div style={{
+      position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2, opacity: 0.3,
+      background: `repeating-linear-gradient(0deg, rgba(0,0,0,0.15) 0px, rgba(0,0,0,0.15) 1px, transparent 1px, transparent 3px)`,
+      mixBlendMode: "overlay",
+    }} />
+    <div style={{
+      position: "absolute", inset: 0, pointerEvents: "none", zIndex: 3, opacity: 0.15,
+      background: `radial-gradient(circle at center, transparent 50%, ${COLORS.bg} 100%), linear-gradient(to bottom, transparent, ${COLORS.crimson}08)`,
+      mixBlendMode: "multiply",
+    }} />
+  </>
+);
+
+// ═══════════════════════════════════════════════════════════════
+// INCIDENT REPORT SECTION
 // ═══════════════════════════════════════════════════════════════
 
-const REDACTED_LINES = [
-  { text: 'DATE: ██████ 1947', delay: 0 },
-  { text: 'LOCATION: FLORA\'S WONDERLAND — SECTOR 7', delay: 1 },
-  { text: 'CASUALTIES: ████████████', delay: 2 },
-  { text: 'STATUS: ONGOING CONTAINMENT', delay: 3 },
-  { text: '', delay: 4 },
-  { text: '> At approximately 02:47 AM, multiple animatronic units', delay: 5 },
-  { text: '  deviated from standard behavior protocols.', delay: 6 },
-  { text: '> Security personnel reported ████████████████', delay: 7 },
-  { text: '  ██████████ in the underground service tunnels.', delay: 8 },
-  { text: '> Costume storage room B-14 was found ████████', delay: 9 },
-  { text: '  with evidence of ████████████████████.', delay: 10 },
-  { text: '', delay: 11 },
-  { text: '> SUBJECT "FLORA" last seen at Gate 3.', delay: 12 },
-  { text: '> All exit routes were sealed from the INSIDE.', delay: 13 },
-  { text: '', delay: 14 },
-  { text: '> NOTE: Investigators reported hearing', delay: 15 },
-  { text: '  a broadcast signal on frequency 104.7 MHz', delay: 16 },
-  { text: '  repeating: "THE SHOW MUST GO ON"', delay: 17 },
-];
+const IncidentReportSection = () => {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+  const { currentEvent } = useGlobalEvent();
 
-export const IncidentPage = () => {
-  const [showCipher, setShowCipher] = useState(false);
-  const { markPuzzleComplete, isPuzzleEventComplete } = useGlobalEvent();
-  const cipherSolved = isPuzzleEventComplete('cipherDecoder');
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.1 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+
+  const [showWaveform, setShowWaveform] = useState(false);
+  const { markPuzzleComplete } = useGlobalEvent();
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      background: COLORS.bg,
-      color: COLORS.bone,
-      padding: 'clamp(100px, 12vw, 140px) clamp(12px, 4vw, 40px) clamp(30px, 5vw, 60px)',
+    <>
+    <section ref={ref} style={{
+      padding: "clamp(80px, 12vw, 140px) clamp(20px, 5vw, 50px)",
+      background: `linear-gradient(180deg, ${COLORS.bg} 0%, ${COLORS.crimson}08 100%)`,
+      borderBottom: `2px solid ${COLORS.crimson}40`,
+      position: "relative",
     }}>
-      <CipherDecoder
-        isOpen={showCipher}
-        onClose={() => setShowCipher(false)}
-        onSuccess={() => { markPuzzleComplete('cipherDecoder'); setShowCipher(false); }}
-      />
-
-      <div style={{ maxWidth: 800, margin: '0 auto' }}>
-        <h1 style={{
-          fontFamily: "'Bebas Neue', sans-serif",
-          fontSize: 'clamp(40px, 8vw, 80px)',
-          letterSpacing: 8,
-          color: COLORS.crimson,
-          marginBottom: 8,
-          textShadow: `2px 2px 0 ${COLORS.signal}40`,
-        }}>
-          THE INCIDENT
-        </h1>
+      <LocalCRTOverlay />
+      <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 5 }}>
         <div style={{
-          fontFamily: "'Space Mono', monospace",
-          fontSize: 12,
-          color: COLORS.crimson,
-          letterSpacing: 3,
-          marginBottom: 40,
-          display: 'flex', alignItems: 'center', gap: 8,
+          marginBottom: 60,
+          opacity: visible ? 1 : 0,
+          transform: visible ? "translateY(0)" : "translateY(20px)",
+          transition: "all 0.8s ease 0.1s",
         }}>
-          <span style={{ animation: 'blink 1s infinite' }}>●</span> CLASSIFIED — SECURITY CLEARANCE LEVEL 5
-        </div>
-
-        {/* Incident Report */}
-        <div style={{
-          background: '#0a0808',
-          border: `2px solid ${COLORS.ash}30`,
-          padding: 'clamp(20px, 4vw, 40px)',
-          position: 'relative',
-          overflow: 'hidden',
-        }}>
-          {/* Scanlines */}
-          <div style={{
-            position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2, opacity: 0.15,
-            background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.3) 0px, rgba(0,0,0,0.3) 1px, transparent 1px, transparent 3px)',
-          }} />
+          <h1 style={{
+            fontFamily: "'Bebas Neue', sans-serif",
+            fontSize: "clamp(48px, 8vw, 80px)",
+            letterSpacing: "0.15em",
+            margin: "0 0 20px 0",
+            color: COLORS.bone,
+            textShadow: `0 4px 20px ${COLORS.crimson}30`,
+          }}>
+            THE INCIDENT
+          </h1>
 
           <div style={{
             fontFamily: "'Space Mono', monospace",
-            fontSize: 11,
-            color: COLORS.ash,
-            letterSpacing: 2,
-            marginBottom: 20,
-            paddingBottom: 12,
-            borderBottom: `1px solid ${COLORS.ash}20`,
+            fontSize: "clamp(10px, 1.2vw, 12px)",
+            letterSpacing: 3,
+            color: COLORS.crimson,
+            margin: "0 0 40px 0",
+            textTransform: "uppercase",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
           }}>
-            INCIDENT REPORT #1947-B — DECLASSIFIED [PARTIAL]
-          </div>
-
-          {REDACTED_LINES.map((line, i) => (
-            <div key={i} style={{
-              fontFamily: "'Space Mono', monospace",
-              fontSize: 'clamp(10px, 2.5vw, 13px)',
-              color: line.text.includes('██') ? COLORS.ash : COLORS.bone,
-              letterSpacing: 1,
-              lineHeight: 2,
-              opacity: line.text === '' ? 0 : 0.85,
-              minHeight: line.text === '' ? 16 : undefined,
-            }}>
-              {line.text}
-            </div>
-          ))}
-
-          <div style={{ marginTop: 30, borderTop: `1px solid ${COLORS.ash}20`, paddingTop: 20 }}>
-            <div style={{
-              fontFamily: "'Space Mono', monospace",
-              fontSize: 10,
-              color: COLORS.crimson,
-              letterSpacing: 2,
-              marginBottom: 12,
-            }}>
-              ⚠ ADDENDUM — ENCRYPTED TRANSMISSION RECOVERED
-            </div>
-
-            {/* Hidden puzzle trigger — the encrypted addendum */}
-            <div
-              onClick={() => !cipherSolved && setShowCipher(true)}
-              style={{
-                padding: '16px 20px',
-                background: cipherSolved ? `${COLORS.flora}08` : `${COLORS.crimson}08`,
-                border: `1px dashed ${cipherSolved ? COLORS.flora : COLORS.crimson}40`,
-                cursor: cipherSolved ? 'default' : 'pointer',
-                transition: 'all 0.3s',
-              }}
-            >
-              {cipherSolved ? (
-                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, letterSpacing: 2 }}>
-                  ✓ TRANSMISSION DECODED — PUZZLE COMPLETE
-                </div>
-              ) : (
-                <>
-                  <div style={{
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: 11,
-                    color: COLORS.crimson,
-                    letterSpacing: 2,
-                    marginBottom: 6,
-                  }}>
-                    XVHG WGRK FHXM LQPZ YBNE...
-                  </div>
-                  <div style={{
-                    fontFamily: "'Space Mono', monospace",
-                    fontSize: 9,
-                    color: COLORS.ash,
-                    letterSpacing: 1,
-                    opacity: 0.6,
-                  }}>
-                    [CLICK TO ATTEMPT DECRYPTION]
-                  </div>
-                </>
-              )}
-            </div>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><span style={{ fontSize: 10, animation: "pulse 2s infinite" }}><IconComponent icon={Icons.Activity} size={12} color={COLORS.crimson} /></span>CLASSIFIED — SECURITY CLEARANCE LEVEL 5</span>
           </div>
         </div>
 
-        {/* Evidence photos placeholder */}
-        <div style={{ marginTop: 40, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(180px, 100%), 1fr))', gap: 12 }}>
-          {['PHOTO #1 — COSTUME ROOM', 'PHOTO #2 — GATE 3', 'PHOTO #3 — TUNNEL MAP'].map((label, i) => (
-            <div key={i} style={{
-              aspectRatio: '4/3',
-              background: '#080808',
-              border: `1px solid ${COLORS.ash}20`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              position: 'relative', overflow: 'hidden',
+        <div style={{
+          background: "rgba(0,0,0,0.6)",
+          border: `2px solid ${COLORS.crimson}40`,
+          padding: "clamp(40px, 8vw, 60px)",
+          boxShadow: `0 0 50px ${COLORS.crimson}20, inset 0 0 30px ${COLORS.crimson}05`,
+          opacity: visible ? 1 : 0,
+          transform: visible ? "translateY(0)" : "translateY(50px)",
+          transition: "all 1s cubic-bezier(0.16,1,0.3,1) 0.1s",
+        }}>
+          <LocalCRTOverlay />
+
+          <div style={{ position: "relative", zIndex: 2 }}>
+            <h2 style={{
+              fontFamily: "'Bebas Neue', sans-serif",
+              fontSize: "clamp(20px, 3vw, 28px)",
+              letterSpacing: "0.1em",
+              margin: "0 0 32px 0",
+              color: COLORS.crimson,
+              textTransform: "uppercase",
+              textShadow: `0 0 15px ${COLORS.crimson}40`,
+            }}>
+              INCIDENT REPORT #2026-B — DECLASSIFIED [PARTIAL]
+            </h2>
+
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+              gap: 24,
+              marginBottom: 40,
             }}>
               <div style={{
-                position: 'absolute', inset: 0, opacity: 0.05,
-                background: 'repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 3px)',
-              }} />
+                fontFamily: "'Space Mono', monospace",
+                fontSize: "clamp(11px, 1.3vw, 13px)",
+                letterSpacing: 1,
+                color: COLORS.bone,
+                opacity: 0.8,
+              }}>
+                <span style={{ color: COLORS.flora, fontWeight: "bold" }}>DATE:</span> ████████ 2026
+              </div>
               <div style={{
                 fontFamily: "'Space Mono', monospace",
-                fontSize: 9,
-                color: COLORS.ash,
+                fontSize: "clamp(11px, 1.3vw, 13px)",
                 letterSpacing: 1,
-                textAlign: 'center',
-                opacity: 0.5,
+                color: COLORS.bone,
+                opacity: 0.8,
               }}>
-                {label}<br />[REDACTED]
+                <span style={{ color: COLORS.flora, fontWeight: "bold" }}>LOCATION:</span> FLORA'S WONDERLAND — SECTOR 7
+              </div>
+              <div style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: "clamp(11px, 1.3vw, 13px)",
+                letterSpacing: 1,
+                color: COLORS.bone,
+                opacity: 0.8,
+              }}>
+                <span style={{ color: COLORS.flora, fontWeight: "bold" }}>CASUALTIES:</span> ████████████
+              </div>
+              <div style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: "clamp(11px, 1.3vw, 13px)",
+                letterSpacing: 1,
+                color: COLORS.bone,
+                opacity: 0.8,
+              }}>
+                <span style={{ color: COLORS.flora, fontWeight: "bold" }}>STATUS:</span> ONGOING CONTAINMENT
               </div>
             </div>
-          ))}
+
+            <div style={{
+              fontFamily: "'Crimson Text', serif",
+              fontSize: "clamp(16px, 2vw, 18px)",
+              lineHeight: 2,
+              color: COLORS.bone,
+              opacity: 0.85,
+            }}>
+              <div style={{ marginBottom: 32 }}>
+                <p style={{ margin: "0 0 16px 0" }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.ChevronRight} size={14} color={COLORS.flora} /></span> At approximately 02:47 AM, multiple animatronic units deviated from standard behavior protocols.
+                </p>
+                <p style={{ margin: 0, color: COLORS.flora, opacity: 0.7, fontStyle: "italic", fontSize: "clamp(14px, 1.8vw, 16px)" }}>
+                  [They didn't deviate. They arrived.]
+                </p>
+              </div>
+
+              <div style={{ marginBottom: 32 }}>
+                <p style={{ margin: "0 0 16px 0" }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.ChevronRight} size={14} color={COLORS.flora} /></span> Security personnel reported ██████████████████ in the underground service tunnels.
+                </p>
+                  <p style={{ margin: 0, color: COLORS.flora, opacity: 0.7, fontStyle: "italic", fontSize: "clamp(12px, 1.6vw, 14px)" }}>
+                  [We believe this was the first witness to a {' '}
+                  {currentEvent?.is_active ? (
+                    <GlitchTextWord word="CHOOSING" puzzleId="powerCurrent" onActivate={() => setShowWaveform(true)} />
+                  ) : 'Choosing'}.
+                  We have tried to find them. We cannot.]
+                  </p>
+              </div>
+
+              <div style={{ marginBottom: 32 }}>
+                <p style={{ margin: "0 0 16px 0" }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.ChevronRight} size={14} color={COLORS.flora} /></span> Costume storage room B-14 was found ████████ with evidence of ████████████████████
+                </p>
+                <p style={{ margin: 0, color: COLORS.flora, opacity: 0.7, fontStyle: "italic", fontSize: "clamp(12px, 1.6vw, 14px)" }}>
+                  [B-14 is where the vessels are stored. He knew exactly what He was doing when He built it there.]
+                </p>
+              </div>
+
+              <div style={{ marginBottom: 32 }}>
+                <p style={{ margin: "0 0 16px 0" }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.ChevronRight} size={14} color={COLORS.flora} /></span> SUBJECT "FLORA" — last seen at Gate 3. All exit routes were sealed from the INSIDE.
+                </p>
+                <p style={{ margin: 0, color: COLORS.flora, opacity: 0.7, fontStyle: "italic", fontSize: "clamp(12px, 1.6vw, 14px)" }}>
+                  [She sealed them. Not to trap anyone. To protect what was happening inside.]
+                </p>
+              </div>
+
+              <div style={{ marginBottom: 32 }}>
+                <p style={{ margin: "0 0 16px 0" }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.ChevronRight} size={14} color={COLORS.flora} /></span> NOTE: Investigators reported hearing a broadcast signal on frequency 104.7 MHz repeating throughout the night: <span style={{ color: COLORS.crimson, fontWeight: "bold" }}>"THE SHOW MUST GO ON"</span>
+                </p>
+                <p style={{ margin: 0, color: COLORS.flora, opacity: 0.7, fontStyle: "italic", fontSize: "clamp(12px, 1.6vw, 14px)" }}>
+                  [It is still repeating. Right now. As you read this.]
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
       <style>{`
-        @keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+        @keyframes pulse {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 1; }
+        }
       `}</style>
-    </div>
+    </section>
+      {/* Waveform puzzle modal for incident trigger */}
+      {showWaveform && (
+        <PowerCurrent
+          isOpen={showWaveform}
+          onClose={() => setShowWaveform(false)}
+          onSuccess={() => { markPuzzleComplete('powerCurrent'); setShowWaveform(false); }}
+        />
+      )}
+    </>
   );
 };
+
+// ═══════════════════════════════════════════════════════════════
+// INCIDENT EVIDENCE SECTION
+// ═══════════════════════════════════════════════════════════════
+
+const EvidenceSection = () => {
+  const [visible, setVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true); }, { threshold: 0.1 });
+    if (ref.current) obs.observe(ref.current);
+    return () => obs.disconnect();
+  }, []);
+
+  const evidence = [
+    {
+      title: "PHOTO #1 — COSTUME ROOM B-14",
+      status: "[REDACTED]",
+      note: "Taken six hours after the Incident. Study the corner on the left. We have studied it for years. We do not agree on what it is.",
+    },
+    {
+      title: "PHOTO #2 — GATE 3",
+      status: "[REDACTED]",
+      note: "The last known position of Flora. The flowers on the ground were not there the day before.",
+    },
+    {
+      title: "PHOTO #3 — TUNNEL MAP",
+      status: "[REDACTED]",
+      note: "This blueprint does not match any filed with the city. Someone built this without telling anyone. He built it. We know He built it.",
+    },
+  ];
+
+  return (
+    <section ref={ref} style={{
+      padding: "clamp(80px, 12vw, 140px) clamp(20px, 5vw, 50px)",
+      background: COLORS.bg,
+      borderBottom: `1px solid ${COLORS.ash}20`,
+      position: "relative",
+    }}>
+      <LocalCRTOverlay />
+      <div style={{ maxWidth: 1000, margin: "0 auto", position: "relative", zIndex: 5 }}>
+        <h2 style={{
+          fontFamily: "'Bebas Neue', sans-serif",
+          fontSize: "clamp(32px, 5vw, 56px)",
+          letterSpacing: "0.1em",
+          marginBottom: 60,
+          color: COLORS.bone,
+          textTransform: "uppercase",
+          textShadow: `0 0 15px ${COLORS.crimson}30`,
+          opacity: visible ? 1 : 0,
+          transform: visible ? "translateY(0)" : "translateY(20px)",
+          transition: "all 0.8s ease 0.1s",
+        }}>
+          PHOTO EVIDENCE
+        </h2>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(300px, 100%), 1fr))",
+          gap: 28,
+        }}>
+          {evidence.map((item, i) => (
+            <div
+              key={i}
+              style={{
+                background: "rgba(0,0,0,0.5)",
+                border: `1px solid ${COLORS.crimson}30`,
+                padding: "clamp(24px, 5vw, 36px)",
+                opacity: visible ? 1 : 0,
+                transform: visible ? "translateY(0)" : "translateY(40px)",
+                transition: `all 0.8s cubic-bezier(0.16,1,0.3,1) ${i * 0.1}s`,
+                boxShadow: "0 0 20px rgba(0,0,0,0.6)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = COLORS.crimson;
+                e.currentTarget.style.boxShadow = `0 0 30px ${COLORS.crimson}30, inset 0 0 20px ${COLORS.crimson}05`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = `${COLORS.crimson}30`;
+                e.currentTarget.style.boxShadow = "0 0 20px rgba(0,0,0,0.6)";
+              }}
+            >
+              <h3 style={{
+                fontFamily: "'Bebas Neue', sans-serif",
+                fontSize: "clamp(16px, 2.5vw, 20px)",
+                letterSpacing: "0.08em",
+                margin: "0 0 12px 0",
+                color: COLORS.crimson,
+                textTransform: "uppercase",
+              }}>
+                {item.title}
+              </h3>
+
+              <p style={{
+                fontFamily: "'Space Mono', monospace",
+                fontSize: "clamp(10px, 1.2vw, 12px)",
+                letterSpacing: 2,
+                color: COLORS.crimson,
+                margin: "0 0 20px 0",
+                textTransform: "uppercase",
+                opacity: 0.7,
+              }}>
+                {item.status}
+              </p>
+
+              <p style={{
+                fontFamily: "'Crimson Text', serif",
+                fontSize: "clamp(15px, 1.9vw, 17px)",
+                lineHeight: 1.8,
+                color: COLORS.bone,
+                opacity: 0.75,
+                margin: 0,
+              }}>
+                {item.note}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div style={{
+          marginTop: 80,
+          paddingTop: 40,
+          borderTop: `1px solid ${COLORS.ash}10`,
+          textAlign: "right",
+        }}>
+          <a 
+            href="/sector-7"
+            style={{
+              fontFamily: "'Space Mono', monospace",
+              fontSize: "7px",
+              letterSpacing: 3,
+              color: COLORS.ash,
+              opacity: 0.25,
+              textTransform: "uppercase",
+              textDecoration: "none",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              display: "inline-block",
+              padding: "4px 8px",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = "0.8";
+              e.currentTarget.style.color = COLORS.flora;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = "0.25";
+              e.currentTarget.style.color = COLORS.ash;
+            }}
+          >
+            ███████ ARCHIVE: S7-20260220
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════
+// MAIN INCIDENT PAGE
+// ═══════════════════════════════════════════════════════════════
+
+export default function IncidentPage() {
+  return (
+    <div style={{ background: COLORS.bg, color: COLORS.bone, minHeight: "100vh", overflowX: "hidden" }}>
+      <IncidentReportSection />
+      <EvidenceSection />
+    </div>
+  );
+}

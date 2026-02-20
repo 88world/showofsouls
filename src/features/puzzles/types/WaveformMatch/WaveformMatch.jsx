@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // WAVEFORM MATCH — Recreate a target waveform by clicking bars
@@ -95,16 +96,16 @@ export const WaveformMatch = ({ isOpen, onClose, onSuccess }) => {
         </div>
 
         {error && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.crimson, marginBottom: 12, textAlign: 'center' }}>{error}</div>}
-        {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12, textAlign: 'center' }}>✓ WAVEFORM MATCHED</div>}
+        {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12, textAlign: 'center', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}><IconComponent icon={Icons.CheckCircle2} size={14} color={COLORS.flora} />WAVEFORM MATCHED</div>}
 
         <button onClick={handleCheck} disabled={success} style={{
           width: '100%', padding: '12px', background: 'transparent',
           border: `2px solid ${success ? COLORS.flora : COLORS.ember}`,
           color: success ? COLORS.flora : COLORS.ember,
           fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: 4, cursor: 'pointer',
-        }}>{success ? '✓ PATTERN LOCKED' : 'VERIFY PATTERN'}</button>
+        }}>{success ? (<><IconComponent icon={Icons.CheckCircle2} size={12} color={COLORS.flora} /> PATTERN LOCKED</>) : 'VERIFY PATTERN'}</button>
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}><IconComponent icon={Icons.X} size={18} color={COLORS.ash} /></button>
       </div>
     </div>
   );

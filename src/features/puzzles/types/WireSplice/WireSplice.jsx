@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // WIRE SPLICE — Connect matching colored wires by dragging
@@ -157,7 +158,7 @@ export const WireSplice = ({ isOpen, onClose, onSuccess }) => {
         </div>
 
         {error && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.crimson, marginBottom: 12, textAlign: 'center' }}>{error}</div>}
-        {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12, textAlign: 'center' }}>✓ ALL WIRES CONNECTED</div>}
+        {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12, textAlign: 'center', display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}><IconComponent icon={Icons.CheckCircle2} size={14} color={COLORS.flora} />ALL WIRES CONNECTED</div>}
 
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={handleReset} disabled={success} style={{
@@ -170,10 +171,10 @@ export const WireSplice = ({ isOpen, onClose, onSuccess }) => {
             border: `2px solid ${success ? COLORS.flora : COLORS.ember}`,
             color: success ? COLORS.flora : COLORS.ember,
             fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: 4, cursor: 'pointer',
-          }}>{success ? '✓ CIRCUIT CLOSED' : 'VERIFY CIRCUIT'}</button>
+          }}>{success ? (<><IconComponent icon={Icons.CheckCircle2} size={12} color={COLORS.flora} /> CIRCUIT CLOSED</>) : 'VERIFY CIRCUIT'}</button>
         </div>
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}><IconComponent icon={Icons.X} size={18} color={COLORS.ash} /></button>
       </div>
     </div>
   );

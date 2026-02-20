@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // FREQUENCY TUNER — Drag a dial to match a target radio frequency
@@ -118,9 +119,9 @@ export const FrequencyTuner = ({ isOpen, onClose, onSuccess }) => {
           border: `2px solid ${success ? COLORS.flora : COLORS.ember}`,
           color: success ? COLORS.flora : COLORS.ember,
           fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: 4, cursor: 'pointer',
-        }}>{success ? '✓ SIGNAL ACQUIRED' : 'LOCK FREQUENCY'}</button>
+        }}>{success ? (<><IconComponent icon={Icons.CheckCircle2} size={12} color={COLORS.flora} /> SIGNAL ACQUIRED</>) : 'LOCK FREQUENCY'}</button>
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}><IconComponent icon={Icons.X} size={18} color={COLORS.ash} /></button>
       </div>
     </div>
   );

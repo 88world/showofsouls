@@ -35,56 +35,76 @@ export const MemoryGame = ({ isOpen, onClose, onSuccess }) => {
   const [message, setMessage] = useState("");
 
   const startGame = (lvl) => {
-    const currentLevel = lvl || level;
+    const currentLevel = typeof lvl === 'number' ? lvl : level;
     const levelSequence = sequences[currentLevel];
+    
+    if (!levelSequence) {
+      console.error(`No sequence found for level ${currentLevel}`);
+      return;
+    }
+
     setSequence(levelSequence);
     setUserInput([]);
     setGameState("showing");
     setMessage("MEMORIZE THE SEQUENCE...");
 
-    // Show sequence
-    levelSequence.forEach((num, i) => {
-      setTimeout(() => {
-        setCurrentDisplay(num);
-        setTimeout(() => setCurrentDisplay(null), 600);
-      }, i * 1000);
-    });
+    // Show sequence with proper timing
+    let displayIdx = 0;
+    const showNext = () => {
+      if (displayIdx >= levelSequence.length) {
+        // All displayed, switch to input
+        setTimeout(() => {
+          setGameState("input");
+          setMessage("ENTER THE SEQUENCE");
+        }, 500);
+        return;
+      }
 
-    // Switch to input mode
-    setTimeout(() => {
-      setGameState("input");
-      setMessage("ENTER THE SEQUENCE");
-    }, levelSequence.length * 1000 + 500);
+      const num = levelSequence[displayIdx];
+      setCurrentDisplay(num);
+      
+      setTimeout(() => {
+        setCurrentDisplay(null);
+        displayIdx++;
+        setTimeout(showNext, 400); // Gap between numbers
+      }, 600);
+    };
+
+    setTimeout(showNext, 500);
   };
 
   const handleNumberClick = (num) => {
-    if (gameState !== "input") return;
+    if (gameState !== "input" || !sequence || sequence.length === 0) return;
 
     const newInput = [...userInput, num];
     setUserInput(newInput);
 
-    // Check if correct
-    if (newInput[newInput.length - 1] !== sequence[newInput.length - 1]) {
+    // Check if correct number was entered
+    const correctNum = sequence[newInput.length - 1];
+    if (num !== correctNum) {
       setGameState("failed");
       setMessage("SEQUENCE ERROR - NEURAL SYNC FAILED");
       setTimeout(() => {
         setGameState("start");
         setLevel(1);
+        setUserInput([]);
         setMessage("");
       }, 2000);
       return;
     }
 
-    // Check if complete
+    // Check if complete sequence was entered
     if (newInput.length === sequence.length) {
       if (level >= 3) {
+        // All levels complete - puzzle solved!
         setGameState("success");
         setMessage("NEURAL SYNC COMPLETE - ACCESS GRANTED");
         setTimeout(() => {
-          onSuccess();
-          onClose();
+          if (onSuccess) onSuccess();
+          if (onClose) onClose();
         }, 2000);
       } else {
+        // Move to next level
         setGameState("success");
         setMessage(`LEVEL ${level} COMPLETE`);
         setTimeout(() => {

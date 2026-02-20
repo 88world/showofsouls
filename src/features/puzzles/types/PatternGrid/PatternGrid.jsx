@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // PATTERN GRID — Toggle cells to match a target pattern (lights-out style)
@@ -145,9 +146,9 @@ export const PatternGrid = ({ isOpen, onClose, onSuccess }) => {
           <span onClick={handleReset} style={{ cursor: 'pointer', color: COLORS.ember, letterSpacing: 2 }}>RESET</span>
         </div>
 
-        {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12, textAlign: 'center' }}>✓ PATTERN SYNCHRONIZED — {moves} MOVES</div>}
+        {success && <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, marginBottom: 12, textAlign: 'center', display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center' }}><IconComponent icon={Icons.CheckCircle2} size={14} color={COLORS.flora} />PATTERN SYNCHRONIZED — {moves} MOVES</div>}
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}><IconComponent icon={Icons.X} size={18} color={COLORS.ash} /></button>
       </div>
     </div>
   );

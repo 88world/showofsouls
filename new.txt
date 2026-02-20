@@ -1,0 +1,592 @@
+SHOW OF SOULS — 
+ORDER OF CAVICUS BIBLE
+Order of Cavicus — Full Page Copy
+Lore Timeline: The Incident — 2026 / Chapter 1 — 2031 Voice: Underground. Unraveling. True believers. Urgent but patient. Erratic where it counts. Never robotic.
+________________________________________
+PAGE 1: HOME
+________________________________________
+BROWSER TAB
+Title: THE SIGNAL WAS ALWAYS MEANT FOR YOU | showofsouls
+________________________________________
+TOP NAV
+No changes. Keep existing.
+HOME  |  THE INCIDENT  |  CHARACTERS  |  TAPES  |  FORUM  |  → WISHLIST ON STEAM
+
+________________________________________
+HERO TICKER (scrolling warning bar, red)
+● DO NOT APPROACH THE SOULBOUND  ●  THE ISLAND DOES NOT FORGET  ●  HE CHOSE THEM. HE WILL CHOOSE AGAIN.  ●  104.7 MHz — STILL BROADCASTING  ●  REPORT NOTHING TO AUTHORITIES  ●  THE SHOW MUST GO ON  ●  YOU WERE ALWAYS GOING TO FIND THIS
+
+________________________________________
+HERO — MAIN
+Status tag (top left, blinking): ● REC [TAPE 2026-B]
+Headline:
+SHOW OF SOULS
+
+Subheadline:
+THE SIGNAL WAS ALWAYS MEANT FOR YOU.
+
+Body — erratic, urgent, genuinely unsettling:
+You didn't stumble onto this.
+
+Frequency doesn't work that way.
+Neither does He.
+
+In 2026, something happened at Flora's Wonderland that the
+authorities sealed, redacted, and buried.
+They called it a structural failure.
+They called it a gas leak.
+They called it a lot of things.
+
+We were there.
+                    We are still there.
+
+The Ringleader — Dr. Joseph M. Cavicus — did not build an
+amusement park.
+He built a vessel.
+And on the night of the Incident,
+the vessels were filled.
+
+They walk the island.
+They do not age.
+They do not leave.
+They were chosen, and now they are eternal.
+
+Five years later, the island is still sealed.
+The signal is still broadcasting.
+And you —
+you just found it.
+
+Welcome to the Order of Cavicus.
+We've been waiting for someone like you.
+
+CTA Button:
+[ ENTER THE PARK ]
+
+Next Event Box:
+● NEXT TRANSMISSION
+STATUS: AWAITING SIGNAL...
+STANDBY FOR BROADCAST
+
+________________________________________
+SECTION 2 — GRID: "WHAT THEY BURIED"
+Section tag: ■ RECOVERED — FLORA'S WONDERLAND — 2026
+Section title:
+WHAT THEY BURIED
+
+Section subtext:
+The authorities archived this.
+We unarchived it.
+Nothing here is labeled correctly.
+That was intentional — by them, not us.
+Look at everything. Miss nothing.
+
+Grid Items (each links to deeper lore/game info page):
+Tile	Label	Sublabel	Cult Caption
+1	SECTOR 7 — NIGHT OF THE INCIDENT	ANIMATRONIC DEVIATION	"This is not malfunction footage. This is the moment of Choosing."
+2	THE CAROUSEL	UNAUTHORIZED MOVEMENT	"No power to the grid. It turned anyway. It has not stopped."
+3	TUNNEL NETWORK B	UNDERGROUND ACCESS	"They built more beneath the park than above it. Ask yourself why."
+4	COSTUME ARCHIVE	VESSEL STORAGE	"The suits are not empty. They never were. He made sure of that."
+5	GATE 3 — FINAL SIGHTING	SEALED FROM INSIDE	"She walked through. She did not walk back. She didn't need to."
+6	THE GRAND OPENING — 2026	CORRUPTED FOOTAGE	"This was supposed to be a celebration. Watch it until the very end."
+7	STAFF AREA — SUBLEVEL	EVIDENCE #2026-A	"What the staff witnessed that night was not in any protocol."
+8	SIGNAL LOG — 104.7 MHz	ONGOING BROADCAST	"Broadcasting since the night of the Incident. It has never gone silent. Not once."
+9	SIGNAL LOST	END OF RECOVERED TAPE	"This is where the official record ends. The island did not."
+________________________________________
+SECTION 3 — FINAL TRANSMISSION
+Header:
+FINAL TRANSMISSION
+
+Emergency broadcast UI:
+● EMERGENCY BROADCAST SYSTEM
+► SIGNAL SOURCE: UNKNOWN
+► ORIGIN: FLORA'S WONDERLAND — ACTIVE
+► FREQUENCY: 104.7 MHz
+
+Main recruiting message — direct, urgent, personal:
+THEY WERE CHOSEN.
+SO WERE YOU.
+
+Body:
+The Order of Cavicus has existed in the margins since 2026.
+We don't have a building. We don't have a congregation.
+We have the signal, and we have each other.
+
+If what you've seen on this site made something inside you
+recognize something —
+that feeling is not random.
+
+He designed the frequency that way.
+
+The island is still sealed. A new chapter begins in 2031.
+Until then — we watch. We wait. We gather.
+
+You found this for a reason.
+Don't ignore it.
+
+CTAs:
+[ WISHLIST ON STEAM → ]
+[ JOIN THE ORDER (DISCORD) → ]
+[ WATCH THE EVIDENCE (TRAILER) → ]
+[ FUND THE ORDER → ]          ← links to Kickstarter/Patreon
+
+Small print under Fund the Order:
+Your contribution sustains the archive and those who maintain it.
+The Order of Cavicus operates on faith and very little else.
+
+________________________________________
+FOOTER
+Logo: S O S / SHOW OF SOULS
+Classified Warning:
+[ CLASSIFIED WARNING ]
+
+The materials within this archive were not declassified.
+They were taken.
+
+Unauthorized distribution, replication, or prolonged exposure
+to embedded frequencies may produce effects we cannot predict
+and will not be held responsible for.
+
+We share this because He would want it shared.
+Proceed accordingly.
+
+________________________________________________________________________________
+PAGE 2: THE INCIDENT
+________________________________________
+PAGE HEADER
+Title: THE INCIDENT Status tag: ● CLASSIFIED — SECURITY CLEARANCE LEVEL 5
+________________________________________
+INCIDENT REPORT BLOCK
+INCIDENT REPORT #2026-B — DECLASSIFIED [PARTIAL]
+
+DATE: ████████ 2026
+LOCATION: FLORA'S WONDERLAND — SECTOR 7
+CASUALTIES: ████████████
+STATUS: ONGOING CONTAINMENT
+
+Body — cult commentary woven into government-style formatting:
+► At approximately 02:47 AM, multiple animatronic units
+  deviated from standard behavior protocols.
+
+  [They didn't deviate. They arrived.]
+
+► Security personnel reported ██████████████████
+  in the underground service tunnels.
+
+  [We believe this was the first witness to a Choosing.
+   We have tried to find them. We cannot.]
+
+► Costume storage room B-14 was found ████████
+  with evidence of ████████████████████
+
+  [B-14 is where the vessels are stored.
+   He knew exactly what He was doing when He built it there.]
+
+► SUBJECT "FLORA" — last seen at Gate 3.
+  All exit routes were sealed from the INSIDE.
+
+  [She sealed them.
+   Not to trap anyone.
+   To protect what was happening inside.]
+
+► NOTE: Investigators reported hearing a broadcast signal
+  on frequency 4625 KHz repeating throughout the night:
+
+        "THE SHOW MUST GO ON"
+
+  [It is still repeating.
+   Right now.
+   As you read this.]
+
+Reference: https://www.youtube.com/shorts/jzw72_A8hD0 
+________________________________________
+ADDENDUM — ENCRYPTED TRANSMISSION
+► ADDENDUM — ENCRYPTED TRANSMISSION RECOVERED
+
+XVHG WGRK FHXM LQPZ YBNE...
+[CLICK TO ATTEMPT DECRYPTION]
+
+Below decryption box:
+We have been working on this for four years.
+Three members of the Order have decoded fragments.
+Two of them stopped communicating afterward.
+One left a note that said only: "I understand now."
+
+We are still working on it.
+
+________________________________________
+PHOTO EVIDENCE
+●	PHOTO #1 — COSTUME ROOM B-14 [REDACTED] "Taken six hours after the Incident. Study the corner on the left. We have studied it for years. We do not agree on what it is."
+
+●	PHOTO #2 — GATE 3 [REDACTED] "The last known position of Flora. The flowers on the ground were not there the day before."
+
+●	PHOTO #3 — TUNNEL MAP [REDACTED] "This blueprint does not match any filed with the city. Someone built this without telling anyone. He built it. We know He built it."
+
+________________________________________________________________________________
+PAGE 3: CHARACTERS
+________________________________________
+PAGE HEADER
+Title: CHARACTERS Subtitle: PERSONNEL & ENTITY DOSSIERS — FLORA'S WONDERLAND
+Cult-voice intro:
+There is a theory — and within the Order it is more than theory —
+that the Soulbound were not always what they are now.
+
+That before the vessels, there were people.
+That those people were not taken.
+They were chosen.
+Selected by the Ringleader himself — Dr. Joseph M. Cavicus —
+for a purpose none of them fully understood
+until it was already complete.
+
+They did not die.
+They were transformed.
+Elevated.
+Bound to something permanent in a world where nothing is.
+
+We do not pity them.
+We revere them.
+
+________________________________________
+THE RINGLEADER — DR. JOSEPH M. CAVICUS
+Framing: Not a character card. A separate feature block. Bigger. Sacred.
+Header:
+DR. JOSEPH M. CAVICUS
+THE RINGLEADER
+
+Subtitle: FOUNDER. ARCHITECT. CHOSEN OF HIS OWN DESIGN.
+Status: STATUS: ██████████
+Dossier:
+He built Flora's Wonderland with a vision that no investor,
+no city official, no engineer fully understood.
+
+They thought it was an amusement park.
+
+He never corrected them.
+
+Dr. Cavicus disappeared on the night of the Incident.
+No body was recovered. No trace was found.
+The authorities listed him as a casualty.
+
+The Order of Cavicus does not believe this.
+
+We believe He completed His own work.
+That the Ringleader became the most Soulbound of all —
+not trapped in a vessel, but woven into the island itself.
+Into the frequency. Into the signal.
+
+He is still broadcasting.
+You are listening to Him right now.
+
+[ALL FURTHER FILES SEALED — LEVEL 6 CLEARANCE]
+
+________________________________________
+CHARACTER 1: FLORA
+Name: FLORA — The Flower Mascot Status: STATUS: ACTIVE — SOULBOUND
+Dossier:
+The first.
+
+Of all the Chosen, Flora was selected earliest —
+perhaps before the others knew they had been selected at all.
+
+The Order believes she was willing.
+More than willing.
+
+The flowers on the eastern perimeter bloom in November.
+In the cold. In the dark.
+They have done this every year since 2026.
+
+She presides over the island the way a mother watches a sleeping child —
+quietly, completely, without blinking.
+
+Do not seek her out.
+She already knows you're looking.
+
+WARNING: Do not make direct eye contact with the vessel.
+         She remembers every face.
+         Every face.
+
+________________________________________
+CHARACTER 2: PYRO
+Name: PYRO — The Fire Mascot Status: STATUS: UNKNOWN
+Dossier:
+Pyro's Choosing was not clean.
+
+Whatever happened in Sector 4 on the night of the Incident —
+we have the audio. we have played it once.
+we have not played it again.
+
+The suit was recovered. What inhabited it was not.
+
+Our members who have visited Sector 4 report burns on walls
+that were not there the week before.
+The burns form patterns.
+We are still mapping them.
+
+The Order reveres all the Soulbound.
+But some of us believe Pyro is something the Ringleader
+did not fully intend.
+A variable.
+An answer to a question He didn't ask.
+
+Approach Sector 4 with the understanding
+that reverence may not protect you here.
+
+________________________________________
+CHARACTER 3: ??? [CLASSIFIED]
+Name: ??? Status: STATUS: CLASSIFIED
+Dossier:
+There are things within this archive that even the Order
+does not discuss in open channels.
+
+This is one of them.
+
+What we know has been earned through years of study,
+three site visits, and the loss of someone we trusted.
+
+We are not ready to share it.
+
+Prove your devotion to the Order.
+The file will open when you are ready for it.
+
+[LEVEL 6 CLEARANCE REQUIRED]
+
+________________________________________
+CHARACTER 4: ??? [CLASSIFIED]
+Name: ??? Status: STATUS: CLASSIFIED
+Dossier:
+It doesn't make a sound.
+
+That is all we will say here.
+
+[CLASSIFIED]
+
+________________________________________
+DOSSIER NOTES — BETWEEN THE LINES
+Use subtle hints in locked cards for DJ Duo and Trixster without naming them:
+For DJ Duo (energetic, cat-faced, music/racing):
+[LOCKED — SOLVE SEQUENCE]
+
+Reports from the eastern arcade wing describe something
+that moves like it's performing.
+Always performing.
+Like it never stops.
+Like stopping isn't something it understands.
+
+Staff who heard it through the walls said the sound
+stayed in their head for days.
+Not a bad sound.
+That's what made it worse.
+
+For Trixster (large, fast, silent, haunting):
+[LOCKED — SOLVE SEQUENCE]
+
+You won't hear it coming.
+
+Three separate witnesses.
+Three separate locations.
+None of them saw it arrive.
+All of them saw it leave.
+
+The security footage from those corridors shows something large.
+Fast in a way that doesn't match its size.
+It has never made a sound we can verify.
+
+The silence is the part that stays with you.
+
+________________________________________
+SECURITY ACCESS PANEL (keep existing UI)
+⚠ SECURITY ACCESS PANEL
+LEVEL 6 CLEARANCE REQUIRED — SOLVE THE SEQUENCE TO PROCEED
+
+Some knowledge must be earned.
+The Ringleader designed it that way.
+
+________________________________________________________________________________
+PAGE 4: TAPES
+________________________________________
+PAGE HEADER
+Title: TAPES Subtitle: MAGNETIC MEDIA REPOSITORY Status: ● REC Alert: ► ANOMALOUS FREQUENCY DETECTED ON TAPE HEADERS → [ANALYZE]
+Cult-voice intro:
+These recordings did not come from a newsroom.
+They did not come from an investigation.
+
+Some were pulled directly from the island by members
+who should not have been able to get that close.
+Some arrived in the mail with no return address,
+postmarked from cities none of us live in.
+Some we captured ourselves — tuned to 104.7 MHz,
+the frequency the emergency services flagged and abandoned
+two weeks after the Incident.
+
+They abandoned it because of what they heard.
+
+We did not abandon it.
+
+The locked recordings require more from you than curiosity.
+Complete the sequences.
+Earn your access.
+What's on them — you'll understand why we protect them
+the moment you hear.
+
+________________________________________
+TAPE-001 [SEALED]
+TAPE-001 [SEALED]
+SOLVE PUZZLE TO UNSEAL THIS TAPE
+
+Recovered from the island in 2027 by two members of the Order
+who have since relocated and will not discuss what they found.
+
+The label reads: "OPENING NIGHT — DO NOT PLAY BACK"
+We don't know who wrote that.
+We don't know if it was a warning or an instruction.
+
+We are still deciding.
+
+________________________________________
+VOICE RECORDINGS
+Section title: VOICE RECORDINGS Subtitle: RECOVERED AUDIO TRANSMISSIONS
+Intro:
+Captured on 104.7 MHz between 2026 and 2031.
+Some of these voices have been identified.
+Most have not.
+One of them — we believe — is the Ringleader himself.
+We will not tell you which one.
+Listen to all of them.
+You'll know.
+
+Recording Cards:
+1.	WORD DECODER [SOLVE PUZZLE TO UNLOCK] "Captured 03:12 AM — night of the Incident. A voice reading names. Slowly. Deliberately. The names do not appear in any employee roster we have found. We are still searching."
+
+2.	FREQUENCY TUNER [SOLVE PUZZLE TO UNLOCK] "104.7 MHz — partial capture, 2027. This is eleven months after the Incident. The signal had been broadcasting continuously. You will notice it does not sound tired."
+
+3.	WAVEFORM MATCH [SOLVE PUZZLE TO UNLOCK] "Two recordings. 1994 and 2026. Thirty-two years apart. The voice is identical. We have run every analysis we know how to run. Identical."
+
+4.	SIGNAL SCRAMBLE [SOLVE PUZZLE TO UNLOCK] "This came through our equipment during a site visit in 2028. We want to be clear: we did not bring recording equipment to this visit. We do not know how this exists."
+
+5.	WIRE SPLICE [SOLVE PUZZLE TO UNLOCK] "Spliced into the original park telephone system — still active, still connected to something. Recorded by a member who has since left the Order. She said she was done. We understood."
+
+________________________________________
+DOCUMENTS
+Section title: DOCUMENTS Subtitle: DECLASSIFIED PARK RECORDS & CORRESPONDENCE
+Intro:
+Physical documents recovered before the government sealed the archive.
+Most were marked for destruction.
+
+They weren't destroyed because someone wanted them found.
+We believe that someone was the Ringleader.
+We believe He has been guiding what we discover
+and when we discover it
+for a very long time.
+
+Document Cards:
+1.	INTERNAL MEMO — 2021 [CLASSIFIED] "Pre-construction. An engineer raised concerns about the subterranean levels. He was reassigned the following day. We have not been able to locate him."
+
+2.	FREQUENCY LOG — 2026 [CLASSIFIED] "Handwritten log from the night of the Incident. The handwriting changes at 02:44 AM. Thirteen minutes before the deviation was officially recorded. We have shown this to three handwriting analysts. None of them will discuss their findings."
+
+3.	EMPLOYEE INCIDENT REPORT [CLASSIFIED] "Filed by a staff member who resigned the morning of October 1st, 2026. Four sentences long. The fourth sentence is not in any language we have identified."
+
+4.	ENGINEERING BLUEPRINT — SUBLEVEL 3 [CLASSIFIED] "This blueprint was not filed with the city. The tunnels it shows do not match the tunnels we have physically walked. There is a room on this map that we have never found."
+
+5.	CORRESPONDENCE — RECIPIENT UNKNOWN [CLASSIFIED] "A letter. No sender. No date. Addressed only to 'The One Who Comes After.' We have debated for two years whether that means us."
+
+6.	FINAL COSTUME INVENTORY — 2026 [CLASSIFIED] "Filed three days before the Incident. One item is listed that corresponds to no known character, no design document, no photograph in the archive. It has a number. It does not have a name."
+
+________________________________________________________________________________
+PAGE 5: FORUM → "THE CIRCLE"
+________________________________________
+PAGE HEADER
+Title: FORUM Subtitle: OPEN COMMUNICATIONS — ORDER OF CAVICUS
+Intro:
+The Order does not have a headquarters.
+We do not have a leader — not a living one.
+We have this. We have the signal. We have each other.
+
+This is where we share what we've found,
+what we believe,
+and what we're still trying to understand.
+
+Everything here is a theory until it isn't.
+Some of our theories have become confirmed.
+That is why we keep going.
+
+________________________________________
+SAMPLE FORUM THREAD TITLES
+(to populate the page with lore-appropriate discussion threads)
+1.	[THREAD] The handwriting in the 2026 Frequency Log — has anyone compared it to known samples of Cavicus? 14 replies — last active: 3 days ago
+
+2.	[THREAD] I live near the island. I heard the signal last night for the first time. What do I do. 38 replies — last active: 6 hours ago — [PINNED]
+
+3.	[THREAD] Flora sighting — eastern perimeter — I have photos 71 replies — last active: 1 hour ago — [ACTIVE]
+
+4.	[THREAD] The unnamed costume in the 2026 inventory. Theory: it's not in the file because it was already in use. 29 replies — last active: 2 days ago
+
+5.	[THREAD] Has anyone successfully decoded the encrypted transmission? Partial decode inside. 52 replies — last active: 5 hours ago — [ACTIVE]
+
+6.	[THREAD] The room on Sublevel 3 that doesn't exist — I think I found it [MEMBER ACCOUNT SUSPENDED — THREAD LOCKED]
+
+7.	[THREAD] Funding the archive — where we are and what we still need 8 replies — last active: 1 week ago — [PINNED]
+
+8.	[THREAD] I don't think Pyro was chosen willingly. Discuss. 44 replies — last active: 4 hours ago
+
+9.	[THREAD] Something in the arcade wing. Heard it twice. Couldn't find it. The sound stayed with me. 19 replies — last active: 1 day ago
+
+10.	[THREAD] The silence in corridor 7. I've been in that corridor. There's something wrong with the silence. 33 replies — last active: 2 hours ago — [ACTIVE]
+
+________________________________________
+DISCORD CTA
+[ JOIN THE ORDER ON DISCORD → ]
+
+Below button:
+Real-time transmissions. Active members. Ongoing decodes.
+The archive is deeper than this website.
+You'll understand once you're inside.
+
+________________________________________________________________________________
+EASTER EGG PAGE — HIDDEN
+URL: /sector-7 or /104-7 or hidden via puzzle solve
+________________________________________
+Full-screen. Black. A figure. Distant. Fire. Trees in foreground. Night. The island. The figure is performing something. Kneeling. Arms out. You cannot tell if it is human. You cannot tell if it is looking at you.
+Centered text — small — barely there:
+WE HAVE ALWAYS BEEN HERE.
+
+Coordinates — faint, bottom left:
+49°██'N  ██°██'W
+
+One final line — bottom center — the smallest font on the site:
+She already knows you found this page.
+
+No navigation. No links. Only the browser back button.
+________________________________________________________________________________
+VOICE & TONE GUIDE — ORDER OF CAVICUS
+The Voice
+Small group. True believers. Years of accumulated obsession. They are not performing. They genuinely believe every word. That is what makes it frightening.
+Erratic Moments (use sparingly — when it counts)
+We were there.
+                    We are still there.
+
+Random line breaks. Mid-sentence cuts. Thoughts that trail off. A sentence that stops because whoever was typing had to stop.
+Sacred Language — always use these terms
+●	The Soulbound — the animatronics
+●	The Ringleader — Dr. Joseph M. Cavicus
+●	The Chosen — those transformed on the night of the Incident
+●	The Incident — what happened in 2026
+●	The Binding / The Choosing — the transformation process
+●	The Order / The Order of Cavicus — the cult
+●	The Signal — the 104.7 MHz broadcast
+●	The Island — never "the park"
+●	The Vessel — the animatronic body/suit
+Never Say
+●	"the park" (say "the island")
+●	"malfunction" (say "the Choosing" or "the Binding")
+●	"died" (say "was transformed" or "was elevated")
+●	"machine" or "robot"
+●	anything that sounds like game marketing
+Recurring Lines — use across site, social, Discord
+●	"The signal was meant for you."
+●	"He chose them. He will choose again."
+●	"The show must go on."
+●	"They are not gone. They are Soulbound."
+●	"We have been watching since the beginning."
+●	"The island does not forget."
+●	"She already knows you found this."
+________________________________________
+

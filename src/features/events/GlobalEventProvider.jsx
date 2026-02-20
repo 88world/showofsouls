@@ -3,15 +3,45 @@ import {
   getCurrentEvent,
   completeGlobalEvent,
   subscribeToEvents,
+  unlockTape,
 } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import { COLORS } from '../../utils/constants';
+import BroadcastToast from './components/BroadcastToast';
 
 const GlobalEventContext = createContext();
+
+// Only these 5 puzzles count towards global event completion
+// Puzzles from recordings/documents are LOCAL only
+const GLOBAL_EVENT_PUZZLE_IDS = [
+  'powerCurrent',
+  'memoryGame',
+  'relayCalibration',
+  'frequencyTuner',
+  'quantumCipher',
+];
 
 export function useGlobalEvent() {
   const context = useContext(GlobalEventContext);
   if (!context) {
-    throw new Error('useGlobalEvent must be used within GlobalEventProvider');
+    // Return a safe fallback to avoid runtime crashes when the provider
+    // is not present (e.g., during SSR or mis-wired trees).
+    return {
+      currentEvent: null,
+      loading: true,
+      completedPuzzles: [],
+      markPuzzleComplete: () => {},
+      isPuzzleEventComplete: () => false,
+      getTotalPuzzles: () => 5,
+      getCompletedCount: () => 0,
+      allPuzzlesComplete: () => false,
+      submitSolution: async () => ({ success: false, error: 'no-event' }),
+      getTimeRemaining: () => ({ expired: true }),
+      syncEventCompletion: async () => ({ success: false, completed: false }),
+      stopEvent: async () => ({ success: false }),
+      refreshEvent: async () => {},
+      resetProgress: () => {},
+    };
   }
   return context;
 }
@@ -26,6 +56,8 @@ export function GlobalEventProvider({ children }) {
   const [currentEvent, setCurrentEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const eventRef = useRef(null);
+  const pollingIntervalRef = useRef(null);
+  const syncAttemptedRef = useRef(false);
 
   // Puzzle completion state — persisted per user in localStorage
   const [completedPuzzles, setCompletedPuzzles] = useState(() => {
@@ -37,6 +69,13 @@ export function GlobalEventProvider({ children }) {
   // Toast notification state
   const [progressToast, setProgressToast] = useState(null);
   const toastTimerRef = useRef(null);
+  // Broadcast (global) toast state
+  const [showBroadcast, setShowBroadcast] = useState(false);
+  const [broadcastMessage, setBroadcastMessage] = useState(null);
+  const dismissBroadcast = useCallback(() => {
+    setShowBroadcast(false);
+    setBroadcastMessage(null);
+  }, []);
 
   // Load current event on mount
   useEffect(() => {
@@ -48,28 +87,64 @@ export function GlobalEventProvider({ children }) {
     localStorage.setItem('sos_event_puzzles', JSON.stringify(completedPuzzles));
   }, [completedPuzzles]);
 
-  // Subscribe to event changes
+  // Subscribe to event changes + polling fallback
   useEffect(() => {
     const unsubscribe = subscribeToEvents((payload) => {
       if (payload.eventType === 'UPDATE') {
         setCurrentEvent(payload.new);
         eventRef.current = payload.new;
+        // If event was deactivated, clear progress
+        if (!payload.new?.is_active && eventRef.current?.is_active) {
+          setCompletedPuzzles([]);
+          // Show global broadcast that event completed
+          setBroadcastMessage({
+            type: 'event_completed',
+            title: payload.new?.title || 'Global Event',
+            firstComplete: true,
+            completedBy: payload.new?.completed_by || 'unknown',
+            rewards: payload.new?.rewards || null,
+          });
+          setShowBroadcast(true);
+        }
       } else if (payload.eventType === 'INSERT') {
         // New event — reset local puzzle completions
         setCurrentEvent(payload.new);
         eventRef.current = payload.new;
         setCompletedPuzzles([]);
+      } else if (payload.eventType === 'DELETE') {
+        // Event deleted — clear everything
+        setCurrentEvent(null);
+        eventRef.current = null;
+        setCompletedPuzzles([]);
       }
     });
 
-    return unsubscribe;
+    // Polling fallback (check every 10 seconds) for real-time subscription failures
+    pollingIntervalRef.current = setInterval(() => {
+      loadCurrentEvent();
+    }, 10000);
+
+    return () => {
+      unsubscribe();
+      if (pollingIntervalRef.current) clearInterval(pollingIntervalRef.current);
+    };
   }, []);
+
+  // Debug helpers were moved later to avoid temporal-dead-zone reference errors
 
   async function loadCurrentEvent() {
     setLoading(true);
     const event = await getCurrentEvent();
     setCurrentEvent(event);
     eventRef.current = event;
+    // Reset sync attempt flag when a new event loads
+    syncAttemptedRef.current = false;
+    
+    // If no active event, reset progress
+    if (!event) {
+      setCompletedPuzzles([]);
+    }
+    
     setLoading(false);
   }
 
@@ -87,17 +162,42 @@ export function GlobalEventProvider({ children }) {
   /**
    * Mark a puzzle as completed for the current global event
    * Called when user solves PasswordTerminal, MemoryGame, etc.
+   * Only GLOBAL_EVENT_PUZZLE_IDS count towards event completion
    */
   const markPuzzleComplete = useCallback((puzzleId) => {
+    // Only global event puzzles count towards completion
+    if (!GLOBAL_EVENT_PUZZLE_IDS.includes(puzzleId)) {
+      return; // Local puzzle (recordings/documents), no global event tracking
+    }
+    
+    // Verify event is still active
+    if (!eventRef.current?.is_active) return;
+    
     setCompletedPuzzles(prev => {
+      // Don't re-add if already completed
       if (prev.includes(puzzleId)) return prev;
+      
       const updated = [...prev, puzzleId];
-      // Show progress toast
       const total = getTotalPuzzles();
       const count = updated.length;
-      setProgressToast({ count, total, allDone: count >= total });
+      
+      // Safety check: prevent going over total
+      if (count > total) return prev;
+      
+      // Show progress toast
+      const allDone = count >= total;
+      setProgressToast({ count, total, allDone });
       if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
       toastTimerRef.current = setTimeout(() => setProgressToast(null), 4000);
+      
+      // If all puzzles completed locally (exactly or over), sync to global
+      // Only sync once when threshold is first reached
+      if (allDone && prev.length < total) {
+        setTimeout(() => {
+          syncEventCompletion();
+        }, 500);
+      }
+      
       return updated;
     });
   }, [getTotalPuzzles]);
@@ -146,23 +246,172 @@ export function GlobalEventProvider({ children }) {
   }
 
   /**
-   * Get time remaining for current event (12-hour window)
+   * Get time remaining for current event
+   * Events have a 12-hour duration window from when they start
    */
   function getTimeRemaining() {
-    if (!currentEvent?.started_at) return null;
+    if (!currentEvent?.is_active || !currentEvent?.started_at) {
+      return { expired: true };
+    }
 
     const startTime = new Date(currentEvent.started_at);
-    const endTime = new Date(startTime.getTime() + 12 * 60 * 60 * 1000);
+    const endTime = new Date(startTime.getTime() + 12 * 60 * 60 * 1000); // 12 hours
     const now = new Date();
     const remaining = endTime - now;
 
-    if (remaining <= 0) return { expired: true };
+    if (remaining <= 0) {
+      return { expired: true };
+    }
 
     const hours = Math.floor(remaining / (1000 * 60 * 60));
     const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
 
-    return { hours, minutes, seconds, expired: false, total: remaining };
+    return { 
+      hours, 
+      minutes, 
+      seconds, 
+      expired: false, 
+      active: true,
+      timeString: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    };
+  }
+
+  /**
+   * Check if all local event puzzles are complete and sync to global
+   */
+  async function syncEventCompletion() {
+    if (!currentEvent?.is_active) return { success: false, completed: false };
+    
+    const totalRequired = getTotalPuzzles();
+    const completedCount = getCompletedCount();
+
+    // Only sync if we have met or exceeded the requirement
+    if (completedCount >= totalRequired) {
+      try {
+        // Mark event record as completed (no solution required for auto-complete)
+        const { error: updateError } = await supabase
+          .from('global_events')
+          .update({ completed_at: new Date().toISOString(), completed_by: 'global_completion', is_active: false })
+          .eq('event_id', currentEvent.event_id);
+
+        if (updateError) {
+          console.error('Error marking event complete:', updateError);
+          return { success: false, completed: false };
+        }
+
+        // If event rewards include tapes, unlock the first tape globally
+        try {
+          const rewards = typeof currentEvent.rewards === 'string' ? JSON.parse(currentEvent.rewards) : (currentEvent.rewards || {});
+          if (rewards && Array.isArray(rewards.tapes)) {
+            // Unlock only the first tape as defined by the event rewards
+            const first = rewards.tapes[0];
+            if (first) {
+              await unlockTape(first, 'global_completion', 'event_auto_unlock');
+            }
+          }
+        } catch (e) {
+          // Non-fatal parsing/unlock error
+          console.warn('Could not parse or unlock event rewards:', e);
+        }
+
+        // Trigger broadcast locally so first-completing user sees immediate feedback
+        setBroadcastMessage({
+          type: 'event_completed',
+          title: currentEvent?.title || 'Global Event',
+          firstComplete: true,
+          completedBy: 'you',
+          rewards: currentEvent?.rewards || null,
+        });
+        setShowBroadcast(true);
+
+        await loadCurrentEvent();
+        return { success: true, completed: true };
+      } catch (err) {
+        console.error('Error syncing event completion:', err);
+        return { success: false, completed: false };
+      }
+    }
+
+    return { success: false, completed: false };
+  }
+
+  // Whenever completedPuzzles changes, check if we've reached the required total and attempt sync once per event
+  useEffect(() => {
+    if (!currentEvent?.is_active) return;
+    const totalRequired = getTotalPuzzles();
+    const completedCount = getCompletedCount();
+    if (completedCount >= totalRequired && !syncAttemptedRef.current) {
+      syncAttemptedRef.current = true;
+      // try syncing; if it fails, allow retry later
+      syncEventCompletion().then(res => {
+        if (!res.success) syncAttemptedRef.current = false;
+      });
+    }
+  }, [completedPuzzles, currentEvent?.event_id]);
+
+  /**
+   * Notify provider that a puzzle activity occurred (opened/completed).
+   * Pages can call this when they open a puzzle so provider re-checks completion state.
+   */
+  const notifyPuzzleActivity = useCallback((puzzleId) => {
+    if (!GLOBAL_EVENT_PUZZLE_IDS.includes(puzzleId)) return;
+    // If we already meet requirement, attempt immediate sync
+    const totalRequired = getTotalPuzzles();
+    const completedCount = getCompletedCount();
+    if (completedCount >= totalRequired) {
+      // attempt sync but don't block
+      syncEventCompletion();
+    }
+  }, [getTotalPuzzles, getCompletedCount]);
+
+  // Debug helpers exposed to `window` for quick testing in browser console
+  useEffect(() => {
+    // Trigger a broadcast message. Pass an object matching BroadcastToast's shape.
+    window.triggerEventBroadcast = (msg = {}) => {
+      try {
+        setBroadcastMessage(msg);
+        setShowBroadcast(true);
+        return true;
+      } catch (e) { return false; }
+    };
+
+    // Mark a puzzle complete (calls provider logic)
+    window.triggerMarkPuzzleComplete = (puzzleId) => {
+      try {
+        markPuzzleComplete(puzzleId);
+        // Also notify activity which may cause an immediate sync check
+        if (notifyPuzzleActivity) notifyPuzzleActivity(puzzleId);
+        return true;
+      } catch (e) { return false; }
+    };
+
+    return () => {
+      try { delete window.triggerEventBroadcast; } catch (e) {}
+      try { delete window.triggerMarkPuzzleComplete; } catch (e) {}
+    };
+  }, [markPuzzleComplete, notifyPuzzleActivity]);
+
+  /**
+   * Deactivate current event (admin only)
+   */
+  async function stopEvent() {
+    if (!currentEvent) return { success: false, error: 'No active event' };
+    
+    const { error } = await supabase
+      .from('global_events')
+      .update({ is_active: false })
+      .eq('event_id', currentEvent.event_id);
+
+    if (error) {
+      console.error('Error stopping event:', error);
+      return { success: false, error: error.message };
+    }
+
+    // Clear progress immediately when stopping event
+    setCompletedPuzzles([]);
+    await loadCurrentEvent();
+    return { success: true };
   }
 
   const value = {
@@ -178,12 +427,21 @@ export function GlobalEventProvider({ children }) {
     getCompletedCount,
     allPuzzlesComplete,
     
-    // Solution
+    // Solution & sync
     submitSolution,
     getTimeRemaining,
+    syncEventCompletion,
+    stopEvent: () => stopEvent(),
     
     // Refresh
     refreshEvent: loadCurrentEvent,
+    resetProgress: () => setCompletedPuzzles([]),
+    // Broadcast controls (for global announcements)
+    showBroadcast,
+    broadcastMessage,
+    dismissBroadcast,
+    // Notify when a puzzle is opened/completed (pages can call this)
+    notifyPuzzleActivity,
   };
 
   return (
@@ -245,6 +503,9 @@ export function GlobalEventProvider({ children }) {
           </div>
         </div>
       )}
+
+      {/* Global broadcast toast (event completed / new event) */}
+      <BroadcastToast />
 
       <style>{`
         @keyframes toastSlideIn {

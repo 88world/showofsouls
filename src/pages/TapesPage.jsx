@@ -1,6 +1,180 @@
+// ...existing import at the top, do not re-import hooks here
+// ...existing imports...
+
+// Markdown-like parser for **bold**, *italic*, etc.
+function parseDocumentContent(text) {
+  if (!text) return null;
+  let html = text
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+    .replace(/\*([^*]+)\*/g, '<i>$1</i>')
+    .replace(/\n/g, '<br/>');
+  return html;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// REFINED DOCUMENT MODAL — High-Readability Archive Version
+// ═══════════════════════════════════════════════════════════════
+
+function DocumentModal({ isOpen, onClose, document }) {
+  if (!isOpen || !document) return null;
+
+  const formatContent = (text) => {
+    if (!text) return null;
+    
+    // Split text into lines to process divisories and annotations individually
+    return text.split('\n').map((line, index) => {
+      const trimmedLine = line.trim();
+
+      // 1. RENDER DIVISORIES: Replace literal "---" with a visual line
+      if (trimmedLine === '---') {
+        return (
+          <div key={index} style={{ 
+            height: '2px', 
+            background: 'linear-gradient(90deg, transparent, #222 50%, transparent)', 
+            margin: '40px 0', 
+            opacity: 0.3 
+          }} />
+        );
+      }
+
+      // 2. CULTIST ANNOTATIONS: Styled red box for Order of Cavicus notes 
+      if (line.includes('[ORDER OF CAVICUS')) {
+        return (
+          <div key={index} style={{ 
+            margin: '40px 0', 
+            padding: '24px', 
+            border: '2px solid #7c1d1d', 
+            background: '#fff8f8', 
+            color: '#7c1d1d', 
+            fontStyle: 'italic', 
+            fontFamily: 'serif', 
+            boxShadow: '6px 6px 0px #7c1d1d15',
+            fontSize: '19px', // Larger readable text
+            lineHeight: '1.6'
+          }}>
+            <span style={{ fontWeight: 900, textTransform: 'uppercase', display: 'block', marginBottom: 10, fontSize: '13px', letterSpacing: '2px', textDecoration: 'underline' }}>
+              INTERNAL ANNOTATION:
+            </span>
+            {line.replace('---', '').replace(/\*\*/g, '')}
+          </div>
+        );
+      }
+
+      // 3. MAIN BODY PROCESSING: Redactions and bolding
+      let html = line
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold text
+        .replace(/█+/g, '<span style="background:#111;color:#111;padding:0 3px;border-radius:2px;">████</span>'); // Redaction bars [cite: 37]
+
+      return (
+        <p key={index} style={{ 
+          marginBottom: trimmedLine === '' ? '24px' : '14px', 
+          lineHeight: '1.8',
+          fontSize: '20px', // Increased readability
+          color: '#1a1a1a',
+          fontFamily: "'Crimson Text', serif",
+          minHeight: trimmedLine === '' ? '1.2em' : 'auto'
+        }} dangerouslySetInnerHTML={{ __html: html }} />
+      );
+    });
+  };
+
+  return (
+    <div 
+      style={{ 
+        position: 'fixed', 
+        inset: 0, 
+        zIndex: 1000000, // Ensure it's above the navbar
+        display: 'flex', 
+        alignItems: 'flex-start', 
+        justifyContent: 'center', 
+        padding: '120px 20px 60px', // Large top padding to clear navbar
+        background: 'rgba(0,0,0,0.9)', 
+        backdropFilter: 'blur(10px)', 
+        overflowY: 'auto' 
+      }} 
+      onClick={onClose}
+    >
+      <div 
+        style={{ 
+          position: 'relative', 
+          width: '100%', 
+          maxWidth: '900px', // Fixed width for paper feel at 100% zoom
+          background: '#fefefe', 
+          color: '#111', 
+          boxShadow: '0 40px 100px rgba(0,0,0,0.8)', 
+          padding: 'clamp(40px, 10vw, 100px)', 
+          borderRadius: '4px',
+          borderBottom: '15px solid #c4b9a3',
+          overflow: 'hidden'
+        }} 
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Physical Paper Texture Overlay */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.06, backgroundImage: "url('https://www.transparenttextures.com/patterns/p6.png')" }} />
+        
+        {/* Close Interaction */}
+        <button onClick={onClose} style={{ position: 'absolute', top: 30, right: 30, color: '#bbb', background: 'none', border: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 800, letterSpacing: 3 }}>[ CLOSE_FILE ]</button>
+
+        {/* Document Header [cite: 36] */}
+        <header style={{ borderBottom: '3px solid #111', paddingBottom: 30, marginBottom: 50 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+            <div style={{ background: '#111', color: '#fff', padding: '6px 16px', fontSize: 12, fontWeight: 800, letterSpacing: 4 }}>
+              {document.status?.toUpperCase() || 'CLASSIFIED'} — CLEARANCE LEVEL 5
+            </div>
+            <div style={{ textAlign: 'right', fontSize: 11, color: '#888', fontWeight: 800, fontFamily: 'monospace' }}>
+              SOURCE: 104.7 MHz <br />
+              ARCHIVE_ID: {document.document_id}
+            </div>
+          </div>
+          <h1 style={{ fontSize: 'clamp(28px, 5vw, 42px)', fontWeight: 900, textTransform: 'uppercase', fontFamily: 'serif', fontStyle: 'italic', margin: '0 0 10px 0', lineHeight: 1.1 }}>
+            {document.title}
+          </h1>
+          <div style={{ fontSize: '20px', fontWeight: 700, color: '#7c1d1d', letterSpacing: '-0.5px' }}>
+            {document.subtitle}
+          </div>
+        </header>
+
+        {/* Technical Metadata */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 30, marginBottom: 50, fontSize: 14, borderBottom: '1px solid #ddd', paddingBottom: 20, fontFamily: 'monospace' }}>
+          <div>
+            <span style={{ fontWeight: 800, textTransform: 'uppercase', color: '#999', display: 'block', fontSize: 10, marginBottom: 4 }}>Author:</span>
+            <span style={{ textTransform: 'uppercase', color: '#333' }}>{document.author}</span>
+          </div>
+          <div>
+            <span style={{ fontWeight: 800, textTransform: 'uppercase', color: '#999', display: 'block', fontSize: 10, marginBottom: 4 }}>Date of Record:</span>
+            <span style={{ textTransform: 'uppercase', color: '#333' }}>{document.date}</span>
+          </div>
+        </div>
+
+        {/* Final Document Body */}
+        <article style={{ textAlign: 'left', wordWrap: 'break-word' }}>
+          {formatContent(document.content)}
+        </article>
+
+        {/* Authentic Declassified Stamp  */}
+        <div style={{ marginTop: 80, display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ 
+            border: '5px double rgba(124, 29, 29, 0.2)', 
+            color: 'rgba(124, 29, 29, 0.2)', 
+            fontWeight: 900, 
+            padding: '10px 40px', 
+            fontSize: 36, 
+            textTransform: 'uppercase', 
+            transform: 'rotate(-12deg)', 
+            userSelect: 'none',
+            letterSpacing: '8px'
+          }}>
+            {document.status}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { COLORS } from '../utils/constants';
 import { useProgression } from '../features/progression/ProgressionProvider';
+import { GlitchTextWord } from '../components/common/GlitchTextWord';
 import { useGlobalEvent } from '../features/events/GlobalEventProvider';
 import { PUZZLE_REGISTRY } from '../features/puzzles/config/puzzleRegistry';
 import { PasswordTerminal } from '../features/puzzles/types/PasswordTerminal/PasswordTerminal';
@@ -16,9 +190,15 @@ import { KeypadLock } from '../features/puzzles/types/KeypadLock/KeypadLock';
 import { PatternGrid } from '../features/puzzles/types/PatternGrid/PatternGrid';
 import { JigsawFragment } from '../features/puzzles/types/JigsawFragment/JigsawFragment';
 import { SpectralAnalysis } from '../features/puzzles/types/SpectralAnalysis/SpectralAnalysis';
+import { RelayCalibration } from '../features/puzzles/types/RelayCalibration/RelayCalibration';
+import { CorruptionPurge } from '../features/puzzles/types/CorruptionPurge/CorruptionPurge';
+import { EchoResonance } from '../features/puzzles/types/EchoResonance/EchoResonance';
+import { CrypticCodex } from '../features/puzzles/types/CrypticCodex/CrypticCodex';
+import { BinaryDecode } from '../features/puzzles/types/BinaryDecode/BinaryDecode';
 import { useTapeUnlocks } from '../hooks/useTapeUnlocks';
 import { useGameStore } from '../store';
 import { getAllRecordings, getAllDocuments } from '../lib/supabase';
+import { Icons } from '../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // RETRO AUDIO PLAYER — Reel-to-reel / cassette style
@@ -378,7 +558,9 @@ const RetroAudioPlayer = ({ src, title, recordingId }) => {
             }}
             onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; }}
             onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; }}
-          >{isPlaying ? '■' : '▶'}</button>
+          >
+            {isPlaying ? <Icons.Pause size={16} /> : <Icons.Play size={16} />}
+          </button>
 
           {/* FWD */}
           <button onClick={() => { if (audioRef.current) audioRef.current.currentTime = Math.min(duration, currentTime + 10); }}
@@ -637,7 +819,7 @@ const CRTVideoModal = ({ tape, onClose }) => {
               boxShadow: `0 0 30px ${COLORS.crimson}40`,
               transition: 'all 0.3s',
             }}>
-              <span style={{ color: '#fff', fontSize: 26, marginLeft: 4 }}>▶</span>
+              <Icons.Play size={32} color="#fff" />
             </div>
           )}
         </div>
@@ -692,10 +874,13 @@ const CRTVideoModal = ({ tape, onClose }) => {
               ...btnStyle, width: 34, height: 28, fontSize: 13,
               border: `1px solid ${isPlaying ? COLORS.crimson : COLORS.bone}50`,
               color: isPlaying ? COLORS.crimson : COLORS.bone,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
             onMouseEnter={e => { e.currentTarget.style.background = (isPlaying ? COLORS.crimson : COLORS.bone) + '20'; }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; }}
-            >{isPlaying ? '▮▮' : '▶'}</button>
+            >
+              {isPlaying ? <Icons.Pause size={14} /> : <Icons.Play size={14} />}
+            </button>
 
             {/* Rewind 10s */}
             <button onClick={() => { if (videoRef.current) videoRef.current.currentTime = Math.max(0, currentTime - 10); }}
@@ -798,6 +983,7 @@ const CRTVideoModal = ({ tape, onClose }) => {
 export const TapesPage = () => {
   const [activePuzzle, setActivePuzzle] = useState(null);
   const [activePuzzleContentId, setActivePuzzleContentId] = useState(null); // tracks which content the puzzle unlocks
+  const [openDoc, setOpenDoc] = useState(null);
   const [hoveredSecret, setHoveredSecret] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
   const [recordings, setRecordings] = useState([]);
@@ -805,6 +991,9 @@ export const TapesPage = () => {
   const [documents, setDocuments] = useState([]);
   const [documentsLoading, setDocumentsLoading] = useState(true);
   const [showSpectral, setShowSpectral] = useState(false);
+  const [showRelay, setShowRelay] = useState(false);
+  const [showFrequencyTuner, setShowFrequencyTuner] = useState(false);
+  const [showWaveformMatch, setShowWaveformMatch] = useState(false);
 
   useEffect(() => {
     const loadRecordings = async () => {
@@ -834,7 +1023,23 @@ export const TapesPage = () => {
     getCompletedCount,
     getTotalPuzzles,
     currentEvent,
+    getTimeRemaining,
   } = useGlobalEvent();
+
+  // Timer state for real-time countdown
+  const [timeRemaining, setTimeRemaining] = useState(() => getTimeRemaining?.() || {});
+
+  useEffect(() => {
+    if (!currentEvent?.is_active) return;
+
+    const updateTimer = () => {
+      const time = getTimeRemaining?.();
+      setTimeRemaining(time || {});
+    };
+
+    const interval = setInterval(updateTimer, 1000);
+    return () => clearInterval(interval);
+  }, [currentEvent?.is_active, getTimeRemaining]);
 
   const { 
     tapes,
@@ -887,12 +1092,52 @@ export const TapesPage = () => {
     keypadLock: KeypadLock,
     patternGrid: PatternGrid,
     jigsawFragment: JigsawFragment,
+    spectralAnalysis: SpectralAnalysis,
+    relayCalibration: RelayCalibration,
+    corruptionPurge: CorruptionPurge,
+    echoResonance: EchoResonance,
+    phaseAlignment: WaveformMatch,
+    harmonicDecomposition: SpectralAnalysis,
+    crypticCodex: CrypticCodex,
+    binaryDecode: BinaryDecode,
+    symbolMatrix: PatternGrid,
+    layeredArchive: PatternGrid,
   };
 
-  // Puzzle IDs assigned to recordings by index (0-4)
-  const recordingPuzzles = ['morseDecoder', 'frequencyTuner', 'waveformMatch', 'signalScramble', 'wireSplice'];
-  // Puzzle IDs assigned to documents by index (0-4)
-  const documentPuzzles = ['redactionReveal', 'fileDecryptor', 'keypadLock', 'patternGrid', 'jigsawFragment'];
+  const recordingPuzzles = [
+    'morseDecoder', 
+    'frequencyTuner', 
+    'waveformMatch', 
+    'signalScramble', 
+    'wireSplice',
+    'spectralAnalysis',
+    'echoResonance',
+    'phaseAlignment',
+    'harmonicDecomposition',
+    'frequencyTuner'
+  ];
+
+  const documentPuzzles = [
+    'redactionReveal', 
+    'fileDecryptor', 
+    'keypadLock', 
+    'patternGrid', 
+    'jigsawFragment',
+    'crypticCodex',
+    'binaryDecode',
+    'symbolMatrix',
+    'layeredArchive',
+    'corruptionPurge'
+  ];
+
+  // Global event puzzles - the 5 core puzzles that appear during active events
+  const globalEventPuzzles = [
+    'passwordTerminal',
+    'memoryGame',
+    'relayCalibration',
+    'frequencyTuner',
+    'waveformMatch'
+  ];
 
   // Local unlock state from Zustand store
   const { unlockedContent, unlockContent, completePuzzle: storePuzzleComplete } = useGameStore();
@@ -1112,7 +1357,7 @@ export const TapesPage = () => {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 boxShadow: `0 0 20px ${COLORS.crimson}60`,
               }}>
-                <span style={{ color: '#fff', fontSize: 16, marginLeft: 3 }}>▶</span>
+                <Icons.Play size={18} color="#fff" />
               </div>
             </div>
           )}
@@ -1190,7 +1435,7 @@ export const TapesPage = () => {
               gap: 4,
               opacity: 0.6,
             }}>
-              <div style={{ fontSize: 18 }}>🔒</div>
+              <Icons.Lock size={20} color={COLORS.bg} />
               <div style={{ fontSize: 10, letterSpacing: 2 }}>SOLVE PUZZLE</div>
               <div style={{ fontSize: 9, letterSpacing: 1, opacity: 0.6 }}>TO UNSEAL THIS TAPE</div>
             </div>
@@ -1210,11 +1455,25 @@ export const TapesPage = () => {
       overflowX: 'hidden',
     }}>
 
-      {/* Spectral Analysis — Global Event Puzzle */}
-      <SpectralAnalysis
-        isOpen={showSpectral}
-        onClose={() => setShowSpectral(false)}
-        onSuccess={() => { markPuzzleComplete('spectralAnalysis'); setShowSpectral(false); }}
+      {/* Relay Calibration — Global Event Puzzle */}
+      <RelayCalibration
+        isOpen={showRelay}
+        onClose={() => setShowRelay(false)}
+        onSuccess={() => { markPuzzleComplete('relayCalibration'); setShowRelay(false); }}
+      />
+
+      {/* Frequency Tuner — Global Event Puzzle */}
+      <FrequencyTuner
+        isOpen={showFrequencyTuner}
+        onClose={() => setShowFrequencyTuner(false)}
+        onSuccess={() => { markPuzzleComplete('frequencyTuner'); setShowFrequencyTuner(false); }}
+      />
+
+      {/* Waveform Match — Global Event Puzzle */}
+      <WaveformMatch
+        isOpen={showWaveformMatch}
+        onClose={() => setShowWaveformMatch(false)}
+        onSuccess={() => { markPuzzleComplete('waveformMatch'); setShowWaveformMatch(false); }}
       />
 
       {/* MAIN CONTENT WRAPPER */}
@@ -1242,35 +1501,127 @@ export const TapesPage = () => {
             justifyContent: 'space-between',
             alignItems: 'center'
           }}>
-            <span>MAGNETIC MEDIA REPOSITORY</span>
+            <span>
+              MAGNETIC{' '}
+              <GlitchTextWord
+                word="MEDIA"
+                puzzleId="relayCalibration"
+                onActivate={(id) => {
+                  if (id === 'relayCalibration') setShowRelay(true);
+                }}
+              />{' '}
+              REPOSITORY
+            </span>
             <span style={{ color: COLORS.crimson, animation: 'blink 2s infinite' }}>● REC</span>
           </div>
 
-          {/* Hidden Spectral Analysis trigger */}
-          <div
-            onClick={() => !isPuzzleEventComplete('spectralAnalysis') && setShowSpectral(true)}
-            style={{
+          {/* Global Event Status & Puzzles */}
+          {currentEvent && currentEvent.is_active ? (
+            <div style={{ marginTop: 20 }}>
+              <div style={{
+                padding: '16px',
+                background: `linear-gradient(135deg, ${COLORS.crimson}20, ${COLORS.flora}15)`,
+                border: `2px solid ${COLORS.crimson}`,
+                borderRadius: 6,
+                marginBottom: 16,
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  fontFamily: "'Bebas Neue', sans-serif",
+                  fontSize: 16,
+                  letterSpacing: 3,
+                  color: COLORS.crimson,
+                  marginBottom: 12,
+                }}>
+                  <Icons.AlertTriangle size={20} />
+                  GLOBAL EVENT ACTIVE
+                </div>
+                <div style={{
+                  fontFamily: "'Space Mono', monospace",
+                  fontSize: 11,
+                  color: COLORS.bone,
+                  marginBottom: 12,
+                  lineHeight: 1.5,
+                }}>
+                  {currentEvent.description || 'An anomalous event is unfolding. Complete the event puzzles to uncover the truth.'}
+                </div>
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gap: 12,
+                  marginBottom: 12,
+                }}>
+                  <div style={{
+                    background: `${COLORS.crimson}10`,
+                    padding: '8px 12px',
+                    borderRadius: 4,
+                  }}>
+                    <div style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 9,
+                      color: COLORS.flora,
+                      letterSpacing: 1,
+                      marginBottom: 4,
+                    }}>
+                      TIME LEFT
+                    </div>
+                    <div style={{
+                      fontFamily: "'Bebas Neue', sans-serif",
+                      fontSize: 18,
+                      letterSpacing: 2,
+                      color: timeRemaining.expired ? COLORS.ash : COLORS.bone,
+                    }}>
+                      {timeRemaining.timeString || '--:--:--'}
+                    </div>
+                  </div>
+                  <div style={{
+                    background: `${COLORS.flora}10`,
+                    padding: '8px 12px',
+                    borderRadius: 4,
+                  }}>
+                    <div style={{
+                      fontFamily: "'Space Mono', monospace",
+                      fontSize: 9,
+                      color: COLORS.flora,
+                      letterSpacing: 1,
+                      marginBottom: 4,
+                    }}>
+                      PROGRESS
+                    </div>
+                    <div style={{
+                      fontFamily: "'Bebas Neue', sans-serif",
+                      fontSize: 18,
+                      letterSpacing: 2,
+                      color: COLORS.bone,
+                    }}>
+                      {getCompletedCount()} / {getTotalPuzzles()}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div style={{
               marginTop: 14,
               padding: '10px 16px',
               background: '#060606',
-              border: `1px dashed ${isPuzzleEventComplete('spectralAnalysis') ? COLORS.flora + '40' : COLORS.flora + '20'}`,
-              cursor: isPuzzleEventComplete('spectralAnalysis') ? 'default' : 'pointer',
-              transition: 'all 0.3s',
-            }}
-          >
-            {isPuzzleEventComplete('spectralAnalysis') ? (
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.flora, letterSpacing: 2 }}>
-                ✓ ANOMALOUS FREQUENCY IDENTIFIED — SPECTRUM LOCKED
-              </div>
-            ) : (
+              border: `1px dashed ${COLORS.ash}30`,
+              borderRadius: 4,
+              textAlign: 'center',
+            }}>
               <div style={{
-                fontFamily: "'Space Mono', monospace", fontSize: 10,
-                color: COLORS.flora, letterSpacing: 2, opacity: 0.6,
+                fontFamily: "'Space Mono', monospace",
+                fontSize: 10,
+                color: COLORS.ash,
+                letterSpacing: 2,
+                opacity: 0.6,
               }}>
-                ⚡ ANOMALOUS FREQUENCY DETECTED ON TAPE HEADERS — [ANALYZE]
+                NO ACTIVE GLOBAL EVENT
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Tape Grid — responsive */}
@@ -1366,6 +1717,8 @@ export const TapesPage = () => {
           }}>
             RECOVERED AUDIO TRANSMISSIONS
           </div>
+
+
         </div>
 
         <div style={{
@@ -1488,7 +1841,7 @@ export const TapesPage = () => {
                       <div key={j} style={{ width: 3, height: h, background: COLORS.ember, opacity: 0.3, borderRadius: 1 }} />
                     ))}
                   </div>
-                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color: COLORS.ember, letterSpacing: 4 }}>🔒</div>
+                  <Icons.Lock size={24} color={COLORS.ember} />
                   <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.ember, letterSpacing: 2 }}>SOLVE PUZZLE TO UNLOCK</div>
                   <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: COLORS.ash, letterSpacing: 1 }}>
                     {PUZZLE_REGISTRY[puzzleId]?.name?.toUpperCase() || 'PUZZLE'}
@@ -1536,6 +1889,8 @@ export const TapesPage = () => {
           }}>
             DECLASSIFIED PARK RECORDS &amp; CORRESPONDENCE
           </div>
+
+
         </div>
 
         <div style={{
@@ -1581,11 +1936,19 @@ export const TapesPage = () => {
               </div>
             ))
           ) : (
+
             documents.map((doc, docIndex) => {
+              // Only one puzzle per page: assign puzzleId based on page index
               const puzzleId = docIndex < documentPuzzles.length ? documentPuzzles[docIndex] : null;
               const contentId = `document_${doc.document_id}`;
               const localUnlocked = !puzzleId || isLocallyUnlocked(contentId);
-              
+              // Corrupt a piece of existing text in the preview if event is active and puzzle not completed
+              let corruptedPreview = null;
+              if (currentEvent?.is_active && puzzleId && !isPuzzleEventComplete(puzzleId) && doc.content) {
+                // Find a random word to corrupt
+                const preview = doc.content.length > 100 ? doc.content.slice(0, 100) + '...' : doc.content;
+                corruptedPreview = preview.replace(/(\w{4,})/, '<span style="background:#111;color:#111;padding:0 3px;border-radius:2px;">████</span>');
+              }
               return doc.is_visible && localUnlocked ? (
                 <div key={doc.document_id} style={{
                   padding: 14, background: '#0a0a0a',
@@ -1604,11 +1967,14 @@ export const TapesPage = () => {
                     border: `1px solid ${COLORS.crimson}30`,
                   }}>{(doc.doc_type || 'REPORT').toUpperCase()}</div>
 
-                  {/* Content preview */}
-                  <div style={{
-                    flex: 1, display: 'flex', flexDirection: 'column', gap: 8,
-                    padding: '12px 10px',
-                  }}>
+                  {/* Content preview (clickable) */}
+                  <div
+                    style={{
+                      flex: 1, display: 'flex', flexDirection: 'column', gap: 8,
+                      padding: '12px 10px', cursor: 'pointer',
+                    }}
+                    onClick={() => setOpenDoc(doc)}
+                  >
                     <div style={{
                       fontFamily: "'Space Mono', monospace", fontSize: 9,
                       color: COLORS.crimson, letterSpacing: 2,
@@ -1622,9 +1988,21 @@ export const TapesPage = () => {
                         fontFamily: "'Crimson Text', serif", fontSize: 13,
                         color: COLORS.ash, lineHeight: 1.5, marginTop: 4,
                         overflow: 'hidden', maxHeight: 52,
-                      }}>{doc.content.length > 100 ? doc.content.slice(0, 100) + '...' : doc.content}</div>
+                      }}
+                        dangerouslySetInnerHTML={{
+                          __html: (() => {
+                            let preview = doc.content.length > 100 ? doc.content.slice(0, 100) + '...' : doc.content;
+                            if (currentEvent?.is_active) preview = preview.replace(/REDACTED/, '<span style="background:#111;color:#111;padding:0 3px;border-radius:2px;">████</span>');
+                            return preview
+                              .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                              .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+                          })()
+                        }}
+                      />
                     )}
                   </div>
+            {/* Document modal popup */}
+            <DocumentModal isOpen={!!openDoc} onClose={() => setOpenDoc(null)} document={openDoc} />
 
                   {/* Footer */}
                   <div style={{
@@ -1653,7 +2031,10 @@ export const TapesPage = () => {
                     }}
                     onMouseEnter={e => e.currentTarget.style.color = COLORS.bone}
                     onMouseLeave={e => e.currentTarget.style.color = COLORS.crimson}
-                    >📄 VIEW DOCUMENT</a>
+                    >
+                      <Icons.FileText size={14} />
+                      VIEW DOCUMENT
+                    </a>
                   )}
                 </div>
               ) : doc.is_visible && puzzleId && !localUnlocked ? (
@@ -1674,7 +2055,7 @@ export const TapesPage = () => {
                       <div key={j} style={{ width: `${w}%`, height: 2, background: COLORS.crimson, opacity: 0.15, borderRadius: 1 }} />
                     ))}
                   </div>
-                  <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color: COLORS.crimson, letterSpacing: 4 }}>🔒</div>
+                  <Icons.Lock size={24} color={COLORS.crimson} />
                   <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.crimson, letterSpacing: 2 }}>SOLVE PUZZLE TO UNLOCK</div>
                   <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: COLORS.ash, letterSpacing: 1, marginBottom: 8 }}>
                     {PUZZLE_REGISTRY[puzzleId]?.name?.toUpperCase() || 'PUZZLE'}

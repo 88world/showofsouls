@@ -30,13 +30,13 @@ export default function TapeUnlockNotification() {
         transition={{ type: 'spring', damping: 20 }}
       >
         <div className="notification-header">
-          <div className="notification-indicator">{'● NEW TAPE UNLOCKED'}</div>
+          <div className="notification-indicator">NEW TAPE UNLOCKED</div>
           <button
             className="notification-close"
             onClick={dismissNotification}
             aria-label="Close notification"
           >
-            ✕
+            Close
           </button>
         </div>
 

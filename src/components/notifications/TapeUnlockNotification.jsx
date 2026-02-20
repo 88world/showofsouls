@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTapeUnlocks } from '../../hooks/useTapeUnlocks';
+import { Icons, IconComponent } from '../common/Icons';
 import './TapeUnlockNotification.css';
 
 // ═══════════════════════════════════════════════════════════════
@@ -30,13 +31,16 @@ export default function TapeUnlockNotification() {
         transition={{ type: 'spring', damping: 20 }}
       >
         <div className="notification-header">
-          <div className="notification-indicator">{'● NEW TAPE UNLOCKED'}</div>
+          <div className="notification-indicator" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+            <IconComponent icon={Icons.Sparkles} size={14} />
+            <span>NEW TAPE UNLOCKED</span>
+          </div>
           <button
             className="notification-close"
             onClick={dismissNotification}
             aria-label="Close notification"
           >
-            ✕
+            <IconComponent icon={Icons.X} />
           </button>
         </div>
 
@@ -57,7 +61,7 @@ export default function TapeUnlockNotification() {
 
         <div className="notification-footer">
           <a href="/tapes" className="notification-link">
-            {'View in Archive →'}
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>View in Archive <IconComponent icon={Icons.ChevronRight} size={14} /></span>
           </a>
         </div>
       </motion.div>

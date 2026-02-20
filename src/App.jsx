@@ -10,11 +10,12 @@ import { COLORS } from './utils/constants';
 
 // Pages
 import HomePage from './pages/HomePage';
-import { IncidentPage } from './pages/IncidentPage';
-import { CharactersPage } from './pages/CharactersPage';
+import IncidentPage from './pages/IncidentPage';
+import CharactersPage from './pages/CharactersPage';
 import { TapesPage } from './pages/TapesPage';
 import { ForumPage } from './pages/ForumPage';
 import { AdminPage } from './pages/AdminPage';
+import Sector7Page from './pages/Sector7Page';
 
 // ═══════════════════════════════════════════════════════════════
 // MAIN APP - ROUTING WRAPPER
@@ -283,6 +284,7 @@ export default function App() {
           <Route path="/tapes" element={<TapesPage />} />
           <Route path="/media" element={<ForumPage />} />
           <Route path="/admin" element={<AdminPage />} />
+          <Route path="/sector-7" element={<Sector7Page />} />
         </Routes>
 
         {/* Footer */}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGlobalEvent } from '../GlobalEventProvider';
+import { Icons, IconComponent } from '../../../components/common/Icons';
 import './GlobalEventModal.css';
 
 // ═══════════════════════════════════════════════════════════════
@@ -70,11 +71,12 @@ export default function GlobalEventModal({ isOpen, onClose, event }) {
           >
             {/* Header */}
             <div className="event-modal-header">
-              <div className="event-modal-indicator">
-                {'>>> GLOBAL EVENT: ACTIVE'}
+              <div className="event-modal-indicator" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <IconComponent icon={Icons.Activity} size={16} />
+                <span>GLOBAL EVENT: ACTIVE</span>
               </div>
-              <button className="event-modal-close" onClick={onClose}>
-                ✕
+              <button className="event-modal-close" onClick={onClose} aria-label="Close event modal">
+                <IconComponent icon={Icons.X} />
               </button>
             </div>
 
@@ -155,8 +157,9 @@ export default function GlobalEventModal({ isOpen, onClose, event }) {
               />
               
               {error && (
-                <div className="solution-error">
-                  ⚠ {error}
+                <div className="solution-error" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <IconComponent icon={Icons.AlertTriangle} />
+                  <span>{error}</span>
                 </div>
               )}
 
@@ -171,9 +174,9 @@ export default function GlobalEventModal({ isOpen, onClose, event }) {
 
             {/* Footer */}
             <div className="event-modal-footer">
-              <div className="footer-warning">
-                ⚠ This is a global event. Once solved by any investigator,
-                rewards will be unlocked for everyone.
+              <div className="footer-warning" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                <IconComponent icon={Icons.AlertTriangle} />
+                <span>This is a global event. Once solved by any investigator, rewards will be unlocked for everyone.</span>
               </div>
             </div>
           </motion.div>

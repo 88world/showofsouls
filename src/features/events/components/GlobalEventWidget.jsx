@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useGlobalEvent } from '../GlobalEventProvider';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Icons, IconComponent } from '../../../components/common/Icons';
 import './GlobalEventWidget.css';
 
 // ═══════════════════════════════════════════════════════════════
@@ -54,13 +55,13 @@ export default function GlobalEventWidget({ onOpenEvent }) {
     >
       {/* Header */}
       <div className="widget-header">
-        <div className="widget-indicator">
+          <div className="widget-indicator">
           {isCompleted ? (
-            <span className="indicator-completed">{'✓ COMPLETED'}</span>
+            <span className="indicator-completed" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.CheckCircle2} size={14} color="#fff" />COMPLETED</span>
           ) : isExpired ? (
-            <span className="indicator-expired">{'⚠ EXPIRED'}</span>
+            <span className="indicator-expired" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.AlertTriangle} size={14} color="#fff" />EXPIRED</span>
           ) : (
-            <span className="indicator-active">{'● ACTIVE'}</span>
+            <span className="indicator-active" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.Activity} size={14} color="#fff" />ACTIVE</span>
           )}
         </div>
         

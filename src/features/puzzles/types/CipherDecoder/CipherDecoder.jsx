@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // CIPHER DECODER — Decode a substitution cipher message
@@ -162,7 +163,7 @@ export const CipherDecoder = ({ isOpen, onClose, onSuccess }) => {
         )}
         {success && (
           <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, textAlign: 'center', marginBottom: 12 }}>
-            ✓ TRANSMISSION DECODED
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.CheckCircle2} size={14} color={COLORS.flora} />TRANSMISSION DECODED</span>
           </div>
         )}
 
@@ -171,9 +172,11 @@ export const CipherDecoder = ({ isOpen, onClose, onSuccess }) => {
           border: `2px solid ${success ? COLORS.flora : COLORS.crimson}`,
           color: success ? COLORS.flora : COLORS.crimson,
           fontFamily: "'Bebas Neue', sans-serif", fontSize: 18, letterSpacing: 4, cursor: 'pointer',
-        }}>{success ? '✓ DECODED' : 'VERIFY DECODE'}</button>
+        }}>{success ? (<span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}><IconComponent icon={Icons.CheckCircle2} size={14} />DECODED</span>) : 'VERIFY DECODE'}</button>
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} aria-label="Close cipher decoder" style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>
+          <IconComponent icon={Icons.X} />
+        </button>
       </div>
     </div>
   );

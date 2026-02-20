@@ -70,12 +70,8 @@ export default function GlobalEventModal({ isOpen, onClose, event }) {
           >
             {/* Header */}
             <div className="event-modal-header">
-              <div className="event-modal-indicator">
-                {'>>> GLOBAL EVENT: ACTIVE'}
-              </div>
-              <button className="event-modal-close" onClick={onClose}>
-                ✕
-              </button>
+              <div className="event-modal-indicator">GLOBAL EVENT: ACTIVE</div>
+              <button className="event-modal-close" onClick={onClose} aria-label="Close event modal">Close</button>
             </div>
 
             {/* Title */}
@@ -155,9 +151,7 @@ export default function GlobalEventModal({ isOpen, onClose, event }) {
               />
               
               {error && (
-                <div className="solution-error">
-                  ⚠ {error}
-                </div>
+                <div className="solution-error">{error}</div>
               )}
 
               <button
@@ -171,10 +165,7 @@ export default function GlobalEventModal({ isOpen, onClose, event }) {
 
             {/* Footer */}
             <div className="event-modal-footer">
-              <div className="footer-warning">
-                ⚠ This is a global event. Once solved by any investigator,
-                rewards will be unlocked for everyone.
-              </div>
+              <div className="footer-warning">This is a global event. Once solved by any investigator, rewards will be unlocked for everyone.</div>
             </div>
           </motion.div>
         </motion.div>

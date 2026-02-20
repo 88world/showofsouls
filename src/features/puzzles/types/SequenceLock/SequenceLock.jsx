@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // SEQUENCE LOCK — Remember and reproduce a symbol sequence (Simon Says)
@@ -7,12 +8,12 @@ import { COLORS } from '../../../../utils/constants';
 // ═══════════════════════════════════════════════════════════════
 
 const SYMBOLS = [
-  { icon: '☠', label: 'Skull' },
-  { icon: '👁', label: 'Eye' },
-  { icon: '🔥', label: 'Fire' },
-  { icon: '⚡', label: 'Bolt' },
-  { icon: '🌀', label: 'Void' },
-  { icon: '✦', label: 'Star' },
+  { icon: 'XCircle', label: 'Skull' },
+  { icon: 'Eye', label: 'Eye' },
+  { icon: 'Zap', label: 'Fire' },
+  { icon: 'Zap', label: 'Bolt' },
+  { icon: 'Sparkles', label: 'Void' },
+  { icon: 'Sparkles', label: 'Star' },
 ];
 
 const COLORS_MAP = [
@@ -154,7 +155,7 @@ export const SequenceLock = ({ isOpen, onClose, onSuccess }) => {
                   filter: isActive ? 'brightness(1.3)' : 'none',
                 }}
               >
-                <span>{sym.icon}</span>
+                <span><IconComponent icon={Icons[sym.icon]} size={28} /></span>
                 <span style={{
                   fontFamily: "'Space Mono', monospace", fontSize: 7,
                   color: isActive ? COLORS_MAP[i] : COLORS.ash, letterSpacing: 1,
@@ -171,8 +172,9 @@ export const SequenceLock = ({ isOpen, onClose, onSuccess }) => {
           </div>
         )}
         {phase === 'showing' && (
-          <div style={{ textAlign: 'center', marginBottom: 12, fontFamily: "'Space Mono', monospace", fontSize: 11, color: '#a855f7' }}>
-            ▶ WATCH THE SEQUENCE... ({sequence.length} symbols)
+          <div style={{ textAlign: 'center', marginBottom: 12, fontFamily: "'Space Mono', monospace", fontSize: 11, color: '#a855f7', display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
+            <IconComponent icon={Icons.Play} size={14} color={'#a855f7'} />
+            <span>WATCH THE SEQUENCE... ({sequence.length} symbols)</span>
           </div>
         )}
         {phase === 'input' && (
@@ -181,13 +183,15 @@ export const SequenceLock = ({ isOpen, onClose, onSuccess }) => {
           </div>
         )}
         {phase === 'fail' && (
-          <div style={{ textAlign: 'center', marginBottom: 12, fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.crimson }}>
-            ✗ WRONG SEQUENCE — LOCK RESET
+          <div style={{ textAlign: 'center', marginBottom: 12, fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.crimson, display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
+            <IconComponent icon={Icons.XCircle} size={14} color={COLORS.crimson} />
+            <span>WRONG SEQUENCE — LOCK RESET</span>
           </div>
         )}
         {phase === 'success' && (
-          <div style={{ textAlign: 'center', marginBottom: 12, fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora }}>
-            ✓ SEQUENCE COMPLETE — LOCK OPENED
+          <div style={{ textAlign: 'center', marginBottom: 12, fontFamily: "'Space Mono', monospace", fontSize: 11, color: COLORS.flora, display: 'flex', gap: 8, alignItems: 'center', justifyContent: 'center' }}>
+            <IconComponent icon={Icons.CheckCircle2} size={14} color={COLORS.flora} />
+            <span>SEQUENCE COMPLETE — LOCK OPENED</span>
           </div>
         )}
 
@@ -199,7 +203,7 @@ export const SequenceLock = ({ isOpen, onClose, onSuccess }) => {
           }}>START SEQUENCE</button>
         )}
 
-        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', color: COLORS.ash, fontSize: 18, cursor: 'pointer' }}><IconComponent icon={Icons.X} size={18} color={COLORS.ash} /></button>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useGlobalEvent } from '../GlobalEventProvider';
 import './BroadcastBar.css'; // Shares toast styles from BroadcastBar.css
+import { Icons, IconComponent } from '../../../components/common/Icons';
 
 // ═══════════════════════════════════════════════════════════════
 // BROADCAST TOAST - Retro TV notification toast
@@ -16,19 +17,19 @@ import './BroadcastBar.css'; // Shares toast styles from BroadcastBar.css
 
 const TOAST_MESSAGES = {
   fragment_collected: {
-    icon: '📡',
+    icon: Icons.Signal,
     getTitle: (msg) => 'SIGNAL RECOVERED',
     getBody: (msg) => `Fragment "${msg.fragmentId}" decoded. Data secured: ${msg.fragmentData}`,
     getSubtitle: () => 'Check your progress in the broadcast bar',
   },
   new_event: {
-    icon: '📺',
+    icon: Icons.Play,
     getTitle: (msg) => 'INCOMING TRANSMISSION',
     getBody: (msg) => `New event detected: "${msg.title}". Puzzle fragments are now scattered across the site.`,
     getSubtitle: () => 'Tune in to decode the signal',
   },
   event_completed: {
-    icon: '🏆',
+    icon: Icons.CheckCircle2,
     getTitle: (msg) => msg.firstComplete ? 'YOU DID IT' : 'EVENT CONCLUDED',
     getBody: (msg) => msg.firstComplete 
       ? `You were the first to complete "${msg.title}"!`
@@ -83,7 +84,7 @@ export default function BroadcastToast() {
 
           <div className="broadcast-content" style={{ padding: '12px 14px' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-              <span className="toast-icon">{config.icon}</span>
+              <span className="toast-icon"><IconComponent icon={config.icon} size={28} /></span>
               <div>
                 <div style={{
                   fontFamily: "'Bebas Neue', sans-serif",

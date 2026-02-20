@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { COLORS } from '../../../../utils/constants';
+import { Icons, IconComponent } from '../../../../components/common/Icons';
 import { PUZZLE_IDS } from '../../config/puzzleRegistry';
 
 // ═══════════════════════════════════════════════════════════════
@@ -216,8 +217,10 @@ export const PasswordTerminal = ({ isOpen, onClose, onSuccess }) => {
                 marginTop: 12,
                 textAlign: "center",
                 animation: "shake 0.5s",
+                display: 'inline-flex', alignItems: 'center', gap: 8,
               }}>
-                ⚠ {error}
+                <IconComponent icon={Icons.AlertTriangle} size={14} color={COLORS.crimson} />
+                <span>{error}</span>
               </div>
             )}
             <div style={{ display: "flex", gap: 12, marginTop: 20 }}>
