@@ -99,10 +99,7 @@ const SplitHero = ({ scrollY }) => {
         display: "flex", alignItems: "center", gap: 16,
         fontFamily: "'Space Mono', monospace", color: COLORS.crimson,
       }}>
-        <div style={{ fontSize: 12, letterSpacing: 2, display: "flex", alignItems: "center", gap: 8 }}>
-          <span style={{ animation: "blink 1s steps(1) infinite" }}>● REC</span>
-          <span style={{ color: COLORS.bone, opacity: 0.7 }}>[TAPE 1947-B]</span>
-        </div>
+        {/* Removed REC [TAPE 1947-B] label */}
       </div>
 
       {/* Bottom Right Signal Box - Park Specific */}

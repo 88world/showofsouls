@@ -187,19 +187,7 @@ const SplitHero = ({ scrollY, onActivatePuzzle }) => {
       }}>
 
         {/* REC label - in flow, top-left */}
-        <div style={{
-          alignSelf: "flex-start",
-          marginBottom: "clamp(16px, 3vh, 28px)",
-          display: "flex", alignItems: "center", gap: 8,
-          fontFamily: "'Space Mono', monospace", color: COLORS.crimson,
-          fontSize: 13, letterSpacing: 2,
-        }}>
-          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ animation: "blink 1s steps(1) infinite" }}><IconComponent icon={Icons.Activity} size={11} color={COLORS.crimson} /></span>
-            <span>REC</span>
-          </span>
-          <span style={{ color: COLORS.bone, opacity: 0.7 }}>[TAPE 1947-B]</span>
-        </div>
+        {/* Removed REC [TAPE 1947-B] label */}
         <div style={{
           opacity: loaded ? 1 : 0,
           transform: loaded ? "scale(1)" : "scale(1.1)",
