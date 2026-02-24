@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { COLORS } from '../utils/constants';
 
-// ═══════════════════════════════════════════════════════════════
-// LOCAL CRT EFFECT OVERLAY
-// ═══════════════════════════════════════════════════════════════
+// Local CRT overlay used across cards and modals
 const LocalCRTOverlay = () => (
   <>
     <div style={{
@@ -18,6 +16,9 @@ const LocalCRTOverlay = () => (
     }} />
   </>
 );
+
+// Retro audio player removed — replaced with static content.
+
 
 // ═══════════════════════════════════════════════════════════════
 // SECTOR 7 DISCOVERY GRID
@@ -573,6 +574,21 @@ const FooterMessage = () => {
 // MAIN SECTOR 7 PAGE
 // ═══════════════════════════════════════════════════════════════
 
+// Minimal YouTube live-audio embed
+const YouTubeAudioEmbed = ({ videoId = 'zWlI2ztER7o', width = '100%', height = 160 }) => {
+  const src = `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=1&modestbranding=1&rel=0`;
+  return (
+    <div style={{ width: '100%', maxWidth: 960, margin: '12px auto' }}>
+      <iframe
+        title={`YouTube Live ${videoId}`}
+        src={src}
+        style={{ width, height, border: 0 }}
+        allow="autoplay; encrypted-media"
+      />
+    </div>
+  );
+};
+
 export default function Sector7Page() {
   return (
     <div className="page page-sector7" style={{
@@ -582,6 +598,7 @@ export default function Sector7Page() {
       overflowX: "hidden",
     }}>
       <HeroSection />
+      <YouTubeAudioEmbed videoId="zWlI2ztER7o" />
       <Sector7Grid />
       <FooterMessage />
 
