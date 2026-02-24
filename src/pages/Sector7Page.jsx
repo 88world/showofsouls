@@ -17,7 +17,221 @@ const LocalCRTOverlay = () => (
   </>
 );
 
-// Retro audio player removed — replaced with static content.
+// ═══════════════════════════════════════════════════════════════
+// CUSTOM RETRO RADIO PLAYER ("THE SURPLUS SCANNER")
+// ═══════════════════════════════════════════════════════════════
+
+// A reusable component for the "screws" in the corners of the radio rack
+const RackScrew = () => (
+  <div style={{
+    width: 12, height: 12, borderRadius: '50%',
+    background: 'linear-gradient(135deg, #3a3a3a, #1a1a1a)',
+    boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.2), 0 2px 2px rgba(0,0,0,0.5)',
+    border: '1px solid #0a0a0a',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0a0a0a', fontSize: 8
+  }}>+</div>
+);
+
+// Small glowing LED indicator
+const StatusLED = ({ label, active, color }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+    <div style={{
+      width: 8, height: 8, borderRadius: '50%',
+      background: active ? color : '#1a1a1a',
+      boxShadow: active ? `0 0 8px ${color}, inset 0 0 4px ${color}EE` : 'inset 0 1px 2px rgba(0,0,0,0.5)',
+      border: '1px solid rgba(0,0,0,0.5)', transition: 'all 0.2s ease'
+    }} />
+    <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 8, color: COLORS.ash, opacity: 0.7, letterSpacing: 1 }}>{label}</span>
+  </div>
+);
+
+const YouTubeAudioPlayer = ({ videoId = 'zWlI2ztER7o' }) => {
+  const containerRef = useRef(null);
+  const playerRef = useRef(null);
+  const [isReady, setIsReady] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(60);
+  const [vu, setVu] = useState(0);
+  const [freqJitter, setFreqJitter] = useState(4625.0);
+
+  // Load YouTube IFrame API
+  useEffect(() => {
+    if (window.YT && window.YT.Player) { setIsReady(true); return; }
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.body.appendChild(tag);
+    window.onYouTubeIframeAPIReady = () => setIsReady(true);
+  }, []);
+
+  // Initialize Player
+  useEffect(() => {
+    if (!isReady || !containerRef.current || playerRef.current) return;
+    playerRef.current = new window.YT.Player(containerRef.current, {
+      height: '0', width: '0', videoId,
+      playerVars: { autoplay: 0, controls: 0, disablekb: 1 },
+      events: {
+        onReady: (e) => { e.target.setVolume(volume); },
+        onStateChange: (e) => { setIsPlaying(e.data === (window.YT && window.YT.PlayerState.PLAYING)); }
+      }
+    });
+    return () => { try { if (playerRef.current?.destroy) playerRef.current.destroy(); } catch (e) {} playerRef.current = null; };
+  }, [isReady]);
+
+  const togglePlay = () => { if (playerRef.current) isPlaying ? playerRef.current.pauseVideo() : playerRef.current.playVideo(); };
+  const handleVolume = (v) => { setVolume(v); if (playerRef.current?.setVolume) playerRef.current.setVolume(v); };
+
+  // Simulated Animations (VU and frequency jitter)
+  useEffect(() => {
+    let raf = null;
+    const tick = () => {
+      // VU Meter math
+      const target = isPlaying ? (0.3 + Math.random() * 0.6) : 0.02 + Math.random() * 0.05;
+      setVu((v) => Math.max(0, Math.min(1, v * 0.9 + target * 0.1)));
+      // Frequency jitter math for 4625 kHz
+      if (isPlaying) setFreqJitter(4625.0 + (Math.random() * 0.4 - 0.2));
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => { if (raf) cancelAnimationFrame(raf); };
+  }, [isPlaying]);
+
+  // Styles for the main radio chassis
+  const chassisStyle = {
+    width: '100%', maxWidth: 720, margin: '40px auto 60px', position: 'relative',
+    background: `linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%)`,
+    borderTop: `1px solid #3a3a3a`, borderBottom: `1px solid #0a0a0a`,
+    boxShadow: `0 20px 40px rgba(0,0,0,0.6), inset 0 2px 2px rgba(255,255,255,0.05), inset 0 -2px 10px rgba(0,0,0,0.8)`,
+    borderRadius: 4, padding: '16px 20px',
+    display: 'flex', flexDirection: 'column', gap: 16,
+  };
+
+  // Style for the glowing display screen area
+  const screenAreaStyle = {
+    background: '#080808', borderRadius: 2, padding: 12,
+    border: `2px solid #333`,
+    boxShadow: 'inset 0 0 20px rgba(0,0,0,1)',
+    position: 'relative', overflow: 'hidden',
+    display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'
+  };
+
+  // Style for the physical play button
+  const buttonStyle = {
+    fontFamily: "'Space Mono', monospace", fontSize: 14, letterSpacing: 1, fontWeight: 700,
+    padding: '14px 24px', borderRadius: 2, cursor: 'pointer',
+    background: isPlaying
+      ? `linear-gradient(180deg, ${COLORS.ember}aa, ${COLORS.crimson})`
+      : `linear-gradient(180deg, #3a3a3a, #2a2a2a)`,
+    color: isPlaying ? '#fff' : COLORS.ash,
+    border: '1px solid rgba(0,0,0,0.5)',
+    borderTop: isPlaying ? `1px solid ${COLORS.ember}` : `1px solid #4a4a4a`,
+    boxShadow: isPlaying
+      ? `inset 0 2px 10px rgba(0,0,0,0.5), 0 0 15px ${COLORS.ember}60`
+      : `0 4px 0 #111, 0 6px 10px rgba(0,0,0,0.5)`,
+    transform: isPlaying ? 'translateY(4px)' : 'translateY(0)',
+    transition: 'all 0.1s ease', outline: 'none',
+    textShadow: isPlaying ? `0 0 8px ${COLORS.ember}` : 'none',
+    minWidth: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8
+  };
+
+  return (
+    <div style={chassisStyle}>
+      {/* Rack Screws & Texture Overlay */}
+      <div style={{ position: 'absolute', top: 8, left: 8 }}><RackScrew /></div>
+      <div style={{ position: 'absolute', top: 8, right: 8 }}><RackScrew /></div>
+      <div style={{ position: 'absolute', bottom: 8, left: 8 }}><RackScrew /></div>
+      <div style={{ position: 'absolute', bottom: 8, right: 8 }}><RackScrew /></div>
+      <div style={{ position: 'absolute', inset: 0, opacity: 0.1, pointerEvents: 'none', backgroundImage: `url('https://www.transparenttextures.com/patterns/noisy-net.png')`, mixBlendMode: 'overlay' }} />
+
+      {/* TOP SECTION - THE DISPLAY SCREEN */}
+      <div style={screenAreaStyle}>
+        {/* CRT Overlay for screen */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.2, background: `repeating-linear-gradient(0deg, rgba(0,0,0,0.2) 0px, rgba(0,0,0,0.2) 1px, transparent 1px, transparent 3px)`, zIndex: 2 }} />
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.3, background: `radial-gradient(circle at center, transparent 50%, #000 100%)`, zIndex: 3 }} />
+
+        {/* Frequency Readout */}
+        <div style={{ zIndex: 10, position: 'relative' }}>
+           <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.flora, opacity: 0.7, letterSpacing: 1, marginBottom: 4 }}>TUNED FREQUENCY</div>
+           <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 48, lineHeight: 0.8, color: isPlaying ? COLORS.flora : COLORS.ash, textShadow: isPlaying ? `0 0 15px ${COLORS.flora}80` : 'none', transition: 'color 0.3s' }}>
+             {isPlaying ? freqJitter.toFixed(1) : '----.-'} <span style={{ fontSize: 24 }}>kHz</span>
+           </div>
+        </div>
+
+        {/* Center - VU Meter (Retro VFD Style) */}
+        <div style={{ flex: 1, maxWidth: 250, margin: '0 20px', zIndex: 10, position: 'relative' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Space Mono', monospace", fontSize: 8, color: COLORS.ash, marginBottom: 4 }}>
+            <span>L</span><span>SIGNAL STRENGTH</span><span>R</span>
+          </div>
+          <div style={{ height: 24, background: '#111', border: `1px solid #333`, borderRadius: 2, overflow: 'hidden', position: 'relative', boxShadow: 'inset 0 0 10px #000' }}>
+            {/* Grid overlay for VFD look */}
+            <div style={{ position: 'absolute', inset: 0, backgroundSize: '4px 4px', backgroundImage: 'linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)', opacity: 0.3, zIndex: 2 }}></div>
+            {/* The Bar */}
+            <div style={{
+              width: `${Math.round(vu * 100)}%`, height: '100%',
+              background: `linear-gradient(90deg, ${COLORS.flora}40, ${COLORS.flora}, ${COLORS.ember}, ${COLORS.crimson})`,
+              boxShadow: `0 0 15px ${COLORS.flora}60`,
+              transition: 'width 0.06s linear', position: 'relative', zIndex: 1
+            }} />
+          </div>
+        </div>
+
+        {/* Status Indicators */}
+        <div style={{ display: 'flex', gap: 12, zIndex: 10, position: 'relative' }}>
+           <StatusLED label="POWER" active={true} color={COLORS.ember} />
+           <StatusLED label="CARRIER" active={isPlaying && vu > 0.1} color={COLORS.flora} />
+           <StatusLED label="LOCKED" active={isPlaying} color={COLORS.crimson} />
+        </div>
+      </div>
+
+      {/* BOTTOM SECTION - CONTROLS */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 24, padding: '0 20px', position: 'relative', zIndex: 10 }}>
+
+        {/* Play Button */}
+        <button onClick={togglePlay} style={buttonStyle}>
+          <span style={{ fontSize: 18 }}>{isPlaying ? '■' : '►'}</span>
+          {isPlaying ? 'DISENGAGE' : 'ENGAGE'}
+        </button>
+
+        {/* Volume Fader Section */}
+        <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 16, background: '#1a1a1a', padding: '8px 16px', borderRadius: 2, border: '1px solid #333', borderBottom: '1px solid #555', boxShadow: 'inset 0 2px 5px rgba(0,0,0,0.5)' }}>
+           <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: COLORS.ash, letterSpacing: 1 }}>GAIN</div>
+
+           {/* Custom styled range input to look like a fader */}
+           <div style={{ flex: 1, position: 'relative', height: 24, display: 'flex', alignItems: 'center' }}>
+             {/* Fader Track slot */}
+             <div style={{ position: 'absolute', left: 0, right: 0, height: 4, background: '#000', borderBottom: '1px solid #333', borderRadius: 2 }}></div>
+             <input
+               type="range" min="0" max="100" value={volume}
+               onChange={(e) => handleVolume(Number(e.target.value))}
+               style={{
+                 width: '100%', position: 'relative', zIndex: 2, margin: 0, opacity: 0, cursor: 'pointer', height: '100%' 
+               }}
+             />
+             {/* The physical fader knob rendered based on volume position */}
+             <div style={{
+               position: 'absolute', left: `calc(${volume}% - 10px)`, top: 0, width: 20, height: 24,
+               background: `linear-gradient(180deg, #555, #2a2a2a)`,
+               border: '1px solid #1a1a1a', borderTop: '1px solid #777', borderRadius: 2,
+               boxShadow: '0 4px 8px rgba(0,0,0,0.5)', pointerEvents: 'none',
+               display: 'flex', justifyContent: 'center', alignItems: 'center'
+             }}>
+                 <div style={{ width: 2, height: 14, background: volume > 0 ? COLORS.ember : '#111', boxShadow: volume > 0 ? `0 0 5px ${COLORS.ember}` : 'none' }}></div>
+             </div>
+           </div>
+
+           <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 12, color: volume > 0 ? COLORS.ember : COLORS.ash, width: 36, textAlign: 'right', textShadow: volume > 0 ? `0 0 8px ${COLORS.ember}60` : 'none' }}>
+             {volume}
+           </div>
+        </div>
+
+      </div>
+
+      {/* Hidden player container */}
+      <div style={{ width: 1, height: 1, overflow: 'hidden', position: 'relative' }}>
+        <div ref={containerRef} />
+      </div>
+    </div>
+  );
+};
 
 
 // ═══════════════════════════════════════════════════════════════
@@ -50,7 +264,7 @@ const Sector7Grid = () => {
     compute();
 
     let rafId = null;
-    const speed = 100; // pixels per second - adjust for faster/slower
+    const speed = 100;
 
     const onFrame = (t) => {
       if (!lastTimeRef.current) lastTimeRef.current = t;
@@ -330,17 +544,13 @@ const Sector7Grid = () => {
                     e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.4)";
                   }}
                 >
-                  <LocalCRTOverlay />
-                  <div style={{ position: "relative", zIndex: 2 }}>
+                  <div>
                     <h3 style={{
                       fontFamily: "'Bebas Neue', sans-serif",
-                      fontSize: "14px",
-                      letterSpacing: "0.08em",
-                      margin: "0 0 4px 0",
+                      fontSize: "24px",
+                      letterSpacing: "0.05em",
                       color: COLORS.flora,
-                      textTransform: "uppercase",
-                      fontWeight: 700,
-                      lineHeight: 1.1,
+                      margin: "0 0 4px 0"
                     }}>
                       {item.title}
                     </h3>
@@ -571,23 +781,8 @@ const FooterMessage = () => {
 };
 
 // ═══════════════════════════════════════════════════════════════
-// MAIN SECTOR 7 PAGE
+// MAIN SECTOR 7 PAGE EXPORT
 // ═══════════════════════════════════════════════════════════════
-
-// Minimal YouTube live-audio embed
-const YouTubeAudioEmbed = ({ videoId = 'zWlI2ztER7o', width = '100%', height = 160 }) => {
-  const src = `https://www.youtube.com/embed/${videoId}?autoplay=0&controls=1&modestbranding=1&rel=0`;
-  return (
-    <div style={{ width: '100%', maxWidth: 960, margin: '12px auto' }}>
-      <iframe
-        title={`YouTube Live ${videoId}`}
-        src={src}
-        style={{ width, height, border: 0 }}
-        allow="autoplay; encrypted-media"
-      />
-    </div>
-  );
-};
 
 export default function Sector7Page() {
   return (
@@ -598,7 +793,10 @@ export default function Sector7Page() {
       overflowX: "hidden",
     }}>
       <HeroSection />
-      <YouTubeAudioEmbed videoId="zWlI2ztER7o" />
+      
+      {/* Inserted the new Retro Radio Player right below the hero */}
+      <YouTubeAudioPlayer videoId="zWlI2ztER7o" />
+      
       <Sector7Grid />
       <FooterMessage />
 

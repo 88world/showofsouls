@@ -58,7 +58,7 @@ export const VHSOverlay = () => {
           position: "fixed",
           bottom: 24,
           left: 24,
-          zIndex: 10001,
+          zIndex: 9999999,
           padding: "12px 16px",
           background: vhsEffectsEnabled ? COLORS.flora + "20" : COLORS.crimson + "20",
           border: `2px solid ${vhsEffectsEnabled ? COLORS.flora : COLORS.crimson}`,
@@ -111,7 +111,7 @@ export const VHSOverlay = () => {
             right: 0,
             bottom: 0,
             pointerEvents: "none",
-            zIndex: 9999,
+            zIndex: 9999999,
             background: `repeating-linear-gradient(
               0deg,
               rgba(0, 20, 10, 0.15),
@@ -128,7 +128,7 @@ export const VHSOverlay = () => {
             inset: 0,
             opacity: 0.15,
             pointerEvents: "none",
-            zIndex: 9999,
+            zIndex: 9999999,
           }}>
             <div style={{
               position: "absolute",
@@ -153,7 +153,7 @@ export const VHSOverlay = () => {
               position: "fixed",
               inset: 0,
               pointerEvents: "none",
-              zIndex: 9999,
+              zIndex: 9999999,
               background: `linear-gradient(135deg, ${COLORS.crimson}40, ${COLORS.signal}30)`,
               animation: "redPulse 0.15s ease-out",
             }} />
@@ -166,7 +166,7 @@ export const VHSOverlay = () => {
                 position: "fixed",
                 inset: 0,
                 pointerEvents: "none",
-                zIndex: 9999,
+                zIndex: 9999999,
                 clipPath: `inset(0 0 ${60 + Math.random() * 30}% 0)`,
                 transform: `translateY(-${Math.random() * 8}px)`,
                 filter: `hue-rotate(${Math.random() * 20}deg)`,
@@ -181,7 +181,7 @@ export const VHSOverlay = () => {
                 position: "fixed",
                 inset: 0,
                 pointerEvents: "none",
-                zIndex: 9999,
+                zIndex: 9999999,
                 clipPath: `inset(${30 + Math.random() * 20}% 0 0 0)`,
                 transform: `translateY(${Math.random() * 8}px)`,
                 filter: `hue-rotate(-${Math.random() * 20}deg)`,
@@ -217,7 +217,7 @@ export const VHSOverlay = () => {
                 height: "8px",
                 top: "20%",
                 pointerEvents: "none",
-                zIndex: 9999,
+                zIndex: 9999999,
                 background: `repeating-linear-gradient(
                   90deg,
                   rgba(255, 255, 255, 0.1),
@@ -235,7 +235,7 @@ export const VHSOverlay = () => {
                 height: "4px",
                 top: "60%",
                 pointerEvents: "none",
-                zIndex: 9999,
+                zIndex: 9999999,
                 background: "rgba(255, 255, 255, 0.15)",
                 animation: "trackingSlide 0.8s linear 0.2s",
                 filter: "blur(2px)",
@@ -248,7 +248,7 @@ export const VHSOverlay = () => {
             position: "fixed",
             inset: 0,
             pointerEvents: "none",
-            zIndex: 9999,
+            zIndex: 9999999,
             background: `linear-gradient(
               to right,
               ${COLORS.crimson}08 0%,
@@ -264,7 +264,7 @@ export const VHSOverlay = () => {
             position: "fixed",
             inset: 0,
             pointerEvents: "none",
-            zIndex: 9999,
+            zIndex: 9999999,
             backgroundImage: `repeating-linear-gradient(
               0deg,
               transparent,
@@ -282,7 +282,7 @@ export const VHSOverlay = () => {
             position: "fixed",
             inset: 0,
             pointerEvents: "none",
-            zIndex: 9999,
+            zIndex: 9999999,
             background: `radial-gradient(
               ellipse at center,
               transparent 40%,
